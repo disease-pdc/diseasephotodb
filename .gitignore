@@ -40,6 +40,6 @@ yarn-debug.log*
 .yarn-integrity
 
 # ENV files
-.env*
+.env
 
 .DS_Store
