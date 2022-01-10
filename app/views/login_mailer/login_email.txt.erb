@@ -1,0 +1,7 @@
+<%
+  link = url_for controller: 'sessions', action: 'create', params: {
+    email: @user.email, token: @token
+  }
+%>
+
+Access the TF Imagery Database by following this link: <%= raw(link) %>
