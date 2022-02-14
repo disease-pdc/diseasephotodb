@@ -1,4 +1,4 @@
-class CreateImageSources < ActiveRecord::Migration[7.0]
+class CreateImageSources < ActiveRecord::Migration[6.1]
   def change
     create_table :image_sources do |t|
       t.text :name, null: false

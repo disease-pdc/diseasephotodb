@@ -1,7 +1,10 @@
 class SessionsController < ApplicationController
 
-  def new
+  layout 'fullscreen'
 
+  skip_before_action :require_login
+
+  def new
   end
 
   def send_login
@@ -19,7 +22,7 @@ class SessionsController < ApplicationController
     @user = User.by_email_token params[:email], params[:token]
     if @user
       session[:user_id] = @user.id
-      redirect_to controller: 'home'
+      redirect_to controller: 'dashboard'
     else
       @errors = ["Login token expired"]
       render action: 'new'

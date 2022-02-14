@@ -1,9 +1,33 @@
-<%= form_tag({controller: "sessions", action: "send_login"}, method: "post") do %>
-  <%= label_tag(:email, "Email Address:") %>
-  <%= text_field_tag(:email, params[:email]) %>
-  <%= submit_tag("Send me a login email") %>
-<% end %>
+<div class="center background">
+  <div class="card p-2" style="max-width: 36rem; margin: auto">
+    <div class="card-body">
 
-<% @errors.each do |error| %>
-  <p><%= error %></p>
-<% end unless @errors.blank? %>
+      <h5 class="card-title">TF Imagery DB</h5>
+
+      <p class="card-text">
+        If you're registered with the Database, enter your email below and link with access will be sent to your email address.  Simply click the link in the email.  Your account will stay logged in for 1 month before you need to request another login link.
+      </p>
+
+      <%= form_tag({controller: "sessions", action: "send_login"}, method: "post") do %>
+        <div class="mb-2">
+          <%= label_tag(
+            :email, 
+            "Email Address",
+            for: 'email-address', class: 'form-label') %>
+          <%= text_field_tag(
+            :email, 
+            params[:email], 
+            id: 'email-address', type: 'email', class: 'form-control') %>
+        </div>
+        <%= submit_tag("Send me a login email", class: "btn btn-primary") %>
+      <% end %>
+
+      <% @errors.each do |error| %>
+        <div class="alert alert-danger mt-2" role="alert">
+          <%= error %>
+        </div>
+      <% end unless @errors.blank? %>
+
+    </div>
+  </div>
+</div>

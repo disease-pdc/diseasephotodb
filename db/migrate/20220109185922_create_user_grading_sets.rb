@@ -1,4 +1,4 @@
-class CreateUserGradingSets < ActiveRecord::Migration[7.0]
+class CreateUserGradingSets < ActiveRecord::Migration[6.1]
   def change
     create_table :user_grading_sets do |t|
       t.references :user, null: false, foreign_key: true

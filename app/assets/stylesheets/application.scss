@@ -1,2 +1,20 @@
 // Custom bootstrap variables must be set or imported *before* bootstrap.
 @import "bootstrap";
+
+html, body {
+  height: 100%;
+}
+
+.fullscreen {
+  min-height: 100%;
+  min-height: 100vh;
+  .center {
+    display: flex;
+    align-items: center;
+    min-height: 100%;
+    min-height: 100vh;
+  }
+  .background {
+    background-color: #f6f6f6;
+  }
+}

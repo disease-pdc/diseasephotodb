@@ -7,5 +7,9 @@ Rails.application.routes.draw do
   get '/signin/token', to: 'sessions#create'
   get '/signout', to: 'sessions#delete'
 
-  
+  # Dashboard
+  get '/dashboard', to: 'dashboard#index'
+
+  resources :image_sources
+
 end

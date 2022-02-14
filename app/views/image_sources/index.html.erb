@@ -1,0 +1,22 @@
+<h1>Image Sources</h1>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col"># of Images</th>
+      <th scope="col">Active?</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @image_sources.each do |source| %>
+      <tr>
+        <td><%= source.name %></td>
+        <td><%= source.image_count %></td>
+        <td><%= source.active? ? 'Active' : 'Inactive' %></td>
+        <td><%= link_to 'edit', controller: 'image_sources', action: 'show', id: source.id %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

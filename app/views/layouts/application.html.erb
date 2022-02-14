@@ -11,6 +11,16 @@
   </head>
 
   <body>
-    <%= yield %>
+    <%= render partial: '/layouts/nav' if current_user %>
+    <div class="container-xl pt-4">
+      <% flash.each do |type, msg| %>
+        <% className = type == 'alert' ? 'danger' : 'info' %>
+        <div class="alert alert-<%= className %> alert-dismissible fade show" role="alert">
+          <%= msg %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      <% end %>
+      <%= yield %>
+    </div>
   </body>
 </html>

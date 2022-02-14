@@ -5,6 +5,7 @@ Rails.application.config.action_mailer.default_url_options = {
 Rails.application.config.action_mailer.smtp_settings = {
   :default_from         => ENV['MAILER_FROM'],
   :address              => ENV['SMTP_HOST'],
+  :domain               => ENV['SMTP_DOMAIN'],
   :port                 => ENV['SMTP_PORT'],
   :user_name            => ENV['SMTP_USERNAME'],
   :password             => ENV['SMTP_PASSWORD'],

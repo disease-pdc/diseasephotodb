@@ -1,4 +1,4 @@
-class CreateImages < ActiveRecord::Migration[7.0]
+class CreateImages < ActiveRecord::Migration[6.1]
   def change
     create_table :images do |t|
       t.references :image_source, null: false, foreign_key: true
