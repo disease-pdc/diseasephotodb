@@ -11,5 +11,7 @@ Rails.application.routes.draw do
   get '/dashboard', to: 'dashboard#index'
 
   resources :image_sources
+  resources :users
+  resources :images
 
 end

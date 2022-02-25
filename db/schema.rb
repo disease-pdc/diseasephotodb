@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_13_212800) do
+ActiveRecord::Schema.define(version: 2022_02_25_100000) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -46,23 +46,13 @@ ActiveRecord::Schema.define(version: 2022_02_13_212800) do
 
   create_table "images", force: :cascade do |t|
     t.bigint "image_source_id", null: false
-    t.bigint "upload_batch_id", null: false
     t.text "filename", null: false
     t.text "mime_type", null: false
     t.jsonb "metadata", default: {}, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.jsonb "exif_data", default: {}, null: false
     t.index ["image_source_id"], name: "index_images_on_image_source_id"
-    t.index ["upload_batch_id"], name: "index_images_on_upload_batch_id"
-  end
-
-  create_table "upload_batches", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.text "name", null: false
-    t.datetime "uploaded_at", precision: 6, null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["user_id"], name: "index_upload_batches_on_user_id"
   end
 
   create_table "user_grading_set_images", force: :cascade do |t|
@@ -94,14 +84,14 @@ ActiveRecord::Schema.define(version: 2022_02_13_212800) do
     t.boolean "grader", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "active", default: true, null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
   end
 
   add_foreign_key "grading_set_images", "grading_sets"
   add_foreign_key "grading_set_images", "images"
   add_foreign_key "image_files", "images"
   add_foreign_key "images", "image_sources"
-  add_foreign_key "images", "upload_batches"
-  add_foreign_key "upload_batches", "users"
   add_foreign_key "user_grading_set_images", "grading_set_images"
   add_foreign_key "user_grading_set_images", "users"
   add_foreign_key "user_grading_sets", "grading_sets"

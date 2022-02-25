@@ -1,5 +1,8 @@
 class User < ApplicationRecord
 
+  scope :active, -> { where(active: true) }
+
+  validates 'email', presence: true, uniqueness: true
 
   def self.by_email_token email, token
     user = User.find_by email: email
@@ -16,6 +19,15 @@ class User < ApplicationRecord
     exp = DateTime.now + 1.hour
     update! login_token_hash: token_hash, login_token_expires_at: exp
     return token_hash
+  end
+
+  def roles_string
+    roles = []
+    roles << "Admin" if admin?
+    roles << "Image Admin" if image_admin?
+    roles << "Image Viewer" if image_viewer?
+    roles << "Grader" if grader?
+    roles.join(", ")
   end
 
 end

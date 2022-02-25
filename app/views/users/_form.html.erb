@@ -1,0 +1,53 @@
+<%= form_with model: @user do |form| %>
+  <div class="mb-3">
+    <%= label_tag :email, "Email Address", for: 'email', class: 'form-label' %>
+    <%= form.text_field :email, class: 'form-control' %>
+  </div>
+  <div class="mb-3 form-check">
+    <%= form.check_box :active, class: 'form-check-input' %>
+    <%= label_tag :active, "Active", for: 'active', class: 'form-check-label' %>
+  </div>
+  <h4>Roles</h4>
+  <div class="mb-3 form-check">
+    <%= form.check_box :grader, class: 'form-check-input' %>
+    <%= label_tag :grader, "Grader", for: 'grader', class: 'form-check-label' %>
+    <div id="graderHelpBlock" class="form-text">
+      User will have permissions to grade image sets.
+    </div>
+  </div>
+  <div class="mb-3 form-check">
+    <%= form.check_box :image_viewer, class: 'form-check-input' %>
+    <%= label_tag :image_viewer, "Image Viewer", for: 'image_viewer', class: 'form-check-label' %>
+    <div id="image_viewerHelpBlock" class="form-text">
+      User will have permissions to view and download image sets.
+    </div>
+  </div>
+  <div class="mb-3 form-check">
+    <%= form.check_box :image_admin, class: 'form-check-input' %>
+    <%= label_tag :image_admin, "Image Admin", for: 'image_admin', class: 'form-check-label' %>
+    <div id="image_adminHelpBlock" class="form-text">
+      User will have permissions to administer (view, add, delete, modify) image sets, image sources and grading memberships.
+    </div>
+  </div>
+  <div class="mb-3 form-check">
+    <%= form.check_box :admin, class: 'form-check-input' %>
+    <%= label_tag :admin, "Admin", for: 'admin', class: 'form-check-label' %>
+    <div id="graderHelpBlock" class="form-text">
+      User will have full permissions of the system, including adding/modifying/removing users.
+    </div>
+  </div>
+
+  <% unless @user.errors.blank? %>
+    <hr/>
+    <ul class="text-danger">
+    <% @user.errors.full_messages.each do |error| %>
+      <li><%= error %></li>
+    <% end %>
+    </ul>
+  <% end %>
+
+  <hr/>
+
+  <%= form.submit class: "btn btn-primary" %>
+  <%= link_to 'Cancel', {controller: 'users'}, class: "btn" %>
+<% end %>

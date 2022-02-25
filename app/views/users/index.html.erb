@@ -1,0 +1,26 @@
+<h1>Users</h1>
+<table class="table table-striped mb-3">
+  <thead>
+    <tr>
+      <th scope="col">Email</th>
+      <th scope="col">Roles</th>
+      <th scope="col">Active?</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @users.each do |user| %>
+      <tr>
+        <td><%= user.email %></td>
+        <td><%= user.roles_string %></td>
+        <td><%= user.active? ? 'Active' : 'Inactive' %></td>
+        <td><%= link_to 'edit', controller: 'users', action: 'show', id: user.id %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%=
+  link_to 'New User', 
+    {controller: 'users', action: 'new'},
+    {class: 'btn btn-primary'}
+%>

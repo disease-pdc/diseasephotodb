@@ -10,43 +10,53 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <%= link_to 'Dashboard', {controller: 'dashboard'}, class: 'nav-link' %> 
-        </li>
-        <% if current_user.admin? || current_user.image_admin? || current_user.image_viewer? %>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Images</a>
-          </li>
-        <% end %>
-        <% if current_user.admin? %>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Grading Sets</a>
-          </li>
-          <li class="nav-item">
-            <%= link_to 'Sources', {controller: 'image_sources'}, class: 'nav-link' %>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Users</a>
-          </li>
-        <% end %>
-      </ul>
-      <div class="d-flex">
+      <% if current_user %>
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <%= current_user.email %>
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li>
-                <a class="dropdown-item" href="#">Preferences</a>
-              </li>
-              <li>
-                <%= link_to 'Sign Out', {controller: 'sessions', action: 'delete'}, class: 'dropdown-item' %>
-              </li>
-            </ul>
+          <li class="nav-item">
+            <%= link_to 'Dashboard', {controller: 'dashboard'}, class: 'nav-link' %> 
           </li>
+          <% if current_user.admin? || current_user.image_admin? || current_user.image_viewer? %>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Images</a>
+            </li>
+          <% end %>
+          <% if current_user.admin? || current_user.image_admin? %>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Grading Sets</a>
+            </li>
+            <li class="nav-item">
+              <%= link_to 'Image Sources', {controller: 'image_sources'}, class: 'nav-link' %>
+            </li>
+          <% end %>
+          <% if current_user.admin? %>
+            <li class="nav-item">
+              <%= link_to 'Users', {controller: 'users'}, class: 'nav-link' %>
+            </li>
+          <% end %>
         </ul>
+        <div class="d-flex">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <%= current_user.email %>
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+               <!--  <li>
+                  <a class="dropdown-item" href="#">Preferences</a>
+                </li> -->
+                <li>
+                  <%= link_to 'Sign Out', {controller: 'sessions', action: 'delete'}, class: 'dropdown-item' %>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        <% else %>
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <%= link_to 'Sign In', {controller: 'sessions', action: 'new'}, class: 'nav-link' %> 
+            </li>
+          </ul>
+        <% end %>
       </form>
     </div>
   </div>

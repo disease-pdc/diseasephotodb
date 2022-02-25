@@ -8,7 +8,7 @@ class SessionsController < ApplicationController
   end
 
   def send_login
-    user = User.find_by email: params[:email]
+    user = User.active.find_by email: params[:email]
     if user
       token = user.create_login_token!
       LoginMailer.with(user: user, token: token).login_email.deliver_now
@@ -19,7 +19,7 @@ class SessionsController < ApplicationController
   end
 
   def create
-    @user = User.by_email_token params[:email], params[:token]
+    @user = User.active.by_email_token params[:email], params[:token]
     if @user
       session[:user_id] = @user.id
       redirect_to controller: 'dashboard'
