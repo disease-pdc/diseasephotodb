@@ -1,9 +1,11 @@
 class ImageSource < ApplicationRecord
 
+  has_many :images
+
   validates 'name', presence: true, uniqueness: true
 
   def image_count
-    0
+    images.count
   end
   
 end

@@ -13,5 +13,6 @@ Rails.application.routes.draw do
   resources :image_sources
   resources :users
   resources :images
+  resources :grading_sets
 
 end

@@ -17,12 +17,12 @@
           </li>
           <% if current_user.admin? || current_user.image_admin? || current_user.image_viewer? %>
             <li class="nav-item">
-              <a class="nav-link" href="#">Images</a>
+              <%= link_to 'Images', {controller: 'images'}, class: 'nav-link' %>
             </li>
           <% end %>
           <% if current_user.admin? || current_user.image_admin? %>
             <li class="nav-item">
-              <a class="nav-link" href="#">Grading Sets</a>
+              <%= link_to 'Grading Sets', {controller: 'grading_sets'}, class: 'nav-link' %>
             </li>
             <li class="nav-item">
               <%= link_to 'Image Sources', {controller: 'image_sources'}, class: 'nav-link' %>

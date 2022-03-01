@@ -1,0 +1,25 @@
+<h3>Create Image</h3>
+
+<%= form_with model: @image do |form| %>
+  <div class="mb-3">
+    <%= label_tag :image_source_id, "Image Source", for: 'image_source_id', class: 'form-label' %>
+    <%= form.text_field :image_source_id, class: 'form-control' %>
+  </div>
+  <div class="mb-3">
+    <%= label_tag :image_file, "Image", for: 'image_file', class: 'form-label' %>
+    <%= form.file_field :image_file, accept: 'image/png,image/gif,image/jpeg', class: 'form-control' %>
+  </div>
+
+  <% unless @image.errors.blank? %>
+    <hr/>
+    <ul class="text-danger">
+    <% @image.errors.full_messages.each do |error| %>
+      <li><%= error %></li>
+    <% end %>
+    </ul>
+  <% end %>
+
+  <hr/>
+  <%= form.submit class: "btn btn-primary" %>
+  <%= link_to 'Cancel', {controller: 'images'}, class: "btn" %>
+<% end %>

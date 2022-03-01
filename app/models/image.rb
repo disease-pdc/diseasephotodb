@@ -1,16 +1,15 @@
 class Image < ApplicationRecord
 
+  has_one_attached :image_file
   belongs_to :image_source
+  belongs_to :user
+  has_many :grading_set_images
+  has_many :grading_sets, through: :grading_set_images
 
-  validates 'filename', 
-    presence: true,
+  validates 'image_file', presence: true
+  validates 'image_source_id', presence: true
+  validates 'filename', presence: true,
     uniqueness: { scope: [:image_source_id] }
-  validates 'image_source_id', 
-    presence: true, 
-    message: 'Image source is required'
   validates 'mime_type', presence: true
-  validates 'metadata', presence: true
-  validates 'exif_data', presence: true
-
 
 end
