@@ -1,6 +1,8 @@
 class User < ApplicationRecord
 
   scope :active, -> { where(active: true) }
+  has_many :user_grading_sets
+  has_many :user_grading_set_images
 
   validates 'email', presence: true, uniqueness: true
 
@@ -29,5 +31,10 @@ class User < ApplicationRecord
     roles << "Grader" if grader?
     roles.join(", ")
   end
+
+  def user_grading_set_for grading_set_id
+    user_grading_sets.where(grading_set_id: grading_set_id).first
+  end
+
 
 end

@@ -1,0 +1,46 @@
+<div class="col-lg-4 col-md-6 col-sm-12">
+  <% 
+    grading_set = user_grading_set.grading_set 
+    image_count = grading_set.image_count
+    user_image_count = user_grading_set.user_grading_set_images.count
+    complete = image_count == user_image_count
+    percent_graded = user_image_count.to_f / image_count.to_f * 100
+  %>
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">
+        <% if complete %>
+          <%= grading_set.name %>
+        <% else %>
+          <a href="<%= url_for controller: 'grading', grading_set_id: grading_set.id %>">
+            <%= grading_set.name %>
+          </a>
+        <% end %>
+      </h5>
+      <h6 class="card-subtitle mb-2 text-muted">
+        <% if complete %>
+          <span class="badge bg-success">Complete</span>
+        <% end %>
+        <%= image_count %> images 
+      </h6>
+      <p class="card-text">
+        <strong>Created</strong> <%= grading_set.created_at.to_s(:long) %>
+      </p>
+    </div>
+    <div class="card-footer">
+      <div class="progress" style="height: 20px;">
+        <div class="progress-bar"
+          role="progressbar" 
+          style="width: <%= percent_graded %>%;" 
+          aria-valuenow="<%= user_image_count %>" 
+          aria-valuemin="0" 
+          aria-valuemax="<%= image_count %>"
+        >
+        </div>
+      </div>
+      <em class="text-center d-block">
+        <%= user_image_count %> / <%= image_count %> Graded
+      </em>
+    </div>
+  </div>
+</div>

@@ -24,7 +24,7 @@ class SessionsController < ApplicationController
       session[:user_id] = @user.id
       redirect_to controller: 'dashboard'
     else
-      @errors = ["Login token expired"]
+      @errors = ["Login token invalid or expired"]
       render action: 'new'
     end
   end

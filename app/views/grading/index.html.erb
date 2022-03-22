@@ -1,0 +1,97 @@
+<% 
+  image = @grading_set_image.image
+  image_index = @user_grading_set.index_of_image(image)
+  image_count = @user_grading_set.image_count 
+%>
+<h2><%= @user_grading_set.grading_set.name %></h2>
+
+<div class="row">
+  <div class="col-lg-8 col-md-6 col-xs-12">
+    <img class="img-fluid img-thumbnail mb-3" 
+      src="<%= url_for image.image_file %>" 
+      alt="<%= image.filename %>"
+    >
+  </div>
+  <div class="col-lg-4 col-md-6 col-sm-12">
+    <div class="grading-controls">
+      <h4 class="text-center">
+        Image <%= image_index + 1 %> / <%= @user_grading_set.image_count %>
+      </h4>
+      <hr/>
+      <p>Please select your grade for this image</p>
+      <div class="row">
+        <% grade = @user_grading_set_image.grade if @user_grading_set_image %>
+        <%= form_with url: url_for(controller: 'grading', action: 'grade', grading_set_id: @user_grading_set.grading_set.id), 
+          method: :post, class: 'col-sm-6 col-xs-12 p-2 d-grid' do |form| 
+        %>
+          <%= form.hidden_field :grading_set_image_id, value: @grading_set_image.id  %>
+          <%= form.hidden_field :grade, value: 1  %>
+          <button type="submit" 
+            class="btn btn-lg btn-<%= grade == 1 ? '' : 'outline-' %>primary"
+          >
+            <strong>+</strong> Positive
+          </button>
+        <% end %>
+        <%= form_with url: url_for(controller: 'grading', action: 'grade', grading_set_id: @user_grading_set.grading_set.id), 
+          method: :post, class: 'col-sm-6 col-xs-12 p-2 d-grid' do |form| 
+        %>
+          <%= form.hidden_field :grading_set_image_id, value: @grading_set_image.id  %>
+          <%= form.hidden_field :grade, value: 4  %>
+          <button type="submit" 
+            class="btn btn-lg btn-<%= grade == 4 ? '' : 'outline-' %>secondary"
+          >
+            <strong>-</strong> Negative
+          </button>
+        <% end %>
+        <%= form_with url: url_for(controller: 'grading', action: 'grade', grading_set_id: @user_grading_set.grading_set.id), 
+          method: :post, class: 'col-sm-6 col-xs-12 p-2 d-grid' do |form| 
+        %>
+          <%= form.hidden_field :grading_set_image_id, value: @grading_set_image.id  %>
+          <%= form.hidden_field :grade, value: 2  %>
+          <button type="submit" 
+            class="btn btn-<%= grade == 2 ? '' : 'outline-' %>primary"
+          >
+            <strong>+</strong> Maybe Positive
+          </button>
+        <% end %>
+        <%= form_with url: url_for(controller: 'grading', action: 'grade', grading_set_id: @user_grading_set.grading_set.id), 
+          method: :post, class: 'col-sm-6 col-xs-12 p-2 d-grid' do |form| 
+        %>
+          <%= form.hidden_field :grading_set_image_id, value: @grading_set_image.id  %>
+          <%= form.hidden_field :grade, value: 3  %>
+          <button type="submit" 
+            class="btn btn-<%= grade == 3 ? '' : 'outline-' %>secondary"
+          >
+            <strong>-</strong> Maybe Negative
+          </button>
+        <% end %>
+      </div>
+      <% if @user_grading_set_image %>
+        <hr/>
+        <div class="row">
+          <div class="col-sm-8">
+            Recorded grading
+            <br/>
+            <span class="fs-5"><strong><%= @user_grading_set_image.grade_text %></strong></span>
+          </div>
+          <% if image_index == image_count - 1 %>
+            <%= form_with url: url_for(controller: 'grading', action: 'complete', grading_set_id: @user_grading_set.grading_set.id), 
+              method: :post, class: 'col-sm-12 p-2 d-grid' do |form| 
+            %>
+              <hr/>
+              <button type="submit" class="btn btn-primary">
+                Complete Grading
+              </button>
+            <% end %>
+          <% else %>
+            <div class="col-sm-4 text-end">
+              <a href="<%= url_for(controller: 'grading', grading_set_id: @user_grading_set.grading_set.id) %>" class="btn btn-primary">
+                Next &#8594;
+              </a>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

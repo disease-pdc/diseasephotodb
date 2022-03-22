@@ -10,6 +10,12 @@ Rails.application.routes.draw do
   # Dashboard
   get '/dashboard', to: 'dashboard#index'
 
+  # Grading
+  get '/grade/:grading_set_id', to: 'grading#index'
+  get '/grade/:grading_set_id/:user_grading_set_image_id', to: 'grading#show'
+  post '/grade/:grading_set_id', to: 'grading#grade'
+  post '/grade/::grading_set_id/complete', to: 'grading#complete'
+
   resources :image_sources
   resources :users
   resources :images

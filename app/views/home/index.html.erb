@@ -1,3 +1,16 @@
+<% if current_user %>
+  <div class="row mb-4">
+    <% @user_grading_sets.each do |user_grading_set| %>
+      <%= render partial: 'dashboard/user_grading_set_card', locals: {user_grading_set: user_grading_set} %>
+    <% end %>
+  </div>
+
+  <a href="<%= url_for(controller: 'dashboard') %>" class="btn btn-primary">
+    All Grading Sets &#8594;
+  </a> 
+  <hr/>
+<% end %>
+
 <h1>TF Imagery DB Home Page</h1>
 
 <p>Some content about the project here.</p>

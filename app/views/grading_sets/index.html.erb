@@ -6,3 +6,50 @@
     </li>
   </ol>
 </nav>
+
+<div class="input-group mb-3">
+  <input type="text" class="form-control" placeholder="Search by name">
+  <button class="btn btn-outline-primary" type="button">Search Grading Sets</button>
+  <% if current_user.image_admin? %>
+    <a class="btn btn-outline-secondary" type="button" href="<%= url_for controller: 'grading_sets', action: 'new' %>">
+      Create Grading Set
+    </a>
+  <% end %>
+</div>
+
+<table class="table table-striped align-middle">
+  <thead>
+    <tr>
+      <th scope="col" style="vertical-align: middle;" width="1%">
+        <input class="form-check-input" type="checkbox" value="">
+      </th>
+      <th scope="col" colspan="3" style="vertical-align: middle;">
+        <div class="btn-group" role="group">
+          <button type="button" class="btn btn-sm btn-outline-primary">Archive</button>
+        </div>
+      </th>
+    </tr>
+    <tr>
+      <th scope="col"></th>
+      <th scope="col">Name</th>
+      <th scope="col">Images</th>
+      <th scope="col">Users</th>
+      <th scope="col">Created</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @grading_sets.each do |grading_set| %>
+      <tr>
+        <td style="width:1%;">
+          <input class="form-check-input" type="checkbox" value="">
+        </td>
+        <td><%= grading_set.name %></td>
+        <td><%= grading_set.grading_set_images.count %></td>
+        <td>
+          <%= grading_set.user_grading_sets.count %> 
+          (<%= grading_set.user_grading_sets_complete_count %> complete)
+        </td>
+        <td><%= grading_set.created_at %></td>
+      </tr>
+    <% end %>
+  </tbody>
