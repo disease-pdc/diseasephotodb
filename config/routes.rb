@@ -17,6 +17,8 @@ Rails.application.routes.draw do
   post '/grade/::grading_set_id/complete', to: 'grading#complete'
 
   resources :image_sources
+  post '/image_sources/:id/metadata', to: 'image_sources#metadata'
+
   resources :users
   resources :images
   resources :grading_sets
