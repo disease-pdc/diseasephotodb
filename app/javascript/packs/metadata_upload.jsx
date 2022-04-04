@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 
+import { AsyncTypeahead } from 'react-bootstrap-typeahead'
 import { read, utils } from 'xlsx'
-import { post } from 'axios'
+import { get, post } from 'axios'
 
 const doUpload = async ({
   authenticityToken,
@@ -48,6 +49,11 @@ const Result = ({filename, success, error}) => (
 )
 
 const MetadataUpload = ({authenticityToken}) => {
+
+  const [selectLoading, setSelectLoading] = useState(false)
+  const [selectOptions, setSelectOptions] = useState([])
+  const [imageSource, setImageSource] = useState(null)
+
   const [data, setData] = useState(null)
   const [uploading, setUploading] = useState(false)
   const [current, setCurrent] = useState(1)
@@ -67,7 +73,6 @@ const MetadataUpload = ({authenticityToken}) => {
           })
           results.push(result)
           setResults(results)
-          console.log(results)
         }
         setFinished(true)
       }
@@ -79,6 +84,30 @@ const MetadataUpload = ({authenticityToken}) => {
     <>
       {!uploading && 
         <>
+          <label htmlFor="metadataFile" className="form-label">
+            Select Image Group
+          </label>
+          <AsyncTypeahead
+            id="image-source-select"
+            className="mb-3"
+            minLength={3}
+            filterBy={() => true}
+            isLoading={selectLoading}
+            options={selectOptions}
+            placeholder="Search for an Image Source..."
+            onSearch={async (query) => {
+              setSelectLoading(true)
+              setSelectOptions(
+                (await get('/image_sources.json', {text: query}))
+                  .data.image_sources.map((is) => (
+                    {label: is.name, value: is.id}
+                  ))
+              )
+              setSelectLoading(false) 
+            }}
+            onChange={(value) => setImageSource(value[0])}
+            renderMenuItemChildren={(option, props) => option.label}
+          />
           <label htmlFor="metadataFile" className="form-label">
             Select XLSX Metadata File
           </label>

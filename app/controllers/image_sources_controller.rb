@@ -8,7 +8,7 @@ class ImageSourcesController < ApplicationController
       .order("name asc")
     respond_to do |format|
       format.html 
-      format.json { render json: {image_souces: @image_sources} }
+      format.json { render json: {image_sources: @image_sources} }
     end
   end
 
