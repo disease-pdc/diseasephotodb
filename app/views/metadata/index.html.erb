@@ -1,0 +1,18 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <%= link_to 'Images', {controller: 'images'} %>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      Metadata
+    </li>
+  </ol>
+</nav>
+
+<h3>Upload Image Metadata</h3>
+<hr/>
+<div id="react-app-container" data-authenticty-token="">
+</div>
+
+
+<%= javascript_pack_tag 'metadata_upload' %>
