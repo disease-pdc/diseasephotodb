@@ -2,33 +2,27 @@ import React, { useEffect, useState } from 'react'
 import ReactDOM from 'react-dom'
 
 import { AsyncTypeahead } from 'react-bootstrap-typeahead'
-import { read, utils } from 'xlsx'
 import { get, post } from 'axios'
 
 const doUpload = async ({
   authenticityToken,
   imageSourceId,
-  filename,
-  metadata
+  file
 }) => {
-  const result = await post('/metadata', {
-    authenticity_token: authenticityToken,
-    image_source_id: imageSourceId,
-    filename: filename,
-    metadata: metadata
+  const formData = new FormData()
+  formData.append("authenticity_token", authenticityToken)
+  formData.append("[image][image_source_id]", imageSourceId)
+  formData.append("[image][image_file]", file)
+  const result = await post('/images.json', formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    }
   })
   return result.data
 }
 
-const getMetadata = ({headers, row}) => {
-  let metadata = {}
-  for (let i = 1; i < headers.length; i++) {
-    metadata[headers[i]] = row[i]
-  }
-  return metadata
-}
 
-const Result = ({filename, success, error}) => (
+const Result = ({filename, success, errors}) => (
   <>
     {success && 
       <>
@@ -43,21 +37,21 @@ const Result = ({filename, success, error}) => (
         &nbsp;
         <strong>{filename}</strong>
         &nbsp;
-        <span>{error}</span>
+        <span>{errors.map((e) => <span>{e}&nbsp;</span>)}</span>
       </>
     }
   </>
 )
 
-const MetadataUpload = ({authenticityToken}) => {
+const ImagesUpload = ({authenticityToken}) => {
 
   const [selectLoading, setSelectLoading] = useState(false)
   const [selectOptions, setSelectOptions] = useState([])
   const [imageSource, setImageSource] = useState(null)
 
-  const [data, setData] = useState(null)
+  const [images, setImages] = useState(null)
   const [uploading, setUploading] = useState(false)
-  
+
   const [current, setCurrent] = useState(1)
   const [results, setResults] = useState([])
   const [finished, setFinished] = useState(false)
@@ -66,15 +60,12 @@ const MetadataUpload = ({authenticityToken}) => {
   useEffect(() => {
     const doEffect = async () => {
       if (uploading) {
-        const headers = data[0]
-        for (let i = 1; i < data.length; i++) {
+        for (let i = 0; i < images.length; i++) {
           setCurrent(i)
           const result = await doUpload({
             authenticityToken,
-            active: '1',
             imageSourceId: imageSource.value,
-            filename: data[i][0],
-            metadata: getMetadata({headers, row: data[i]})
+            file: images[i]
           })
           results.push(result)
           setResults(results)
@@ -114,32 +105,24 @@ const MetadataUpload = ({authenticityToken}) => {
             renderMenuItemChildren={(option, props) => option.label}
           />
           <label htmlFor="metadataFile" className="form-label">
-            Select XLSX Metadata File
+            Select images to upload to this source 
           </label>
           <div className="input-group mb-3">
             <input className="form-control" 
               type="file" 
               id="metadataFile" 
-              accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              accept="image/png,image/gif,image/jpeg"
+              multiple
               onChange={(e) => {
-                const reader = new FileReader()
-                reader.onload = function (e) {
-                  var data = e.target.result
-                  let readedData = read(data, {type: 'binary'})
-                  const wsname = readedData.SheetNames[0]
-                  const ws = readedData.Sheets[wsname]
-                  const dataParse = utils.sheet_to_json(ws, {header:1})
-                  setData(dataParse)
-                };
-                reader.readAsBinaryString(e.target.files[0])
+                setImages(e.target.files)
               }}
             />
-            <button disabled={!data || !imageSource}
+            <button disabled={!images || !imageSource}
               className="btn btn-primary" 
               type="button"
               onClick={() => setUploading(true)}
             >
-              Import Metadata
+              Upload images
             </button>
           </div>
         </>
@@ -148,12 +131,12 @@ const MetadataUpload = ({authenticityToken}) => {
         <>
           {!finished &&
             <strong>
-              Uploading {current} / {data.length - 1}
+              Uploading {current} / {images.length}
             </strong>
           }
           {finished && 
             <div className="alert alert-success" role="alert">
-              Upload Complete - {current} uploaded
+              Upload Complete - {current} processed
             </div>
           }
           <ul>
@@ -171,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const el = document.getElementById('react-app-container')
   const token = el.getAttribute('data-authenticity-token')
   ReactDOM.render(
-    <MetadataUpload authenticityToken={token} />,
+    <ImagesUpload authenticityToken={token} />,
     el.appendChild(document.createElement('div'))
   )
 })

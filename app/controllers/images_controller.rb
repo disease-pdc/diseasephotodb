@@ -29,10 +29,10 @@ class ImagesController < ApplicationController
     respond_to do |format|
       if @image.save
         format.html { redirect_to @image, notice: 'Image was sucessfully uploaded.' }
-        format.json { render json: @image }
+        format.json { render json: {success: true, image: @image, filename: @image.filename}}
       else
         format.html { render action: 'new' }
-        format.json { render json: @image.errors, status: :unprocessable_entity }
+        format.json { render json: {errors: @image.errors.full_messages, filename: params[:image][:image_file].original_filename} }
       end
     end
   end
