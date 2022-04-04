@@ -18,7 +18,7 @@ Rails.application.routes.draw do
 
   resources :image_sources
   get '/metadata', to: 'metadata#index'
-  post '/metadata/:id', to: 'metadata#update'
+  post '/metadata', to: 'metadata#update'
   resources :users
   resources :images
   resources :grading_sets

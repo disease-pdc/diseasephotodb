@@ -2,7 +2,7 @@ class ImageSource < ApplicationRecord
 
   has_many :images
 
-  default_scope { where(active: true) }
+  scope :active, -> { where(active: true) }
 
   validates 'name', presence: true, uniqueness: true
 

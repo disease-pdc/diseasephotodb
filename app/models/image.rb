@@ -6,6 +6,8 @@ class Image < ApplicationRecord
   has_many :grading_set_images
   has_many :grading_sets, through: :grading_set_images
 
+  scope :active, -> { joins(:image_source).where('image_sources.active', true) }
+
   validates 'image_file', presence: true
   validates 'image_source_id', presence: true
   validates 'filename', presence: true,

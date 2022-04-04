@@ -4,7 +4,7 @@ class ImagesController < ApplicationController
   before_action :require_image_admin, only: [:create, :update, :destroy]
 
   def index
-    @images = Image.all
+    @images = Image.active
   end
 
   def show

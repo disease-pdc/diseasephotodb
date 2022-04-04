@@ -7,17 +7,17 @@ class MetadataController < ApplicationController
 
   def update
     @image = Image.where(
-      image_source_id: params[:id],
+      image_source_id: params[:image_source_id],
       filename: params[:filename]
     ).first
     unless @image
-      render json: {error: 'Image not found'}, staus: :unprocessable_entity
+      render json: {filename: params[:filename], error: 'Image not found'}, staus: :unprocessable_entity
     else
       @image.metadata = params[:metadata]
       if @image.save
-        render json: {success: true}
+        render json: {filename: params[:filename], success: true}
       else
-        render json: {error: @image.errors}, staus: :unprocessable_entity 
+        render json: {filename: params[:filename], error: @image.errors}, staus: :unprocessable_entity 
       end
     end
   end

@@ -3,9 +3,16 @@ class ImageSourcesController < ApplicationController
   before_action :require_image_admin
 
   def index
-    @image_sources = ImageSource
-      .where('name ilike :name', name: "%#{params[:text]}%")
-      .order("name asc")
+    wheres = ["1=1"]
+    wheres_params = {}
+    unless params[:text].blank?
+      wheres << 'name ilike :name'
+      wheres_params[:name] = "%#{params[:text]}%"
+    end
+    @image_sources = ImageSource.order("name asc")
+      .where(wheres.join(" and "), wheres_params)
+    @image_sources = @image_sources.active if params[:active]
+    @image_sources = @image_sources
     respond_to do |format|
       format.html 
       format.json { render json: {image_sources: @image_sources} }

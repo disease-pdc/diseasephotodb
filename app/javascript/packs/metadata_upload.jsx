@@ -7,16 +7,17 @@ import { get, post } from 'axios'
 
 const doUpload = async ({
   authenticityToken,
+  imageSourceId,
   filename,
   metadata
 }) => {
-  console.log(authenticityToken)
-  console.log(filename)
-  console.log(metadata)
-  return {
-    filename,
-    success: true
-  }
+  const result = await post('/metadata', {
+    authenticity_token: authenticityToken,
+    image_source_id: imageSourceId,
+    filename: filename,
+    metadata: metadata
+  })
+  return result.data
 }
 
 const getMetadata = ({headers, row}) => {
@@ -60,6 +61,7 @@ const MetadataUpload = ({authenticityToken}) => {
   const [results, setResults] = useState([])
   const [finished, setFinished] = useState(false)
 
+
   useEffect(() => {
     const doEffect = async () => {
       if (uploading) {
@@ -68,6 +70,8 @@ const MetadataUpload = ({authenticityToken}) => {
           setCurrent(i)
           const result = await doUpload({
             authenticityToken,
+            active: '1',
+            imageSourceId: imageSource.value,
             filename: data[i][0],
             metadata: getMetadata({headers, row: data[i]})
           })
@@ -129,7 +133,7 @@ const MetadataUpload = ({authenticityToken}) => {
                 reader.readAsBinaryString(e.target.files[0])
               }}
             />
-            <button disabled={!data}
+            <button disabled={!data || !imageSource}
               className="btn btn-primary" 
               type="button"
               onClick={() => setUploading(true)}
@@ -152,8 +156,8 @@ const MetadataUpload = ({authenticityToken}) => {
             </div>
           }
           <ul>
-            {results.map((result) => (
-              <li><Result {...result} /></li>
+            {results.map((result, i) => (
+              <li key={i}><Result {...result} /></li>
             ))}
           </ul>
         </>
