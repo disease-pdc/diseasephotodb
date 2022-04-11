@@ -1,3 +1,5 @@
+require 'csv'
+
 class GradingSet < ApplicationRecord
 
   has_many :grading_set_images
@@ -11,6 +13,13 @@ class GradingSet < ApplicationRecord
 
   def user_grading_sets_complete_count
     0
+  end
+
+  def data_to_csv
+    headers = %w{filename source email grade}
+    CSV.generate(headers: true) do |csv|
+      csv << headers
+    end
   end
 
 end
