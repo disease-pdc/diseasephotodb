@@ -3,7 +3,18 @@ class UsersController < ApplicationController
   before_action :require_admin
 
   def index
-    @users = User.all.order("email asc")
+    wheres = ["1=1"]
+    wheres_params = {}
+    unless params[:text].blank?
+      wheres << 'email ilike :email'
+      wheres_params[:email] = "%#{params[:text]}%"
+    end
+    @users = User.order("email asc")
+      .where(wheres.join(" and "), wheres_params)
+    respond_to do |format|
+      format.html 
+      format.json { render json: {users: @users} }
+    end
   end
 
   def show

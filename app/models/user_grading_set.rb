@@ -1,5 +1,7 @@
 class UserGradingSet < ApplicationRecord
 
+  after_destroy :destroy_user_grading_set_images
+
   belongs_to :user
   belongs_to :grading_set
 
@@ -47,6 +49,10 @@ class UserGradingSet < ApplicationRecord
     grading_set.image_count
   end
 
+  def complete?
+
+  end
+
   def index_of_image image
     user_grading_set_images
       .joins(:grading_set_image)
@@ -59,6 +65,10 @@ class UserGradingSet < ApplicationRecord
       .joins(:grading_set_image)
       .where('grading_set_images.image_id = ?', image.id)
       .first
+  end
+
+  def destroy_user_grading_set_images
+    user_grading_set_images.delete_all
   end
 
 end

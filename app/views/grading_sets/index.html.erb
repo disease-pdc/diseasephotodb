@@ -43,7 +43,11 @@
         <td style="width:1%;">
           <input class="form-check-input" type="checkbox" value="">
         </td>
-        <td><%= grading_set.name %></td>
+        <td>
+          <a href="<%= url_for(grading_set) %>">
+            <%= grading_set.name %>
+          </a>
+        </td>
         <td><%= grading_set.grading_set_images.count %></td>
         <td>
           <%= grading_set.user_grading_sets.count %> 
@@ -53,3 +57,4 @@
       </tr>
     <% end %>
   </tbody>
+</table>
