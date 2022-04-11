@@ -1942,6 +1942,11 @@ case-sensitive-paths-webpack-plugin@^2.4.0:
   resolved "https://registry.yarnpkg.com/case-sensitive-paths-webpack-plugin/-/case-sensitive-paths-webpack-plugin-2.4.0.tgz#db64066c6422eed2e08cc14b986ca43796dbc6d4"
   integrity sha512-roIFONhcxog0JSSWbvVAh3OocukmSgpqOH6YpMkCvav/ySIV3JKg4Dc8vYtQjYi/UxpNE36r/9v+VqTQqgkYmw==
 
+cash-dom@^8.1.1:
+  version "8.1.1"
+  resolved "https://registry.yarnpkg.com/cash-dom/-/cash-dom-8.1.1.tgz#37f6ba46fc470a1efad5215eefc2515271949c60"
+  integrity sha512-aMESow+8m7EuifAeNhpnRHQHN8O24gGeiR53lebD5ShBCisBCoB4y5BBe9pGXtTPP6b1qCp90W9HaaUARyc16Q==
+
 cfb@~1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/cfb/-/cfb-1.2.1.tgz#209429e4c68efd30641f6fc74b2d6028bd202402"

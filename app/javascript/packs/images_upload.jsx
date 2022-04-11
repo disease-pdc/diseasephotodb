@@ -94,7 +94,7 @@ const ImagesUpload = ({authenticityToken}) => {
             onSearch={async (query) => {
               setSelectLoading(true)
               setSelectOptions(
-                (await get('/image_sources.json', {text: query}))
+                (await get('/image_sources.json', {params: {text: query}}))
                   .data.image_sources.map((is) => (
                     {label: is.name, value: is.id}
                   ))

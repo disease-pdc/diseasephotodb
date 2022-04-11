@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   post '/metadata', to: 'metadata#update'
   resources :users
   resources :images
+  post '/images/addtogradingset', to: 'images#addtogradingset'
   resources :grading_sets
 
 end

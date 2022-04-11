@@ -12,7 +12,6 @@ class ImageSourcesController < ApplicationController
     @image_sources = ImageSource.order("name asc")
       .where(wheres.join(" and "), wheres_params)
     @image_sources = @image_sources.active if params[:active]
-    @image_sources = @image_sources
     respond_to do |format|
       format.html 
       format.json { render json: {image_sources: @image_sources} }

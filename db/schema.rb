@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_25_160850) do
+ActiveRecord::Schema.define(version: 2022_04_10_191500) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,6 +48,7 @@ ActiveRecord::Schema.define(version: 2022_02_25_160850) do
     t.bigint "image_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["grading_set_id", "image_id"], name: "index_grading_set_images_on_grading_set_id_and_image_id", unique: true
     t.index ["grading_set_id"], name: "index_grading_set_images_on_grading_set_id"
     t.index ["image_id"], name: "index_grading_set_images_on_image_id"
   end
@@ -67,13 +68,13 @@ ActiveRecord::Schema.define(version: 2022_02_25_160850) do
 
   create_table "images", force: :cascade do |t|
     t.bigint "image_source_id", null: false
-    t.bigint "user_id", null: false
     t.text "filename", null: false
     t.text "mime_type", null: false
     t.jsonb "metadata", default: {}, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.jsonb "exif_data", default: {}, null: false
+    t.bigint "user_id", null: false
     t.index ["image_source_id"], name: "index_images_on_image_source_id"
     t.index ["user_id"], name: "index_images_on_user_id"
   end
@@ -116,6 +117,7 @@ ActiveRecord::Schema.define(version: 2022_02_25_160850) do
   add_foreign_key "grading_set_images", "grading_sets"
   add_foreign_key "grading_set_images", "images"
   add_foreign_key "images", "image_sources"
+  add_foreign_key "images", "users", name: "images_user_id_fkey"
   add_foreign_key "user_grading_set_images", "grading_set_images"
   add_foreign_key "user_grading_set_images", "users"
   add_foreign_key "user_grading_sets", "grading_sets"

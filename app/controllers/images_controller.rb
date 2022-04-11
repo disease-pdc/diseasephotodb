@@ -3,8 +3,18 @@ class ImagesController < ApplicationController
   before_action :require_image_viewer, only: [:index, :show]
   before_action :require_image_admin, only: [:create, :update, :destroy]
 
+  skip_forgery_protection only: [:index]
+
   def index
-    @images = Image.active
+    @pagesize = 50
+    @limit = (params[:limit] || @pagesize).to_i
+    @offset = (params[:offset] || 0).to_i
+    @images = search_images.limit(@limit).offset(@offset)
+    @images_count = search_images.count
+    respond_to do |format|
+      format.html 
+      format.json { render json: {images: @images} }
+    end
   end
 
   def show
@@ -37,6 +47,36 @@ class ImagesController < ApplicationController
     end
   end
 
+  def addtogradingset
+    @grading_set = GradingSet.find params[:grading_set_id]
+    unless @grading_set
+      return redirect_to({ action: 'index' }, flash: { error: "No such grading set" })
+    end
+    if params[:image_id_all] == 'all'
+      @image_ids = search_images.select(:id).map(&:id)
+      @count = GradingSetImage.upsert_all(@image_ids.map {|image_id|
+        {
+          image_id: image_id, 
+          grading_set_id: @grading_set.id,
+          created_at: Time.zone.now,
+          updated_at: Time.zone.now
+        }
+      }, unique_by: [:grading_set_id, :image_id], returning: [:id]).count
+    else
+      @count = GradingSetImage.upsert_all(params[:image_ids].map {|image_id|
+        {
+          image_id: image_id, 
+          grading_set_id: @grading_set.id,
+          created_at: Time.zone.now,
+          updated_at: Time.zone.now
+        }
+      }, unique_by: [:grading_set_id, :image_id], returning: [:id]).count
+    end
+    return redirect_to({ action: 'index' }, flash: {
+      success: "Successfully added #{@count} images to #{@grading_set.name}"
+    })
+  end
+
   # def update
   #   @image = Image.find params[:id]
   #   respond_to do |format|
@@ -57,6 +97,29 @@ class ImagesController < ApplicationController
         :image_source_id,
         :image_file
       )
+    end
+
+    def search_images
+      wheres = ["1=1"]
+      wheres_params = {}
+      joins = []
+      unless params[:filename].blank?
+        wheres << 'filename ilike :filename'
+        wheres_params[:filename] = "%#{params[:filename]}%"
+      end
+      unless params[:image_source].blank?
+        joins << :image_source
+        wheres << 'image_sources.name ilike :image_source'
+        wheres_params[:image_source] = "%#{params[:image_source]}%"
+      end
+      unless params[:grading_set].blank?
+        joins << :grading_sets
+        wheres << 'grading_sets.name ilike :grading_set'
+        wheres_params[:grading_set] = "%#{params[:grading_set]}%"
+      end
+      Image.active.joins(joins)
+        .order("images.filename asc")
+        .where(wheres.join(" and "), wheres_params)
     end
 
 end
