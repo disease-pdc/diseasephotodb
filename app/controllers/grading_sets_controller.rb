@@ -22,8 +22,32 @@ class GradingSetsController < ApplicationController
     @grading_set = GradingSet.find params[:id]
   end
 
-  def create
+  def new
+    @grading_set = GradingSet.new
+  end
 
+  def edit
+    @grading_set = GradingSet.find params[:id]
+  end
+
+  def update
+    @grading_set = GradingSet.find params[:id]
+    if @grading_set.update grading_set_params
+      flash.notice = "Grading set #{@grading_set.name} updated"
+      return redirect_to action: 'show'
+    else
+      return render action: 'show'
+    end
+  end
+
+  def create
+    @grading_set = GradingSet.new grading_set_params
+    if @grading_set.save
+      flash.notice = "Grading set #{@grading_set.name} created"
+      return redirect_to action: 'index'
+    else
+      return render action: 'new'
+    end
   end
 
   def data
@@ -32,6 +56,10 @@ class GradingSetsController < ApplicationController
       format.html
       format.csv { send_data @grading_set.data_to_csv, filename: "#{@grading_set.name}-#{Date.today}.csv" }
     end
+  end
+
+  def destroy
+
   end
 
   def adduser
@@ -83,5 +111,11 @@ class GradingSetsController < ApplicationController
     end
     redirect_to action: 'show'
   end
+
+  private
+
+    def grading_set_params
+      params.require(:grading_set).permit(:name)
+    end
 
 end

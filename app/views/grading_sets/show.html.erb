@@ -5,8 +5,14 @@
 
 <h2>
   <%= @grading_set.name %>
+  &nbsp;
+  <a href="<%= url_for action: 'edit', id: @grading_set.id %>" class="btn btn-sm btn-outline-primary">
+    Edit
+  </a>
 </h2>
-<span>Created <%= @grading_set.created_at %></span>
+<p>
+  Created <%= @grading_set.created_at %>
+</p>
 
 <hr/>
 

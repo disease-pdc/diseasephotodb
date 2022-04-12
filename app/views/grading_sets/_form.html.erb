@@ -1,0 +1,27 @@
+<%= form_with model: @grading_set do |form| %>
+  <div class="mb-3">
+    <%= label_tag :name, "Grading Set Name", for: 'name', class: 'form-label' %>
+    <%= form.text_field :name, class: 'form-control' %>
+  </div>
+
+  <% unless @grading_set.errors.blank? %>
+    <hr/>
+    <ul class="text-danger">
+    <% @grading_set.errors.full_messages.each do |error| %>
+      <li><%= error %></li>
+    <% end %>
+    </ul>
+  <% end %>
+
+  <hr/>
+  <%= form.submit class: "btn btn-primary" %>
+  <%= link_to 'Cancel', {controller: 'grading_sets'}, class: "btn" %>
+  <% unless @grading_set.id.blank? %>
+    <%= link_to 'Delete', 
+      {controller: 'grading_sets', action: 'destroy', id: @grading_set.id}, 
+      method: :delete,
+      data: {confirm: 'Are you sure you wish to delete this Grading Set?  It will delete all user grading data.'},
+      class: "btn btn-danger ms-5" 
+  %>
+  <% end %>
+<% end %>
