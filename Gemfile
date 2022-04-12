@@ -19,6 +19,8 @@ gem 'sass-rails', '>= 6'
 
 gem 'bootstrap', '~> 5.1.3'
 
+gem 'image_processing', '~> 1.12', '>= 1.12.2'
+
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
 gem 'webpacker', '~> 5.0'
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
