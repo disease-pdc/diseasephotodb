@@ -1,5 +1,17 @@
+require 'sidekiq/web'
+
+class AdminConstraint
+  def matches?(request)
+    return false unless request.session[:user_id]
+    user = User.find request.session[:user_id]
+    user && user.admin?
+  end
+end
+
 Rails.application.routes.draw do
   root "home#index"
+  
+  mount Sidekiq::Web => '/sidekiq', :constraints => AdminConstraint.new
   
   # Sessions
   get '/signin', to: 'sessions#new'

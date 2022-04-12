@@ -38,6 +38,9 @@ gem 'bootsnap', '>= 1.4.4', require: false
 
 gem 'bcrypt', '~> 3.1', '>= 3.1.12'
 
+# Read EXIF data from images
+gem 'exifr', '~> 1.3', '>= 1.3.9'
+
 gem "aws-sdk-s3", require: false
 
 group :development, :test do

@@ -38,6 +38,7 @@ class ImagesController < ApplicationController
     end
     respond_to do |format|
       if @image.save
+        ExifJob.perform_async @image.id
         format.html { redirect_to @image, notice: 'Image was sucessfully uploaded.' }
         format.json { render json: {success: true, image: @image, filename: @image.filename}}
       else
