@@ -7,30 +7,25 @@
   </ol>
 </nav>
 
-<div class="input-group mb-3">
-  <input type="text" class="form-control" placeholder="Search by name">
-  <button class="btn btn-outline-primary" type="button">Search Grading Sets</button>
-  <% if current_user.image_admin? %>
-    <a class="btn btn-outline-secondary" type="button" href="<%= url_for controller: 'grading_sets', action: 'new' %>">
-      Create Grading Set
-    </a>
-  <% end %>
-</div>
+<%= form_with url: url_for(controller: 'grading_sets'), 
+  method: :get, 
+  id: 'search-form',
+  class: '' do |form| 
+%>
+  <div class="input-group mb-3">
+    <input type="text" class="form-control" name="text" placeholder="Search by name" value="<%= params[:text] %>">
+    <input class="btn btn-outline-primary" type="submit" value="Search Grading Sets" />
+    <% if current_user.image_admin? %>
+      <a class="btn btn-outline-secondary" type="button" href="<%= url_for controller: 'grading_sets', action: 'new' %>">
+        Create Grading Set
+      </a>
+    <% end %>
+  </div>
+<% end %>
 
 <table class="table table-striped align-middle">
   <thead>
     <tr>
-      <th scope="col" style="vertical-align: middle;" width="1%">
-        <input class="form-check-input" type="checkbox" value="">
-      </th>
-      <th scope="col" colspan="3" style="vertical-align: middle;">
-        <div class="btn-group" role="group">
-          <button type="button" class="btn btn-sm btn-outline-primary">Archive</button>
-        </div>
-      </th>
-    </tr>
-    <tr>
-      <th scope="col"></th>
       <th scope="col">Name</th>
       <th scope="col">Images</th>
       <th scope="col">Users</th>
@@ -40,9 +35,6 @@
   <tbody>
     <% @grading_sets.each do |grading_set| %>
       <tr>
-        <td style="width:1%;">
-          <input class="form-check-input" type="checkbox" value="">
-        </td>
         <td>
           <a href="<%= url_for(grading_set) %>">
             <%= grading_set.name %>
