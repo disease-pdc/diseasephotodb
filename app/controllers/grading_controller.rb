@@ -30,7 +30,15 @@ class GradingController < ApplicationController
         grading_set_image: GradingSetImage.find(params[:grading_set_image_id])
       )
     end
-    @user_grading_set_image.grade = params[:grade]
+    @user_grading_set_image.grading_data = params.permit(grading_data: [
+      :photo_quality,
+      :is_everted,
+      :tf_grade,
+      :ti_grade,
+      :ts_grade,
+      :upper_lid_tt_grade,
+      :lower_lid_tt_grade
+    ])
     @user_grading_set_image.save!
     redirect_to action: 'show', 
       grading_set_id: params[:grading_set_id],

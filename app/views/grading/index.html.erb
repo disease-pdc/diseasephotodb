@@ -14,58 +14,317 @@
   </div>
   <div class="col-lg-4 col-md-6 col-sm-12">
     <div class="grading-controls">
-      <h4 class="text-center">
+      <h4 class="text-center mb-4">
         Image <%= image_index + 1 %> / <%= @user_grading_set.image_count %>
       </h4>
-      <hr/>
-      <p>Please select your grade for this image</p>
-      <div class="row">
-        <% grade = @user_grading_set_image.grade if @user_grading_set_image %>
-        <%= form_with url: url_for(controller: 'grading', action: 'grade', grading_set_id: @user_grading_set.grading_set.id), 
-          method: :post, class: 'col-sm-6 col-xs-12 p-2 d-grid' do |form| 
-        %>
-          <%= form.hidden_field :grading_set_image_id, value: @grading_set_image.id  %>
-          <%= form.hidden_field :grade, value: 1  %>
-          <button type="submit" 
-            class="btn btn-lg btn-<%= grade == 1 ? '' : 'outline-' %>primary"
-          >
-            <strong>+</strong> Positive
+
+      <%= form_with url: url_for(controller: 'grading', action: 'grade', 
+          grading_set_id: @user_grading_set.grading_set.id), 
+        method: :post do |form| 
+      %>
+
+        <div class="section-main">
+
+          <div class="row">
+            <div class="col-lg-12">
+              <label class="form-label">
+                Do you consider the quality of this image sufficient to be able to grade it?
+              </label>
+            </div>
+            <div class="col-lg-12 text-lg-end">
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" value="1"
+                  name="grading_data[photo_quality]" id="photo_quality_1">
+                <label class="form-check-label" for="photo_quality_1">
+                  Yes
+                </label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" value="0"
+                  name="grading_data[photo_quality]" id="photo_quality_0">
+                <label class="form-check-label" for="photo_quality_0">
+                  No
+                </label>
+              </div>
+            </div>
+          </div>
+          <hr/>
+          <div class="row">
+            <div class="col-lg-6">
+              <label class="form-label">Is the eyelid everted?</label>
+            </div>
+            <div class="col-lg-6 text-lg-end">
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" value="1"
+                  name="grading_data[is_everted]" id="is_everted_1">
+                <label class="form-check-label" for="is_everted_1">
+                  Yes
+                </label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" value="0"
+                  name="grading_data[is_everted]" id="is_everted_0">
+                <label class="form-check-label" for="is_everted_0">
+                  No
+                </label>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <hr/>
+
+        <div class="section-everted d-none">
+
+          <div class="col-lg-12">
+            <label class="form-label">
+              Please select your <mark><strong>TF</strong></mark> grade for this image:
+            </label>
+            <div class="col-lg-12">
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-check form-control-lg form-check-inline">
+                    <input class="form-check-input" type="radio" value="1"
+                      name="grading_data[tf_grade]" id="tf_grade_1">
+                    <label class="form-check-label" for="tf_grade_1">
+                      Positive
+                    </label>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-check form-control-lg fform-check-inline">
+                    <input class="form-check-input" type="radio" 
+                      name="grading_data[tf_grade]" id="tf_grade_0" value="0">
+                    <label class="form-check-label" for="tf_grade_0">
+                      Negative
+                    </label>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" value="2" 
+                      name="grading_data[tf_grade]" id="tf_grade_2">
+                    <label class="form-check-label" for="tf_grade_2">
+                      Maybe Positive
+                    </label>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" 
+                      name="grading_data[tf_grade]" id="tf_grade_-1" value="-1">
+                    <label class="form-check-label" for="tf_grade_-1">
+                      Maybe Negative
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <hr/>
+          
+          <div class="col-lg-12">
+            <label class="form-label">
+              Please select your <mark><strong>TI</strong></mark> grade for this image:
+            </label>
+            <div class="col-lg-12">
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-check form-control-lg form-check-inline">
+                    <input class="form-check-input" type="radio" value="1" 
+                      name="grading_data[ti_grade]" id="ti_grade_1">
+                    <label class="form-check-label" for="ti_grade_1">
+                      Positive
+                    </label>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-check form-control-lg fform-check-inline">
+                    <input class="form-check-input" type="radio" 
+                      name="grading_data[ti_grade]" id="ti_grade_0" value="0">
+                    <label class="form-check-label" for="ti_grade_0">
+                      Negative
+                    </label>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" value="2" 
+                      name="grading_data[ti_grade]" id="ti_grade_2">
+                    <label class="form-check-label" for="ti_grade_2">
+                      Maybe Positive
+                    </label>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" 
+                      name="grading_data[ti_grade]" id="ti_grade_-1" value="-1">
+                    <label class="form-check-label" for="ti_grade_-1">
+                      Maybe Negative
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <hr/>
+          
+          <div class="col-lg-12">
+            <label class="form-label">
+              Please select your <mark><strong>TS</strong></mark> grade for this image:
+            </label>
+            <div class="col-lg-12">
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-check form-control-lg form-check-inline">
+                    <input class="form-check-input" type="radio" value="1" 
+                      name="grading_data[ts_grade]" id="ts_grade_1">
+                    <label class="form-check-label" for="ts_grade_1">
+                      Positive
+                    </label>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-check form-control-lg fform-check-inline">
+                    <input class="form-check-input" type="radio" 
+                      name="grading_data[ts_grade]" id="ts_grade_0" value="0">
+                    <label class="form-check-label" for="ts_grade_0">
+                      Negative
+                    </label>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" value="2" 
+                      name="grading_data[ts_grade]" id="ts_grade_2">
+                    <label class="form-check-label" for="ts_grade_2">
+                      Maybe Positive
+                    </label>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" 
+                      name="grading_data[ts_grade]" id="ts_grade_-1" value="-1">
+                    <label class="form-check-label" for="ts_grade_-1">
+                      Maybe Negative
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="section-everted-no d-none">
+
+          <div class="col-lg-12">
+            <label class="form-label">
+              Please select your <mark><strong>upper lid TT</strong></mark> grade for this image:
+            </label>
+            <div class="col-lg-12">
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-check form-control-lg form-check-inline">
+                    <input class="form-check-input" type="radio" value="1" 
+                      name="grading_data[upper_lid_tt_grade]" id="upper_lid_tt_grade_1">
+                    <label class="form-check-label" for="upper_lid_tt_grade_1">
+                      Positive
+                    </label>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-check form-control-lg fform-check-inline">
+                    <input class="form-check-input" type="radio" 
+                      name="grading_data[upper_lid_tt_grade]" id="upper_lid_tt_grade_0" value="0">
+                    <label class="form-check-label" for="upper_lid_tt_grade_0">
+                      Negative
+                    </label>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" value="2" 
+                      name="grading_data[upper_lid_tt_grade]" id="upper_lid_tt_grade_2">
+                    <label class="form-check-label" for="upper_lid_tt_grade_2">
+                      Maybe Positive
+                    </label>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" value="-1" 
+                      name="grading_data[upper_lid_tt_grade]" id="upper_lid_tt_grade_-1">
+                    <label class="form-check-label" for="upper_lid_tt_grade_-1">
+                      Maybe Negative
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <hr/>
+
+          <div class="col-lg-12">
+            <label class="form-label">
+              Please select your <mark><strong>lower lid TT</strong></mark> grade for this image:
+            </label>
+            <div class="col-lg-12">
+              <div class="row">
+                <div class="col-6">
+                  <div class="form-check form-control-lg form-check-inline">
+                    <input class="form-check-input" type="radio"  value="1"
+                      name="grading_data[lower_lid_tt_grade]" id="lower_lid_tt_grade_1">
+                    <label class="form-check-label" for="lower_lid_tt_grade_1">
+                      Positive
+                    </label>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-check form-control-lg fform-check-inline">
+                    <input class="form-check-input" type="radio" 
+                      name="grading_data[lower_lid_tt_grade]" id="lower_lid_tt_grade_0" value="0">
+                    <label class="form-check-label" for="lower_lid_tt_grade_0">
+                      Negative
+                    </label>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" value="2" 
+                      name="grading_data[lower_lid_tt_grade]" id="lower_lid_tt_grade_2">
+                    <label class="form-check-label" for="lower_lid_tt_grade_2">
+                      Maybe Positive
+                    </label>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" 
+                      name="grading_data[lower_lid_tt_grade]" id="lower_lid_tt_grade_-1" value="-1">
+                    <label class="form-check-label" for="lower_lid_tt_grade_-1">
+                      Maybe Negative
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-submit mt-3">
+          <button type="submit" class="btn btn-primary submit-grading" disabled>
+            Submit Grading
           </button>
-        <% end %>
-        <%= form_with url: url_for(controller: 'grading', action: 'grade', grading_set_id: @user_grading_set.grading_set.id), 
-          method: :post, class: 'col-sm-6 col-xs-12 p-2 d-grid' do |form| 
-        %>
-          <%= form.hidden_field :grading_set_image_id, value: @grading_set_image.id  %>
-          <%= form.hidden_field :grade, value: 4  %>
-          <button type="submit" 
-            class="btn btn-lg btn-<%= grade == 4 ? '' : 'outline-' %>secondary"
-          >
-            <strong>-</strong> Negative
-          </button>
-        <% end %>
-        <%= form_with url: url_for(controller: 'grading', action: 'grade', grading_set_id: @user_grading_set.grading_set.id), 
-          method: :post, class: 'col-sm-6 col-xs-12 p-2 d-grid' do |form| 
-        %>
-          <%= form.hidden_field :grading_set_image_id, value: @grading_set_image.id  %>
-          <%= form.hidden_field :grade, value: 2  %>
-          <button type="submit" 
-            class="btn btn-<%= grade == 2 ? '' : 'outline-' %>primary"
-          >
-            <strong>+</strong> Maybe Positive
-          </button>
-        <% end %>
-        <%= form_with url: url_for(controller: 'grading', action: 'grade', grading_set_id: @user_grading_set.grading_set.id), 
-          method: :post, class: 'col-sm-6 col-xs-12 p-2 d-grid' do |form| 
-        %>
-          <%= form.hidden_field :grading_set_image_id, value: @grading_set_image.id  %>
-          <%= form.hidden_field :grade, value: 3  %>
-          <button type="submit" 
-            class="btn btn-<%= grade == 3 ? '' : 'outline-' %>secondary"
-          >
-            <strong>-</strong> Maybe Negative
-          </button>
-        <% end %>
-      </div>
+        </div>
+      <% end %>
+
       <% if @user_grading_set_image %>
         <hr/>
         <div class="row">
@@ -95,3 +354,6 @@
     </div>
   </div>
 </div>
+
+
+<%= javascript_pack_tag 'grading_scripts' %>
