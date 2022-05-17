@@ -22,7 +22,9 @@
           grading_set_id: @user_grading_set.grading_set.id), 
         method: :post do |form| 
       %>
-
+        <input type="hidden" name="grading_set_image_id" 
+          value="<%= @grading_set_image.id %>"
+        >
         <div class="section-main">
 
           <div class="row">
@@ -323,17 +325,15 @@
             Submit Grading
           </button>
         </div>
-      <% end %>
+      <% end if !@user_grading_set_image %>
 
       <% if @user_grading_set_image %>
         <hr/>
         <div class="row">
-          <div class="col-sm-8">
-            Recorded grading
-            <br/>
-            <span class="fs-5"><strong><%= @user_grading_set_image.grade_text %></strong></span>
-          </div>
           <% if image_index == image_count - 1 %>
+            <div class="col-sm-8">
+              All images in this grading set have been graded.
+            </div>
             <%= form_with url: url_for(controller: 'grading', action: 'complete', grading_set_id: @user_grading_set.grading_set.id), 
               method: :post, class: 'col-sm-12 p-2 d-grid' do |form| 
             %>
@@ -343,6 +343,9 @@
               </button>
             <% end %>
           <% else %>
+            <div class="col-sm-8">
+              Grading for this image has been completed
+            </div>
             <div class="col-sm-4 text-end">
               <a href="<%= url_for(controller: 'grading', grading_set_id: @user_grading_set.grading_set.id) %>" class="btn btn-primary">
                 Next &#8594;

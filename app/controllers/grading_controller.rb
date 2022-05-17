@@ -38,11 +38,10 @@ class GradingController < ApplicationController
       :ts_grade,
       :upper_lid_tt_grade,
       :lower_lid_tt_grade
-    ])
+    ])['grading_data']
     @user_grading_set_image.save!
-    redirect_to action: 'show', 
-      grading_set_id: params[:grading_set_id],
-      user_grading_set_image_id: @user_grading_set_image.id
+    flash.notice = "#{@user_grading_set.grading_set.name} image grade saved!"
+    redirect_to action: 'index', grading_set_id: params[:grading_set_id]
   end
 
   def complete
