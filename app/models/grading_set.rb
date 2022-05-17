@@ -35,4 +35,32 @@ class GradingSet < ApplicationRecord
     end
   end
 
+  def csv_enumerator
+    Enumerator.new do |yielder|
+      yielder << CSV.generate_line(%w(
+        id filename source user photo_quality is_everted tf_grade ti_grade 
+        ts_grade upper_lid_tt_grade lower_lid_tt_grade
+      ))
+      UserGradingSetImage.joins({grading_set_image: :image}, :user)
+          .where("grading_set_images.grading_set_id = ?", id)
+          .find_in_batches do |batch|
+        batch.each do |user_grading_set_image|
+          yielder << CSV.generate_line([
+            user_grading_set_image.id,
+            user_grading_set_image.grading_set_image.image.filename,
+            user_grading_set_image.grading_set_image.image.image_source.name,
+            user_grading_set_image.user.email,
+            user_grading_set_image.grading_data['photo_quality'],
+            user_grading_set_image.grading_data['is_everted'],
+            user_grading_set_image.grading_data['tf_grade'],
+            user_grading_set_image.grading_data['ti_grade'],
+            user_grading_set_image.grading_data['ts_grade'],
+            user_grading_set_image.grading_data['upper_lid_tt_grade'],
+            user_grading_set_image.grading_data['lower_lid_tt_grade']
+          ])
+        end
+      end
+    end
+  end
+
 end

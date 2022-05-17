@@ -1,10 +1,15 @@
 class UserGradingSetImage < ApplicationRecord
 
-  TEXT_VALUES = {
-    1 => 'Positive',
-    2 => 'Mostly Positive',
-    3 => 'Mostly Negative',
-    4 => 'Negative'
+  YES_NO_VALUES = {
+    yes: 'y',
+    no: 'n'
+  }
+
+  GRADE_VALUES = {
+    positive: 'p',
+    negative: 'n',
+    maybe_positive: 'mp',
+    maybe_negative: 'mn'
   }
 
   belongs_to :user

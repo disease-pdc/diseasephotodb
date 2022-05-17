@@ -41,9 +41,9 @@ $(function () {
 
   $("input").on('change', (e) => {
     const val = $("input[name='grading_data[is_everted]']:checked").val() 
-    if (val === "1") {
+    if (val === $("#is_everted_1").val()) {
       showEverted()
-    } else if (val === "0") {
+    } else {
       showEvertedNo()
     }
   })

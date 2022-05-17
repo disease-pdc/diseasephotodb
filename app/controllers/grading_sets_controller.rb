@@ -52,10 +52,16 @@ class GradingSetsController < ApplicationController
 
   def data
     @grading_set = GradingSet.find params[:id]
-    respond_to do |format|
-      format.html
-      format.csv { send_data @grading_set.data_to_csv, filename: "#{@grading_set.name}-#{Date.today}.csv" }
-    end
+
+    headers.delete("Content-Length")
+    headers["Cache-Control"] = "no-cache"
+    headers["Content-Type"] = "text/csv"
+    headers["Content-Disposition"] = "attachment; filename=\"report.csv\""
+    headers["X-Accel-Buffering"] = "no"
+
+    response.status = 200
+
+    self.response_body = @grading_set.csv_enumerator
   end
 
   def destroy
