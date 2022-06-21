@@ -1,5 +1,6 @@
 class Image < ApplicationRecord
 
+  PROCESSING_URL = '/processing.png'
   SIZES = {
     main: [1000,1000],
     list: [150,150]
@@ -27,10 +28,14 @@ class Image < ApplicationRecord
   end
 
   def variant_url variant
-    if ActiveStorage::Blob.service.name == :local
-      image_file.variant(resize_to_limit: variant)
+    if (image_file.variant(resize_to_limit: variant).processed?)
+      if ActiveStorage::Blob.service.name == :local
+        image_file.variant(resize_to_limit: variant)
+      else
+        image_file.variant(resize_to_limit: variant).processed.url
+      end
     else
-      image_file.variant(resize_to_limit: variant).processed.url
+      PROCESSING_URL
     end
   end
 
