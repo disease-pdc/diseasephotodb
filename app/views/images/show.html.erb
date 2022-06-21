@@ -17,7 +17,7 @@
 <div class="row">
   <div class="col-md-6 mb-4">
     <%= 
-      image_tag @image.image_file.variant(resize_to_limit: Image::SIZES[:mail]),
+      image_tag @image.image_file.variant(resize_to_limit: Image::SIZES[:main]),
         class: "img-fluid img-thumbnail mb-3",
         alt: @image.filename
     %>
