@@ -7,10 +7,17 @@
 
 <div class="row">
   <div class="col-lg-8 col-md-6 col-xs-12">
-    <img class="img-fluid img-thumbnail mb-3" 
-      src="<%= url_for image.image_file %>" 
-      alt="<%= image.filename %>"
+    <%= 
+      image_tag image.image_file.variant(resize_to_limit: Image::SIZES[:main]),
+        class: "img-fluid img-thumbnail mb-3",
+        alt: image.filename
+    %>
+    <a class="btn btn-primary" 
+      href="<%= url_for image.image_file %>"
+      target="_blank"
     >
+      Open Original Image
+    </a>
   </div>
   <div class="col-lg-4 col-md-6 col-sm-12">
     <div class="grading-controls">

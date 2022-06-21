@@ -61,7 +61,7 @@ const ImagesUpload = ({authenticityToken}) => {
     const doEffect = async () => {
       if (uploading) {
         for (let i = 0; i < images.length; i++) {
-          setCurrent(i)
+          setCurrent(i+1)
           const result = await doUpload({
             authenticityToken,
             imageSourceId: imageSource.value,

@@ -1,5 +1,10 @@
 class Image < ApplicationRecord
 
+  SIZES = {
+    main: [1000,nil],
+    list: [150,nil]
+  }
+
   has_one_attached :image_file
   belongs_to :image_source
   belongs_to :user
@@ -13,5 +18,12 @@ class Image < ApplicationRecord
   validates 'filename', presence: true,
     uniqueness: { scope: [:image_source_id] }
   validates 'mime_type', presence: true
+
+  after_commit :do_image_processing, on: [:create]
+
+  def do_image_processing
+    ExifJob.perform_async self.id
+    ImageVariantJob.perform_async self.id
+  end
 
 end

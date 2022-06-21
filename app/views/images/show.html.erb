@@ -16,10 +16,11 @@
 
 <div class="row">
   <div class="col-md-6 mb-4">
-    <img class="img-fluid img-thumbnail mb-3" 
-      src="<%= url_for @image.image_file %>" 
-      alt="<%= @image.filename %>"
-    >
+    <%= 
+      image_tag @image.image_file.variant(resize_to_limit: Image::SIZES[:mail]),
+        class: "img-fluid img-thumbnail mb-3",
+        alt: @image.filename
+    %>
     <a class="btn btn-primary" 
       href="<%= url_for @image.image_file %>"
       target="_blank"
