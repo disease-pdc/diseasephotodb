@@ -26,4 +26,12 @@ class Image < ApplicationRecord
     ImageVariantJob.perform_async self.id
   end
 
+  def variant_url variant
+    if ActiveStorage::Blob.service.name == :local
+      image_file.variant(resize_to_limit: variant)
+    else
+      image_file.variant(resize_to_limit: variant).processed.url
+    end
+  end
+
 end
