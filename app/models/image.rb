@@ -1,8 +1,8 @@
 class Image < ApplicationRecord
 
   SIZES = {
-    main: [1000,nil],
-    list: [150,nil]
+    main: [1000,1000],
+    list: [150,150]
   }
 
   has_one_attached :image_file
