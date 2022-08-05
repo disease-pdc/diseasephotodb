@@ -60,12 +60,14 @@
         <%= @image.updated_at %>
       </div>
 
-      <div class="<%= label_class %>">
-        Uploaded By
-      </div>
-      <div class="<%= data_class %>">
-        <%= @image.user.email %>
-      </div>
+      <% if current_user.admin? || current_user.image_admin? %>
+        <div class="<%= label_class %>">
+          Uploaded By
+        </div>
+        <div class="<%= data_class %>">
+          <%= @image.user.email %>
+        </div>
+      <% end %>
 
       <div class="<%= label_class %>">
         Source

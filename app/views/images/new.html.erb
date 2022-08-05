@@ -1,8 +1,10 @@
 <h3>Upload Images</h3>
 <hr/>
-<div id="react-app-container" data-authenticity-token="<%= form_authenticity_token %>">
-</div>
-
+<div id="react-app-container" 
+  data-authenticity-token="<%= form_authenticity_token %>"
+  data-image-sources="<%= JSON.dump(@image_sources.as_json) %>"
+  data-image-source-id="<%= @image_source_id %>"
+></div>
 
 <%= javascript_pack_tag 'images_upload' %>
 

@@ -18,43 +18,38 @@
 %>
   <input type="hidden" name="limit" value="<%= @limit %>" />
   <input type="hidden" name="offset" value="<%= @offset %>" />
-  <div class="col-auto">
+  <div class="col-md-3 col-6">
     <label for="filename" class="form-label form-label-sm">Filename</label>
     <input type="text" class="form-control form-control-sm" 
       id="filename" name="filename" 
       value="<%= params[:filename] %>"
     />
   </div>
-  <div class="col-auto">
+  <div class="col-md-3">
     <label for="image_source" class="form-label form-label-sm">Source</label>
-    <input type="text" class="form-control form-control-sm"
-      id="image_source" name="image_source" 
-      value="<%= params[:image_source] %>"
-    />
+    <select name="image_source_id" class="form-select form-select-sm">
+      <option value=""></option>
+      <% @image_sources.each do |image_source| %>
+        <option value="<%= image_source.id %>" 
+          <%= params[:image_source_id] == image_source.id.to_s ? "selected" : '' %>
+        >
+          <%= image_source.name %>
+        </option>
+      <% end %>
+    </select>
   </div>
-  <div class="col-auto">
+  <div class="col-md-3">
     <label for="grading_set" class="form-label form-label-sm">Grading Set</label>
     <input type="text" class="form-control form-control-sm"
       id="grading_set" name="grading_set" 
       value="<%= params[:grading_set] %>"
     />
   </div>
-  <div class="col-auto">
+  <div class="col-md-3">
     <label class="form-label">&nbsp;</label>
     <button class="btn btn-primary form-control form-control-sm" type="submit">
       Search Images
     </button>
-  </div>
-  <div class="col-auto">
-    <label class="form-label form-label-sm">Upload</label>
-    <div class="input-group btn-group">
-      <a class="btn btn-outline-secondary form-control form-control-sm" type="button" href="<%= url_for controller: 'images', action: 'new' %>">
-        Images
-      </a>
-      <a class="btn btn-outline-secondary form-control form-control-sm" type="button" href="<%= url_for controller: 'metadata' %>">
-        Metadata
-      </a>
-    </div>
   </div>
 
   <input id="selected-grading-set" name="grading_set_id" type="hidden" />

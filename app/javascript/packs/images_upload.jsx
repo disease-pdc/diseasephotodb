@@ -43,11 +43,13 @@ const Result = ({filename, success, errors}) => (
   </>
 )
 
-const ImagesUpload = ({authenticityToken}) => {
-
-  const [selectLoading, setSelectLoading] = useState(false)
-  const [selectOptions, setSelectOptions] = useState([])
-  const [imageSource, setImageSource] = useState(null)
+const ImagesUpload = ({
+  authenticityToken,
+  imageSources,
+  imageSourceId
+}) => {
+  
+  const [sourceId, setSourceId] = useState(imageSourceId || -1)
 
   const [images, setImages] = useState(null)
   const [uploading, setUploading] = useState(false)
@@ -64,7 +66,7 @@ const ImagesUpload = ({authenticityToken}) => {
           setCurrent(i+1)
           const result = await doUpload({
             authenticityToken,
-            imageSourceId: imageSource.value,
+            imageSourceId: sourceId,
             file: images[i]
           })
           results.push(result)
@@ -83,27 +85,15 @@ const ImagesUpload = ({authenticityToken}) => {
           <label htmlFor="metadataFile" className="form-label">
             Select Image Source
           </label>
-          <AsyncTypeahead
-            id="image-source-select"
-            className="mb-3"
-            minLength={3}
-            filterBy={() => true}
-            isLoading={selectLoading}
-            options={selectOptions}
-            placeholder="Search for an Image Source..."
-            onSearch={async (query) => {
-              setSelectLoading(true)
-              setSelectOptions(
-                (await get('/image_sources.json', {params: {text: query}}))
-                  .data.image_sources.map((is) => (
-                    {label: is.name, value: is.id}
-                  ))
-              )
-              setSelectLoading(false) 
-            }}
-            onChange={(value) => setImageSource(value[0])}
-            renderMenuItemChildren={(option, props) => option.label}
-          />
+          <select className="form-select mb-3"
+            value={imageSourceId}
+            onChange={e => setSourceId(e.target.value)}
+          >
+            <option value="-1"></option>
+            {imageSources.map(({id,name}) => (
+              <option key={id} value={id}>{name}</option>
+            ))}
+          </select>
           <label htmlFor="metadataFile" className="form-label">
             Select images to upload to this source 
           </label>
@@ -117,7 +107,7 @@ const ImagesUpload = ({authenticityToken}) => {
                 setImages(e.target.files)
               }}
             />
-            <button disabled={!images || !imageSource}
+            <button disabled={!images || !sourceId || sourceId === "-1"}
               className="btn btn-primary" 
               type="button"
               onClick={() => setUploading(true)}
@@ -152,9 +142,12 @@ const ImagesUpload = ({authenticityToken}) => {
 
 document.addEventListener('DOMContentLoaded', () => {
   const el = document.getElementById('react-app-container')
-  const token = el.getAttribute('data-authenticity-token')
   ReactDOM.render(
-    <ImagesUpload authenticityToken={token} />,
+    <ImagesUpload 
+      authenticityToken={el.getAttribute('data-authenticity-token')}
+      imageSources={JSON.parse(el.getAttribute('data-image-sources'))}
+      imageSourceId={el.getAttribute('data-image-source-id')}
+    />,
     el.appendChild(document.createElement('div'))
   )
 })

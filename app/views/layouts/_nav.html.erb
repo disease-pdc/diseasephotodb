@@ -13,11 +13,33 @@
       <% if current_user %>
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <%= link_to 'Dashboard', {controller: 'dashboard'}, class: 'nav-link' %> 
+            <%= link_to 'Home', {controller: 'home'}, class: 'nav-link' %> 
+          </li>
+          <li class="nav-item">
+            <%= link_to 'Grade', {controller: 'dashboard'}, class: 'nav-link' %> 
           </li>
           <% if current_user.admin? || current_user.image_admin? || current_user.image_viewer? %>
             <li class="nav-item">
               <%= link_to 'Images', {controller: 'images'}, class: 'nav-link' %>
+            </li>
+          <% end %>
+          <% if current_user.admin? || current_user.image_admin? || current_user.image_viewer? %>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="uploadsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Uploads
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="uploadsDropdown">
+                <li>
+                  <a class="dropdown-item" href="<%= url_for controller: 'images', action: 'new' %>">
+                    Upload Images
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="<%= url_for controller: 'metadata' %>">
+                    Upload Metadata
+                  </a>
+                </li>
+              </ul>
             </li>
           <% end %>
           <% if current_user.admin? || current_user.image_admin? %>

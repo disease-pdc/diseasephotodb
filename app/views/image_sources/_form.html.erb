@@ -6,6 +6,11 @@
   <div class="mb-3 form-check">
     <%= form.check_box :active, class: 'form-check-input' %>
     <%= label_tag :name, "Active?", for: 'active', class: 'form-check-label' %>
+    <div class="form-text">
+      An inactive image source will not be available for adding to grading sets. 
+      <br/>
+      It will still be available for existing grading sets and data downloads.
+    </div>
   </div>
 
   <% unless @image_source.errors.blank? %>

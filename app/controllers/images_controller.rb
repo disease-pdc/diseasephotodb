@@ -13,6 +13,7 @@ class ImagesController < ApplicationController
     @offset = (params[:offset] || 0).to_i
     @images = search_images.limit(@limit).offset(@offset)
     @images_count = search_images.count
+    @image_sources = ImageSource.active.order('name desc')
     respond_to do |format|
       format.html 
       format.json { render json: {images: @images} }
@@ -28,7 +29,8 @@ class ImagesController < ApplicationController
   end
 
   def new
-    @image = Image.new
+    @image_sources = ImageSource.active.order("name desc").all
+    @image_source_id = params[:image_source_id]
   end
 
   def create
@@ -108,6 +110,10 @@ class ImagesController < ApplicationController
       unless params[:filename].blank?
         wheres << 'filename ilike :filename'
         wheres_params[:filename] = "%#{params[:filename]}%"
+      end
+      unless params[:image_source_id].blank?
+        wheres << 'image_source_id = :image_source_id'
+        wheres_params[:image_source_id] = "#{params[:image_source_id]}"
       end
       unless params[:image_source].blank?
         joins << :image_source
