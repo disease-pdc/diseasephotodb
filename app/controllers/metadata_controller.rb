@@ -3,6 +3,8 @@ class MetadataController < ApplicationController
   before_action :require_image_admin
 
   def index
+    @image_sources = ImageSource.active.order("name desc").all
+    @image_source_id = params[:image_source_id]
   end
 
   def update

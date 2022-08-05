@@ -60,11 +60,14 @@
             </div>
           </div>
           <hr/>
+        </div>
+
+        <div class="secton-is-everted d-none">
           <div class="row">
-            <div class="col-lg-6">
+            <div class="col-lg-12">
               <label class="form-label">Is the eyelid everted?</label>
             </div>
-            <div class="col-lg-6 text-lg-end">
+            <div class="col-lg-12 text-lg-end">
               <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" 
                   value="<%= UserGradingSetImage::YES_NO_VALUES[:yes] %>"
@@ -83,36 +86,34 @@
               </div>
             </div>
           </div>
-
+          <hr/>
         </div>
-
-        <hr/>
 
         <div class="section-everted d-none">
 
           <div class="col-lg-12">
             <label class="form-label">
-              Please select your <mark><strong>TF</strong></mark> grade for this image:
+              <strong>TF:</strong>
             </label>
             <div class="col-lg-12">
               <div class="row">
                 <div class="col-6">
-                  <div class="form-check form-control-lg form-check-inline">
+                  <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio"
                       value="<%= UserGradingSetImage::GRADE_VALUES[:positive] %>"
                       name="grading_data[tf_grade]" id="tf_grade_1">
                     <label class="form-check-label" for="tf_grade_1">
-                      Positive
+                      Definitely Yes
                     </label>
                   </div>
                 </div>
                 <div class="col-6">
-                  <div class="form-check form-control-lg fform-check-inline">
+                  <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio"  
                       value="<%= UserGradingSetImage::GRADE_VALUES[:negative] %>"
                       name="grading_data[tf_grade]" id="tf_grade_0">
                     <label class="form-check-label" for="tf_grade_0">
-                      Negative
+                      Definitely No
                     </label>
                   </div>
                 </div>
@@ -122,7 +123,7 @@
                       value="<%= UserGradingSetImage::GRADE_VALUES[:maybe_positive] %>"
                       name="grading_data[tf_grade]" id="tf_grade_2">
                     <label class="form-check-label" for="tf_grade_2">
-                      Maybe Positive
+                      Probably Yes
                     </label>
                   </div>
                 </div>
@@ -132,7 +133,7 @@
                       value="<%= UserGradingSetImage::GRADE_VALUES[:maybe_negative] %>"
                       name="grading_data[tf_grade]" id="tf_grade_-1">
                     <label class="form-check-label" for="tf_grade_-1">
-                      Maybe Negative
+                      Probably No
                     </label>
                   </div>
                 </div>
@@ -144,27 +145,27 @@
           
           <div class="col-lg-12">
             <label class="form-label">
-              Please select your <mark><strong>TI</strong></mark> grade for this image:
+              <strong>TI:</strong>
             </label>
             <div class="col-lg-12">
               <div class="row">
                 <div class="col-6">
-                  <div class="form-check form-control-lg form-check-inline">
+                  <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio"
                       value="<%= UserGradingSetImage::GRADE_VALUES[:positive] %>"
                       name="grading_data[ti_grade]" id="ti_grade_1">
                     <label class="form-check-label" for="ti_grade_1">
-                      Positive
+                      Definitely Yes
                     </label>
                   </div>
                 </div>
                 <div class="col-6">
-                  <div class="form-check form-control-lg fform-check-inline">
+                  <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio"
                       value="<%= UserGradingSetImage::GRADE_VALUES[:negative] %>"
                       name="grading_data[ti_grade]" id="ti_grade_0">
                     <label class="form-check-label" for="ti_grade_0">
-                      Negative
+                      Definitely No
                     </label>
                   </div>
                 </div>
@@ -174,7 +175,7 @@
                       value="<%= UserGradingSetImage::GRADE_VALUES[:maybe_positive] %>"
                       name="grading_data[ti_grade]" id="ti_grade_2">
                     <label class="form-check-label" for="ti_grade_2">
-                      Maybe Positive
+                      Probably Yes
                     </label>
                   </div>
                 </div>
@@ -184,7 +185,7 @@
                       value="<%= UserGradingSetImage::GRADE_VALUES[:maybe_negative] %>"
                       name="grading_data[ti_grade]" id="ti_grade_-1">
                     <label class="form-check-label" for="ti_grade_-1">
-                      Maybe Negative
+                      Probably No
                     </label>
                   </div>
                 </div>
@@ -196,27 +197,27 @@
           
           <div class="col-lg-12">
             <label class="form-label">
-              Please select your <mark><strong>TS</strong></mark> grade for this image:
+              <strong>TS:</strong>
             </label>
             <div class="col-lg-12">
               <div class="row">
                 <div class="col-6">
-                  <div class="form-check form-control-lg form-check-inline">
+                  <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio"
                       value="<%= UserGradingSetImage::GRADE_VALUES[:positive] %>" 
                       name="grading_data[ts_grade]" id="ts_grade_1">
                     <label class="form-check-label" for="ts_grade_1">
-                      Positive
+                      Definitely Yes
                     </label>
                   </div>
                 </div>
                 <div class="col-6">
-                  <div class="form-check form-control-lg fform-check-inline">
+                  <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio"
                       value="<%= UserGradingSetImage::GRADE_VALUES[:negative] %>"
                       name="grading_data[ts_grade]" id="ts_grade_0">
                     <label class="form-check-label" for="ts_grade_0">
-                      Negative
+                      Definitely No
                     </label>
                   </div>
                 </div>
@@ -226,7 +227,7 @@
                       value="<%= UserGradingSetImage::GRADE_VALUES[:maybe_positive] %>" 
                       name="grading_data[ts_grade]" id="ts_grade_2">
                     <label class="form-check-label" for="ts_grade_2">
-                      Maybe Positive
+                      Probably Yes
                     </label>
                   </div>
                 </div>
@@ -236,41 +237,41 @@
                       value="<%= UserGradingSetImage::GRADE_VALUES[:maybe_negative] %>"
                       name="grading_data[ts_grade]" id="ts_grade_-1">
                     <label class="form-check-label" for="ts_grade_-1">
-                      Maybe Negative
+                      Probably No
                     </label>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
+          <hr/>
         </div>
 
         <div class="section-everted-no d-none">
 
           <div class="col-lg-12">
             <label class="form-label">
-              Please select your <mark><strong>upper lid TT</strong></mark> grade for this image:
+              <strong>Upper</strong> eyelid trichiasis:
             </label>
             <div class="col-lg-12">
               <div class="row">
                 <div class="col-6">
-                  <div class="form-check form-control-lg form-check-inline">
+                  <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio"
                       value="<%= UserGradingSetImage::GRADE_VALUES[:positive] %>" 
                       name="grading_data[upper_lid_tt_grade]" id="upper_lid_tt_grade_1">
                     <label class="form-check-label" for="upper_lid_tt_grade_1">
-                      Positive
+                      Definitely Yes
                     </label>
                   </div>
                 </div>
                 <div class="col-6">
-                  <div class="form-check form-control-lg fform-check-inline">
+                  <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" 
                       value="<%= UserGradingSetImage::GRADE_VALUES[:negative] %>" 
                       name="grading_data[upper_lid_tt_grade]" id="upper_lid_tt_grade_0">
                     <label class="form-check-label" for="upper_lid_tt_grade_0">
-                      Negative
+                      Definitely No
                     </label>
                   </div>
                 </div>
@@ -280,7 +281,7 @@
                       value="<%= UserGradingSetImage::GRADE_VALUES[:maybe_positive] %>"  
                       name="grading_data[upper_lid_tt_grade]" id="upper_lid_tt_grade_2">
                     <label class="form-check-label" for="upper_lid_tt_grade_2">
-                      Maybe Positive
+                      Probably Yes
                     </label>
                   </div>
                 </div>
@@ -290,7 +291,7 @@
                       value="<%= UserGradingSetImage::GRADE_VALUES[:maybe_negative] %>" 
                       name="grading_data[upper_lid_tt_grade]" id="upper_lid_tt_grade_-1">
                     <label class="form-check-label" for="upper_lid_tt_grade_-1">
-                      Maybe Negative
+                      Probably No
                     </label>
                   </div>
                 </div>
@@ -302,27 +303,27 @@
 
           <div class="col-lg-12">
             <label class="form-label">
-              Please select your <mark><strong>lower lid TT</strong></mark> grade for this image:
+              <strong>Lower</strong> eyelid trichiasis:
             </label>
             <div class="col-lg-12">
               <div class="row">
                 <div class="col-6">
-                  <div class="form-check form-control-lg form-check-inline">
+                  <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio"
                       value="<%= UserGradingSetImage::GRADE_VALUES[:positive] %>"
                       name="grading_data[lower_lid_tt_grade]" id="lower_lid_tt_grade_1">
                     <label class="form-check-label" for="lower_lid_tt_grade_1">
-                      Positive
+                      Definitely Yes
                     </label>
                   </div>
                 </div>
                 <div class="col-6">
-                  <div class="form-check form-control-lg fform-check-inline">
+                  <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio"
                       value="<%= UserGradingSetImage::GRADE_VALUES[:negative] %>"
                       name="grading_data[lower_lid_tt_grade]" id="lower_lid_tt_grade_0">
                     <label class="form-check-label" for="lower_lid_tt_grade_0">
-                      Negative
+                      Definitely No
                     </label>
                   </div>
                 </div>
@@ -332,7 +333,7 @@
                       value="<%= UserGradingSetImage::GRADE_VALUES[:maybe_positive] %>" 
                       name="grading_data[lower_lid_tt_grade]" id="lower_lid_tt_grade_2">
                     <label class="form-check-label" for="lower_lid_tt_grade_2">
-                      Maybe Positive
+                      Probably Yes
                     </label>
                   </div>
                 </div>
@@ -342,13 +343,14 @@
                       value="<%= UserGradingSetImage::GRADE_VALUES[:maybe_negative] %>" 
                       name="grading_data[lower_lid_tt_grade]" id="lower_lid_tt_grade_-1">
                     <label class="form-check-label" for="lower_lid_tt_grade_-1">
-                      Maybe Negative
+                      Probably No
                     </label>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          <hr/>
         </div>
 
         <div class="form-submit mt-3">

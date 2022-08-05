@@ -11,7 +11,10 @@
 
 <h3>Upload Image Metadata</h3>
 <hr/>
-<div id="react-app-container" data-authenticity-token="<%= form_authenticity_token %>">
+<div id="react-app-container" 
+  data-authenticity-token="<%= form_authenticity_token %>"
+  data-image-sources="<%= JSON.dump(@image_sources.as_json) %>"
+  data-image-source-id="<%= @image_source_id %>">
 </div>
 
 

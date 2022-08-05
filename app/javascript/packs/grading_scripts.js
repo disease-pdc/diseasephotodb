@@ -4,6 +4,10 @@ const noSelection = (selector) => {
   return $(selector) == null || $(selector).length < 1
 }
 
+const showIsEverted = () => {
+  $('.secton-is-everted').removeClass('d-none')
+}
+
 const showEverted = () => {
   $('.section-everted-no').removeClass('d-block')
   $('.section-everted-no').addClass('d-none')
@@ -40,11 +44,14 @@ const showEvertedNo = () => {
 $(function () {
 
   $("input").on('change', (e) => {
-    const val = $("input[name='grading_data[is_everted]']:checked").val() 
-    if (val === $("#is_everted_1").val()) {
-      showEverted()
-    } else {
-      showEvertedNo()
+    if (!noSelection("input[name='grading_data[photo_quality]']:checked")) {
+      showIsEverted()
+      const val = $("input[name='grading_data[is_everted]']:checked").val() 
+      if (val === $("#is_everted_1").val()) {
+        showEverted()
+      } else if (val === $("#is_everted_0").val()) {
+        showEvertedNo()
+      }
     }
   })
 

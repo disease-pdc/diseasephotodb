@@ -19,16 +19,18 @@
             <%= link_to 'Grade', {controller: 'dashboard'}, class: 'nav-link' %> 
           </li>
           <% if current_user.admin? || current_user.image_admin? || current_user.image_viewer? %>
-            <li class="nav-item">
-              <%= link_to 'Images', {controller: 'images'}, class: 'nav-link' %>
-            </li>
-          <% end %>
-          <% if current_user.admin? || current_user.image_admin? || current_user.image_viewer? %>
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="uploadsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Uploads
+              <a class="nav-link dropdown-toggle" href="#" id="imagesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Images
               </a>
-              <ul class="dropdown-menu" aria-labelledby="uploadsDropdown">
+              <ul class="dropdown-menu" aria-labelledby="imagesDropdown">
+                <li>
+                  <a class="dropdown-item" href="<%= url_for controller: 'images' %>">
+                    Images List
+                  </a>
+                </li>
+                <% if current_user.admin? || current_user.image_admin? %>
+                <li><hr class="dropdown-divider"></li>
                 <li>
                   <a class="dropdown-item" href="<%= url_for controller: 'images', action: 'new' %>">
                     Upload Images
@@ -39,15 +41,46 @@
                     Upload Metadata
                   </a>
                 </li>
+                <% end %>
               </ul>
             </li>
           <% end %>
           <% if current_user.admin? || current_user.image_admin? %>
-            <li class="nav-item">
-              <%= link_to 'Grading Sets', {controller: 'grading_sets'}, class: 'nav-link' %>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="gradingSetsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Grading Sets
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="gradingSetsDropdown">
+                <li>
+                  <a class="dropdown-item" href="<%= url_for controller: 'grading_sets' %>">
+                    Grading Sets List
+                  </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                  <a class="dropdown-item" href="<%= url_for controller: 'grading_sets', action: 'new' %>">
+                    Create Grading Set
+                  </a>
+                </li>
+              </ul>
             </li>
-            <li class="nav-item">
-              <%= link_to 'Image Sources', {controller: 'image_sources'}, class: 'nav-link' %>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="imageSourcesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Image Sources
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="imageSourcesDropdown">
+                <li>
+                  <a class="dropdown-item" href="<%= url_for controller: 'image_sources' %>">
+                    Image Sources List
+                  </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                  <a class="dropdown-item" href="<%= url_for controller: 'image_sources', action: 'new' %>">
+                    Create Image Source
+                  </a>
+                </li>
+              </ul>
             </li>
           <% end %>
           <% if current_user.admin? %>

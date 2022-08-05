@@ -49,11 +49,13 @@ const Result = ({filename, success, error}) => (
   </>
 )
 
-const MetadataUpload = ({authenticityToken}) => {
+const MetadataUpload = ({
+  authenticityToken,
+  imageSources,
+  imageSourceId
+}) => {
 
-  const [selectLoading, setSelectLoading] = useState(false)
-  const [selectOptions, setSelectOptions] = useState([])
-  const [imageSource, setImageSource] = useState(null)
+  const [sourceId, setSourceId] = useState(imageSourceId || -1)
 
   const [data, setData] = useState(null)
   const [uploading, setUploading] = useState(false)
@@ -72,7 +74,7 @@ const MetadataUpload = ({authenticityToken}) => {
           const result = await doUpload({
             authenticityToken,
             active: '1',
-            imageSourceId: imageSource.value,
+            imageSourceId: sourceId,
             filename: data[i][0],
             metadata: getMetadata({headers, row: data[i]})
           })
@@ -88,61 +90,53 @@ const MetadataUpload = ({authenticityToken}) => {
   return (
     <>
       {!uploading && 
-        <>
-          <label htmlFor="metadataFile" className="form-label">
-            Select Image Source
-          </label>
-          <AsyncTypeahead
-            id="image-source-select"
-            className="mb-3"
-            minLength={3}
-            filterBy={() => true}
-            isLoading={selectLoading}
-            options={selectOptions}
-            placeholder="Search for an Image Source..."
-            onSearch={async (query) => {
-              setSelectLoading(true)
-              setSelectOptions(
-                (await get('/image_sources.json', {text: query}))
-                  .data.image_sources.map((is) => (
-                    {label: is.name, value: is.id}
-                  ))
-              )
-              setSelectLoading(false) 
-            }}
-            onChange={(value) => setImageSource(value[0])}
-            renderMenuItemChildren={(option, props) => option.label}
-          />
-          <label htmlFor="metadataFile" className="form-label">
-            Select XLSX Metadata File
-          </label>
-          <div className="input-group mb-3">
-            <input className="form-control" 
-              type="file" 
-              id="metadataFile" 
-              accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-              onChange={(e) => {
-                const reader = new FileReader()
-                reader.onload = function (e) {
-                  var data = e.target.result
-                  let readedData = read(data, {type: 'binary'})
-                  const wsname = readedData.SheetNames[0]
-                  const ws = readedData.Sheets[wsname]
-                  const dataParse = utils.sheet_to_json(ws, {header:1})
-                  setData(dataParse)
-                };
-                reader.readAsBinaryString(e.target.files[0])
-              }}
-            />
-            <button disabled={!data || !imageSource}
-              className="btn btn-primary" 
-              type="button"
-              onClick={() => setUploading(true)}
+        <div className="row">
+          <div className="col-lg-4">
+            <label htmlFor="metadataFile" className="form-label">
+              Select Image Source
+            </label>
+            <select className="form-select mb-3"
+              value={imageSourceId}
+              onChange={e => setSourceId(e.target.value)}
             >
-              Import Metadata
-            </button>
+              <option value="-1"></option>
+              {imageSources.map(({id,name}) => (
+                <option key={id} value={id}>{name}</option>
+              ))}
+            </select>
           </div>
-        </>
+          <div className="col-lg-8">
+            <label htmlFor="metadataFile" className="form-label">
+              Select XLSX Metadata File
+            </label>
+            <div className="input-group mb-3">
+              <input className="form-control" 
+                type="file" 
+                id="metadataFile" 
+                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                onChange={(e) => {
+                  const reader = new FileReader()
+                  reader.onload = function (e) {
+                    var data = e.target.result
+                    let readedData = read(data, {type: 'binary'})
+                    const wsname = readedData.SheetNames[0]
+                    const ws = readedData.Sheets[wsname]
+                    const dataParse = utils.sheet_to_json(ws, {header:1})
+                    setData(dataParse)
+                  };
+                  reader.readAsBinaryString(e.target.files[0])
+                }}
+              />
+              <button disabled={!data || !imageSource || sourceId === "-1"}
+                className="btn btn-primary" 
+                type="button"
+                onClick={() => setUploading(true)}
+              >
+                Import Metadata
+              </button>
+            </div>
+          </div>
+        </div>
       }
       {uploading &&
         <>
@@ -169,9 +163,12 @@ const MetadataUpload = ({authenticityToken}) => {
 
 document.addEventListener('DOMContentLoaded', () => {
   const el = document.getElementById('react-app-container')
-  const token = el.getAttribute('data-authenticity-token')
   ReactDOM.render(
-    <MetadataUpload authenticityToken={token} />,
+    <MetadataUpload 
+      authenticityToken={el.getAttribute('data-authenticity-token')}
+      imageSources={JSON.parse(el.getAttribute('data-image-sources'))}
+      imageSourceId={el.getAttribute('data-image-source-id')}
+    />,
     el.appendChild(document.createElement('div'))
   )
 })

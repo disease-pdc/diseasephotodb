@@ -81,41 +81,45 @@ const ImagesUpload = ({
   return (
     <>
       {!uploading && 
-        <>
-          <label htmlFor="metadataFile" className="form-label">
-            Select Image Source
-          </label>
-          <select className="form-select mb-3"
-            value={imageSourceId}
-            onChange={e => setSourceId(e.target.value)}
-          >
-            <option value="-1"></option>
-            {imageSources.map(({id,name}) => (
-              <option key={id} value={id}>{name}</option>
-            ))}
-          </select>
-          <label htmlFor="metadataFile" className="form-label">
-            Select images to upload to this source 
-          </label>
-          <div className="input-group mb-3">
-            <input className="form-control" 
-              type="file" 
-              id="metadataFile" 
-              accept="image/png,image/gif,image/jpeg"
-              multiple
-              onChange={(e) => {
-                setImages(e.target.files)
-              }}
-            />
-            <button disabled={!images || !sourceId || sourceId === "-1"}
-              className="btn btn-primary" 
-              type="button"
-              onClick={() => setUploading(true)}
+        <div className="row">
+          <div className="col-lg-4">
+            <label htmlFor="metadataFile" className="form-label">
+              Select Image Source
+            </label>
+            <select className="form-select mb-3"
+              value={imageSourceId}
+              onChange={e => setSourceId(e.target.value)}
             >
-              Upload images
-            </button>
+              <option value="-1"></option>
+              {imageSources.map(({id,name}) => (
+                <option key={id} value={id}>{name}</option>
+              ))}
+            </select>
           </div>
-        </>
+          <div className="col-lg-8">
+            <label htmlFor="metadataFile" className="form-label">
+              Select images to upload to this source 
+            </label>
+            <div className="input-group mb-3">
+              <input className="form-control" 
+                type="file" 
+                id="metadataFile" 
+                accept="image/png,image/gif,image/jpeg"
+                multiple
+                onChange={(e) => {
+                  setImages(e.target.files)
+                }}
+              />
+              <button disabled={!images || !sourceId || sourceId === "-1"}
+                className="btn btn-primary" 
+                type="button"
+                onClick={() => setUploading(true)}
+              >
+                Upload images
+              </button>
+            </div>
+          </div>
+        </div>
       }
       {uploading &&
         <>
