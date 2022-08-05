@@ -1,4 +1,5 @@
 class GradingSetsController < ApplicationController
+  include CsvStreamable
 
   before_action :require_image_viewer, only: [:index, :show]
   before_action :require_image_admin, only: [:create, :adduser, :removeuser, :removeimage]
@@ -52,16 +53,8 @@ class GradingSetsController < ApplicationController
 
   def data
     @grading_set = GradingSet.find params[:id]
-
-    headers.delete("Content-Length")
-    headers["Cache-Control"] = "no-cache"
-    headers["Content-Type"] = "text/csv"
-    headers["Content-Disposition"] = "attachment; filename=\"report.csv\""
-    headers["X-Accel-Buffering"] = "no"
-
-    response.status = 200
-
-    self.response_body = @grading_set.csv_enumerator
+    stream_csv_response filename: 'report.csv',
+      enumerator: @grading_set.csv_enumerator
   end
 
   def destroy

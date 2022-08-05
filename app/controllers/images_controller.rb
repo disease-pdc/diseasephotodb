@@ -1,9 +1,11 @@
 class ImagesController < ApplicationController
+  include CsvStreamable
 
   before_action :require_image_viewer, only: [:index, :show]
   before_action :require_image_admin, only: [:create, :update, :destroy]
 
-  skip_before_action :verify_authenticity_token, only: [:addtogradingset]
+  skip_before_action :verify_authenticity_token, 
+    only: [:addtogradingset, :metadata]
   
   skip_forgery_protection only: [:index]
 
@@ -81,6 +83,12 @@ class ImagesController < ApplicationController
     })
   end
 
+  def metadata
+    @image_ids = search_images.select(:id).map(&:id)
+    stream_csv_response filename: 'metadata.csv',
+      enumerator: Image.csv_metadata_enumerator(@image_ids)
+  end
+
   # def update
   #   @image = Image.find params[:id]
   #   respond_to do |format|
@@ -107,13 +115,17 @@ class ImagesController < ApplicationController
       wheres = ["1=1"]
       wheres_params = {}
       joins = []
+      unless params[:image_ids].blank?
+        wheres << 'images.id in (:image_ids)'
+        wheres_params[:image_ids] = params[:image_ids]
+      end
       unless params[:filename].blank?
         wheres << 'filename ilike :filename'
         wheres_params[:filename] = "%#{params[:filename]}%"
       end
       unless params[:image_source_id].blank?
         wheres << 'image_source_id = :image_source_id'
-        wheres_params[:image_source_id] = "#{params[:image_source_id]}"
+        wheres_params[:image_source_id] = params[:image_source_id]
       end
       unless params[:image_source].blank?
         joins << :image_source

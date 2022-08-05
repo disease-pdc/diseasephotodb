@@ -34,6 +34,7 @@ Rails.application.routes.draw do
   resources :users
   resources :images
   post '/images/addtogradingset', to: 'images#addtogradingset'
+  post '/images/metadata', to: 'images#metadata'
   resources :grading_sets
   get '/grading_sets/:id/data', to: 'grading_sets#data'
   post '/grading_sets/:id/adduser', to: 'grading_sets#adduser'

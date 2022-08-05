@@ -22,6 +22,33 @@ class Image < ApplicationRecord
 
   after_commit :do_image_processing, on: [:create]
 
+  def self.all_metadata_keys
+    result = connection.execute %(
+      SELECT
+        DISTINCT field
+      FROM (
+        SELECT jsonb_object_keys(metadata) AS field
+        FROM images
+      ) AS subquery
+      ORDER BY field
+    )
+    result.map { |row| row['field'] }
+  end
+
+  def self.csv_metadata_enumerator ids
+    keys = Image.all_metadata_keys
+    Enumerator.new do |yielder|
+      yielder << CSV.generate_line(%w(id filename source mime_type) + keys)
+      Image.where('id in (?)', ids)
+          .includes(:image_source)
+          .find_each do |image|
+        data = [image.id, image.filename, image.image_source.name]
+        keys.each { |k| data << image.metadata[k] }
+        yielder << CSV.generate_line(data)
+      end
+    end
+  end
+
   def do_image_processing
     ExifJob.perform_async self.id
     ImageVariantJob.perform_async self.id

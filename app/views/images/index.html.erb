@@ -11,8 +11,9 @@
   </ol>
 </nav>
 
-<%= form_with url: url_for(controller: 'images'), 
+<%= form_with url: url_for(controller: 'images'),
   method: :get, 
+  local: true,
   id: 'search-form',
   class: 'row mb-3 gy-2 gx-3 align-items-center' do |form| 
 %>
@@ -103,6 +104,13 @@
             >
               Add to grading set
             </button>
+            <input id="add-grading-set-button"
+              class="btn btn-sm btn-outline-primary"
+              formaction="<%= url_for controller: 'images', action: 'metadata'  %>"
+              formmethod="post"
+              type="submit"
+              value="Download Metadata"
+            />
             <!-- <button type="button"
               class="btn btn-sm btn-outline-primary"
             >

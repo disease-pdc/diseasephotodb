@@ -38,7 +38,7 @@ class GradingSet < ApplicationRecord
   def csv_enumerator
     Enumerator.new do |yielder|
       yielder << CSV.generate_line(%w(
-        id filename source user photo_quality is_everted tf_grade ti_grade 
+        id filename source photo_quality is_everted tf_grade ti_grade 
         ts_grade upper_lid_tt_grade lower_lid_tt_grade
       ))
       UserGradingSetImage.joins({grading_set_image: :image}, :user)
@@ -49,7 +49,6 @@ class GradingSet < ApplicationRecord
             user_grading_set_image.id,
             user_grading_set_image.grading_set_image.image.filename,
             user_grading_set_image.grading_set_image.image.image_source.name,
-            user_grading_set_image.user.email,
             user_grading_set_image.grading_data['photo_quality'],
             user_grading_set_image.grading_data['is_everted'],
             user_grading_set_image.grading_data['tf_grade'],
