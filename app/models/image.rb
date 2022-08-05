@@ -1,4 +1,5 @@
 class Image < ApplicationRecord
+  include JsonKeyable
 
   PROCESSING_URL = '/processing.png'
   SIZES = {
@@ -23,16 +24,11 @@ class Image < ApplicationRecord
   after_commit :do_image_processing, on: [:create]
 
   def self.all_metadata_keys
-    result = connection.execute %(
-      SELECT
-        DISTINCT field
-      FROM (
-        SELECT jsonb_object_keys(metadata) AS field
-        FROM images
-      ) AS subquery
-      ORDER BY field
-    )
-    result.map { |row| row['field'] }
+    Image.query_json_metadata_keys 'metadata'
+  end
+
+  def self.all_exif_data_keys
+    Image.query_json_metadata_keys 'exif_data'
   end
 
   def self.csv_metadata_enumerator ids
@@ -42,8 +38,22 @@ class Image < ApplicationRecord
       Image.where('id in (?)', ids)
           .includes(:image_source)
           .find_each do |image|
-        data = [image.id, image.filename, image.image_source.name]
+        data = [image.id, image.filename, image.image_source.name, image.mime_type]
         keys.each { |k| data << image.metadata[k] }
+        yielder << CSV.generate_line(data)
+      end
+    end
+  end
+
+  def self.csv_exif_data_enumerator ids
+    keys = Image.all_exif_data_keys
+    Enumerator.new do |yielder|
+      yielder << CSV.generate_line(%w(id filename source mime_type) + keys)
+      Image.where('id in (?)', ids)
+          .includes(:image_source)
+          .find_each do |image|
+        data = [image.id, image.filename, image.image_source.name, image.mime_type]
+        keys.each { |k| data << image.exif_data[k] }
         yielder << CSV.generate_line(data)
       end
     end

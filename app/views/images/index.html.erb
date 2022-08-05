@@ -111,6 +111,13 @@
               type="submit"
               value="Download Metadata"
             />
+            <input id="add-grading-set-button"
+              class="btn btn-sm btn-outline-primary"
+              formaction="<%= url_for controller: 'images', action: 'exif_data'  %>"
+              formmethod="post"
+              type="submit"
+              value="Download Exif Data"
+            />
             <!-- <button type="button"
               class="btn btn-sm btn-outline-primary"
             >

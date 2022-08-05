@@ -5,7 +5,7 @@ class ImagesController < ApplicationController
   before_action :require_image_admin, only: [:create, :update, :destroy]
 
   skip_before_action :verify_authenticity_token, 
-    only: [:addtogradingset, :metadata]
+    only: [:addtogradingset, :metadatam, :exif_data]
   
   skip_forgery_protection only: [:index]
 
@@ -84,9 +84,13 @@ class ImagesController < ApplicationController
   end
 
   def metadata
-    @image_ids = search_images.select(:id).map(&:id)
     stream_csv_response filename: 'metadata.csv',
-      enumerator: Image.csv_metadata_enumerator(@image_ids)
+      enumerator: Image.csv_metadata_enumerator(search_image_ids)
+  end
+
+  def exif_data
+    stream_csv_response filename: 'exif_data.csv',
+      enumerator: Image.csv_exif_data_enumerator(search_image_ids)
   end
 
   # def update
@@ -140,6 +144,10 @@ class ImagesController < ApplicationController
       Image.active.joins(joins)
         .order("images.filename asc")
         .where(wheres.join(" and "), wheres_params)
+    end
+
+    def search_image_ids
+      search_images.select(:id).map(&:id)
     end
 
 end
