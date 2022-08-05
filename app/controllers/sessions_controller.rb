@@ -12,9 +12,6 @@ class SessionsController < ApplicationController
     if user
       token = user.create_login_token!
       LoginMailer.with(user: user, token: token).login_email.deliver_now
-    else
-      @errors = ["Unable to find email"]
-      render action: 'new'
     end
   end
 
