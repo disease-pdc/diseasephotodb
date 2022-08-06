@@ -5,7 +5,7 @@ class ImagesController < ApplicationController
   before_action :require_image_admin, only: [:create, :update, :destroy]
 
   skip_before_action :verify_authenticity_token, 
-    only: [:addtogradingset, :metadatam, :exif_data]
+    only: [:addtogradingset, :metadata, :exif_data]
   
   skip_forgery_protection only: [:index]
 
