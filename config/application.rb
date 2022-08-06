@@ -11,6 +11,9 @@ module Tfimagerydb
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.1
 
+    # Session expires in 30 days
+    config.session_store :cookie_store, expire_after: 30.days
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files
