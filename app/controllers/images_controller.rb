@@ -16,6 +16,7 @@ class ImagesController < ApplicationController
     @images = search_images.limit(@limit).offset(@offset)
     @images_count = search_images.count
     @image_sources = ImageSource.active.order('name desc')
+    @metadata_keys = Image.all_metadata_keys
     respond_to do |format|
       format.html 
       format.json { render json: {images: @images} }
@@ -119,6 +120,11 @@ class ImagesController < ApplicationController
       wheres = ["1=1"]
       wheres_params = {}
       joins = []
+      unless params[:metadata_key].blank?
+        safe_key = params[:metadata_key].gsub("'", "") # remove single quotes
+        wheres << "images.metadata->>'#{safe_key}' = :metadata_value"
+        wheres_params[:metadata_value] = params[:metadata_value]
+      end
       unless params[:image_ids].blank?
         wheres << 'images.id in (:image_ids)'
         wheres_params[:image_ids] = params[:image_ids]

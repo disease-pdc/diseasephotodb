@@ -19,16 +19,16 @@
 %>
   <input type="hidden" name="limit" value="<%= @limit %>" />
   <input type="hidden" name="offset" value="<%= @offset %>" />
-  <div class="col-lg-3">
-    <label for="filename" class="form-label">Filename</label>
-    <input type="text" class="form-control" 
+  <div class="col-lg-2">
+    <label for="filename" class="form-label form-label-sm">Filename</label>
+    <input type="text" class="form-control form-control-sm" 
       id="filename" name="filename" 
       value="<%= params[:filename] %>"
     />
   </div>
-  <div class="col-lg-3">
-    <label for="image_source" class="form-label">Source</label>
-    <select name="image_source_id" class="form-select">
+  <div class="col-lg-2">
+    <label for="image_source" class="form-label form-label-sm">Source</label>
+    <select name="image_source_id" class="form-select form-select-sm">
       <option value=""></option>
       <% @image_sources.each do |image_source| %>
         <option value="<%= image_source.id %>" 
@@ -39,16 +39,36 @@
       <% end %>
     </select>
   </div>
-  <div class="col-lg-3">
-    <label for="grading_set" class="form-label">Grading Set</label>
-    <input type="text" class="form-control"
+  <div class="col-lg-2">
+    <label for="grading_set" class="form-label form-label-sm">Grading Set</label>
+    <input type="text" class="form-control form-control-sm"
       id="grading_set" name="grading_set" 
       value="<%= params[:grading_set] %>"
     />
   </div>
-  <div class="col-lg-3">
-    <label class="form-label">&nbsp;</label>
-    <button class="btn btn-primary form-control form-control-sm" type="submit">
+  <div class="col-lg-4">
+    <label for="metadata_value" class="form-label form-label-sm">Metadata</label>
+    <div class="input-group input-group-sm ">
+      <select name="metadata_key" class="form-select form-select-sm">
+        <option value=""></option>
+        <% @metadata_keys.each do |key| %>
+          <option value="<%= key %>" 
+            <%= params[:metadata_key] == key ? "selected" : '' %>
+          >
+            <%= key %>
+          </option>
+        <% end %>
+      </select>
+      <span class="input-group-text input-group-sm">=</span>
+      <input type="text" class="form-control form-control-sm"
+        id="metadata_value" name="metadata_value" 
+        value="<%= params[:metadata_value] %>"
+      />
+    </div>
+  </div>
+  <div class="col-lg-2">
+    <label class="form-label form-label-sm">&nbsp;</label>
+    <button class="btn btn-primary form-control btn-sm" type="submit">
       Search Images
     </button>
   </div>
