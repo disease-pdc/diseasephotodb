@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
 
-  before_action :require_admin
+  before_action :require_image_admin
 
   def index
     wheres = ["1=1"]
