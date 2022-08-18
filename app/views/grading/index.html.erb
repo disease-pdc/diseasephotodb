@@ -1,6 +1,6 @@
 <% 
   image = @grading_set_image.image
-  image_index = @user_grading_set.index_of_image(image)
+  image_index = @user_grading_set.index_of_grading_set_image(@grading_set_image)
   image_count = @user_grading_set.image_count 
 %>
 <h2><%= @user_grading_set.grading_set.name %></h2>
