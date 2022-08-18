@@ -20,6 +20,24 @@
           </li>
           <% if current_user.admin? || current_user.image_admin? || current_user.image_viewer? %>
             <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="imageSourcesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Image Folders
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="imageSourcesDropdown">
+                <li>
+                  <a class="dropdown-item" href="<%= url_for controller: 'image_sources' %>">
+                    Image Folders List
+                  </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                  <a class="dropdown-item" href="<%= url_for controller: 'image_sources', action: 'new' %>">
+                    Create Image Folder
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="imagesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Images
               </a>
@@ -60,24 +78,6 @@
                 <li>
                   <a class="dropdown-item" href="<%= url_for controller: 'grading_sets', action: 'new' %>">
                     Create Grading Set
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="imageSourcesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Image Folders
-              </a>
-              <ul class="dropdown-menu" aria-labelledby="imageSourcesDropdown">
-                <li>
-                  <a class="dropdown-item" href="<%= url_for controller: 'image_sources' %>">
-                    Image Folders List
-                  </a>
-                </li>
-                <li><hr class="dropdown-divider"></li>
-                <li>
-                  <a class="dropdown-item" href="<%= url_for controller: 'image_sources', action: 'new' %>">
-                    Create Image Folder
                   </a>
                 </li>
               </ul>

@@ -4,7 +4,7 @@ class ImageSource < ApplicationRecord
 
   scope :active, -> { where(active: true) }
 
-  validates 'name', presence: true, uniqueness: true
+  validates 'name', presence: true,  allow_blank: false, uniqueness: true
 
   def image_count
     images.count

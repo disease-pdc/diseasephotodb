@@ -30,15 +30,14 @@
       <th scope="col">Images</th>
       <th scope="col">Users</th>
       <th scope="col">Created</th>
+      <th scope="col"></th>
     </tr>
   </thead>
   <tbody>
     <% @grading_sets.each do |grading_set| %>
       <tr>
         <td>
-          <a href="<%= url_for(grading_set) %>">
-            <%= grading_set.name %>
-          </a>
+          <%= grading_set.name %>
         </td>
         <td><%= grading_set.grading_set_images.count %></td>
         <td>
@@ -46,6 +45,11 @@
           (<%= grading_set.user_grading_sets_complete_count %> complete)
         </td>
         <td><%= grading_set.created_at %></td>
+        <td>
+          <a href="<%= url_for(grading_set) %>">
+            view
+          </a>
+        </td>
       </tr>
     <% end %>
   </tbody>

@@ -7,6 +7,8 @@ class GradingSet < ApplicationRecord
   has_many :user_grading_sets
   has_many :users, through: :user_grading_sets
 
+  validates 'name', presence: true,  allow_blank: false, uniqueness: true
+  
   def image_count
     images.count
   end
