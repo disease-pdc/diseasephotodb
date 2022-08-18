@@ -56,7 +56,7 @@ class UserGradingSet < ApplicationRecord
   def index_of_image image
     user_grading_set_images
       .joins(:grading_set_image)
-      .where('grading_set_images.image_id < ?', image.id)
+      .where('grading_set_images.id < ?', image.id)
       .count
   end
 
