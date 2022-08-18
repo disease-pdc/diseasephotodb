@@ -10,12 +10,14 @@
 </nav>
 
 <h3>Upload Image Metadata</h3>
+
+Upload an XLSX spreadsheet with image metadata.  See this template file for example usage: <a href="/templateuploadsDB2testV4.xlsx">templateuploads.xlsx</a>
+
+<%= javascript_pack_tag 'metadata_upload' %>
 <hr/>
+
 <div id="react-app-container" 
   data-authenticity-token="<%= form_authenticity_token %>"
   data-image-sources="<%= JSON.dump(@image_sources.as_json) %>"
   data-image-source-id="<%= @image_source_id %>">
 </div>
-
-
-<%= javascript_pack_tag 'metadata_upload' %>
