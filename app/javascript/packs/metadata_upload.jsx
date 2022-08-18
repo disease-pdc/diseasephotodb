@@ -93,7 +93,7 @@ const MetadataUpload = ({
         <div className="row">
           <div className="col-lg-4">
             <label htmlFor="metadataFile" className="form-label">
-              Select Image Source
+              Select Image Folder
             </label>
             <select className="form-select mb-3"
               value={imageSourceId}

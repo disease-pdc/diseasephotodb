@@ -84,7 +84,7 @@ const ImagesUpload = ({
         <div className="row">
           <div className="col-lg-4">
             <label htmlFor="metadataFile" className="form-label">
-              Select Image Source
+              Select Image Folder
             </label>
             <select className="form-select mb-3"
               value={imageSourceId}
@@ -98,7 +98,7 @@ const ImagesUpload = ({
           </div>
           <div className="col-lg-8">
             <label htmlFor="metadataFile" className="form-label">
-              Select images to upload to this source 
+              Select images to upload to this folder 
             </label>
             <div className="input-group mb-3">
               <input className="form-control" 

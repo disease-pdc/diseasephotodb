@@ -1,13 +1,13 @@
 <%= form_with model: @image_source do |form| %>
   <div class="mb-3">
-    <%= label_tag :name, "Image Source Name", for: 'name', class: 'form-label' %>
+    <%= label_tag :name, "Image Folder Name", for: 'name', class: 'form-label' %>
     <%= form.text_field :name, class: 'form-control' %>
   </div>
   <div class="mb-3 form-check">
     <%= form.check_box :active, class: 'form-check-input' %>
     <%= label_tag :name, "Active?", for: 'active', class: 'form-check-label' %>
     <div class="form-text">
-      An inactive image source will not be available for adding to grading sets. 
+      An inactive image folder will not be available for adding to grading sets. 
       <br/>
       It will still be available for existing grading sets and data downloads.
     </div>
@@ -23,13 +23,13 @@
   <% end %>
 
   <hr/>
-  <%= form.submit class: "btn btn-primary" %>
+  <%= form.submit "Submit image folder", class: "btn btn-primary" %>
   <%= link_to 'Cancel', {controller: 'image_sources'}, class: "btn" %>
   <% unless @image_source.id.blank? %>
     <%= link_to 'Delete', 
       {controller: 'image_sources', action: 'destroy', id: @image_source.id}, 
       method: :delete,
-      data: {confirm: 'Are you sure you wish to delete this Image Source?'},
+      data: {confirm: 'Are you sure you wish to delete this Image folder?'},
       class: "btn btn-danger ms-5" 
   %>
   <% end %>

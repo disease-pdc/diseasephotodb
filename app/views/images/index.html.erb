@@ -27,7 +27,7 @@
     />
   </div>
   <div class="col-lg-2">
-    <label for="image_source" class="form-label form-label-sm">Source</label>
+    <label for="image_source" class="form-label form-label-sm">Folder</label>
     <select name="image_source_id" class="form-select form-select-sm">
       <option value=""></option>
       <% @image_sources.each do |image_source| %>
@@ -180,7 +180,7 @@
                     <%= link_to image.filename, {controller: 'images', action: 'show', id: image.id} %>
                   </div>
                   <div class="<%= label_class %>">
-                    Source
+                    Folder
                   </div>
                   <div class="<%= data_class %>">
                     <a href="<%= url_for controller: 'images', image_source_id: image.image_source.id %>">
