@@ -48,17 +48,18 @@ const ImagesUpload = ({
   imageSources,
   imageSourceId
 }) => {
-  
+
   const [sourceId, setSourceId] = useState(imageSourceId || -1)
 
   const [images, setImages] = useState(null)
   const [uploading, setUploading] = useState(false)
+  const [permission, setPermission] = useState(false)
 
   const [current, setCurrent] = useState(1)
   const [results, setResults] = useState([])
   const [finished, setFinished] = useState(false)
 
-
+  console.log(permission)
   useEffect(() => {
     const doEffect = async () => {
       if (uploading) {
@@ -81,45 +82,58 @@ const ImagesUpload = ({
   return (
     <>
       {!uploading && 
-        <div className="row">
-          <div className="col-lg-4">
-            <label htmlFor="metadataFile" className="form-label">
-              Select Image Folder
-            </label>
-            <select className="form-select mb-3"
-              value={imageSourceId}
-              onChange={e => setSourceId(e.target.value)}
-            >
-              <option value="-1"></option>
-              {imageSources.map(({id,name}) => (
-                <option key={id} value={id}>{name}</option>
-              ))}
-            </select>
-          </div>
-          <div className="col-lg-8">
-            <label htmlFor="metadataFile" className="form-label">
-              Select images to upload to this folder 
-            </label>
-            <div className="input-group mb-3">
-              <input className="form-control" 
-                type="file" 
-                id="metadataFile" 
-                accept="image/png,image/gif,image/jpeg"
-                multiple
-                onChange={(e) => {
-                  setImages(e.target.files)
-                }}
-              />
-              <button disabled={!images || !sourceId || sourceId === "-1"}
-                className="btn btn-primary" 
-                type="button"
-                onClick={() => setUploading(true)}
+        <>
+          <div className="row">
+            <div className="col-lg-4">
+              <label htmlFor="metadataFile" className="form-label">
+                Select Image Folder
+              </label>
+              <select className="form-select mb-3"
+                value={sourceId}
+                onChange={e => setSourceId(e.target.value)}
               >
-                Upload images
-              </button>
+                <option value="-1"></option>
+                {imageSources.map(({id,name}) => (
+                  <option key={id} value={id}>{name}</option>
+                ))}
+              </select>
+            </div>
+            <div className="col-lg-8">
+              <label htmlFor="metadataFile" className="form-label">
+                Select images to upload to this folder 
+              </label>
+              <div className="input-group mb-3">
+                <input className="form-control" 
+                  type="file" 
+                  id="metadataFile" 
+                  accept="image/png,image/gif,image/jpeg"
+                  multiple
+                  onChange={(e) => {
+                    setImages(e.target.files)
+                  }}
+                />
+                <button disabled={!permission || !images || !sourceId || sourceId === "-1"}
+                  className="btn btn-primary" 
+                  type="button"
+                  onClick={() => setUploading(true)}
+                >
+                  Upload images
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+          <div className="col">
+            <input type="checkbox" 
+              className="form-check-input me-1" 
+              id="permission"
+              value={permission}
+              onChange={(e) => setPermission(e.target.checked)}
+            />
+            <label className="form-check-label" htmlFor="permission">
+              I confirm that I have permission to use and upload these photographs.
+            </label>
+          </div>
+        </>
       }
       {uploading &&
         <>
