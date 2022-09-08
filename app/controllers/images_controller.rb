@@ -2,7 +2,7 @@ class ImagesController < ApplicationController
   include CsvStreamable
 
   before_action :require_image_viewer, only: [:index, :show]
-  before_action :require_image_admin, only: [:create, :update, :destroy]
+  before_action :require_image_admin, only: [:create, :update, :destroy, :download]
 
   skip_before_action :verify_authenticity_token, 
     only: [:addtogradingset, :metadata, :exif_data]
