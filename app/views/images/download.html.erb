@@ -1,0 +1,20 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <%= link_to 'Images', {controller: 'images'} %>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      Download
+    </li>
+  </ol>
+</nav>
+
+<h3>Download Images</h3>
+<hr/>
+<div id="react-app-container" 
+  data-authenticity-token="<%= form_authenticity_token %>"
+  data-image-sources="<%= JSON.dump(@image_sources.as_json) %>"
+  data-image-source-id="<%= @image_source_id %>"
+></div>
+
+<%= javascript_pack_tag 'images_download' %>

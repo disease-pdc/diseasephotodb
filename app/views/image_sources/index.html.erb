@@ -17,6 +17,8 @@
         <td class="text-nowrap" width="1%">
           <%= link_to 'upload images', controller: 'images', action: 'new', image_source_id: source.id %>
           &nbsp;|&nbsp;
+          <%= link_to 'download images', controller: 'images', action: 'download', image_source_id: source.id %>
+          &nbsp;|&nbsp;
           <%= link_to 'edit', controller: 'image_sources', action: 'show', id: source.id %>
         </td>
       </tr>

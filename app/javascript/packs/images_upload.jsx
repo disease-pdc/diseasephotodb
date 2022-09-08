@@ -59,7 +59,6 @@ const ImagesUpload = ({
   const [results, setResults] = useState([])
   const [finished, setFinished] = useState(false)
 
-  console.log(permission)
   useEffect(() => {
     const doEffect = async () => {
       if (uploading) {

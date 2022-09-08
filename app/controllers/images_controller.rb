@@ -94,6 +94,11 @@ class ImagesController < ApplicationController
       enumerator: Image.csv_exif_data_enumerator(search_image_ids)
   end
 
+  def download
+    @image_sources = ImageSource.active.order("name desc").all
+    @image_source_id = params[:image_source_id]
+  end
+
   # def update
   #   @image = Image.find params[:id]
   #   respond_to do |format|

@@ -56,6 +56,21 @@ class ImageSourcesController < ApplicationController
     end
   end
 
+  def image_urls
+    @image_source = ImageSource.find params[:id]
+    image_data = []
+    @image_source.images.find_each do |image|
+      image_data << {
+        filename: image.filename,
+        url: url_for(image.image_file)
+      }
+    end
+    respond_to do |format|
+      format.html 
+      format.json { render json: {images: image_data} }
+    end
+  end
+
   private
 
     def image_source_params

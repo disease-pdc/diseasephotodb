@@ -26,16 +26,22 @@ Rails.application.routes.draw do
   get '/grade/:grading_set_id', to: 'grading#index'
   get '/grade/:grading_set_id/:user_grading_set_image_id', to: 'grading#show'
   post '/grade/:grading_set_id', to: 'grading#grade'
-  post '/grade/::grading_set_id/complete', to: 'grading#complete'
+  post '/grade/:grading_set_id/complete', to: 'grading#complete'
 
   resources :image_sources
+  get '/image_sources/:id/image_urls', to: 'image_sources#image_urls'
+
   get '/metadata', to: 'metadata#index'
   post '/metadata', to: 'metadata#update'
+
   resources :users
+
+  get '/images/download', to: 'images#download'
   resources :images
   post '/images/addtogradingset', to: 'images#addtogradingset'
   post '/images/metadata', to: 'images#metadata'
   post '/images/exif_data', to: 'images#exif_data'
+
   resources :grading_sets
   get '/grading_sets/:id/data', to: 'grading_sets#data'
   post '/grading_sets/:id/adduser', to: 'grading_sets#adduser'
