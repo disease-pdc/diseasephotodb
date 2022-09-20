@@ -2,9 +2,11 @@ class GradingController < ApplicationController
 
   def index
     @user_grading_set = current_user.user_grading_set_for(params[:grading_set_id])
-    @grading_set_image = @user_grading_set.next_grading_set_image
-    if @grading_set_image
-      @user_grading_set_image = @user_grading_set.user_grading_set_image_for @grading_set_image.image
+    if !@user_grading_set.image_complete?
+      @grading_set_image = @user_grading_set.next_grading_set_image
+    elsif !@user_grading_set.image_flipped_complete?
+      @grading_set_image = @user_grading_set.next_grading_set_image_flipped
+      @flipped = true
     end
   end
 
@@ -22,7 +24,8 @@ class GradingController < ApplicationController
     @user_grading_set = current_user.user_grading_set_for(params[:grading_set_id])
     @user_grading_set_image = UserGradingSetImage.where(
       user_id: current_user.id,
-      grading_set_image: params[:grading_set_image_id]
+      grading_set_image: params[:grading_set_image_id],
+      flipped: params[:flipped] == '1'
     ).first
     unless @user_grading_set_image
       @user_grading_set_image = UserGradingSetImage.new(
@@ -30,6 +33,7 @@ class GradingController < ApplicationController
         grading_set_image: GradingSetImage.find(params[:grading_set_image_id])
       )
     end
+    @user_grading_set_image.flipped = params[:flipped] == '1'
     @user_grading_set_image.grading_data = params.permit(grading_data: [
       :photo_quality,
       :is_everted,

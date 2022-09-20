@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_29_142700) do
+ActiveRecord::Schema.define(version: 2022_09_20_160500) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -57,6 +57,7 @@ ActiveRecord::Schema.define(version: 2022_04_29_142700) do
     t.text "name", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "flipped_percent", default: 0, null: false
   end
 
   create_table "image_sources", force: :cascade do |t|
@@ -85,7 +86,9 @@ ActiveRecord::Schema.define(version: 2022_04_29_142700) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.jsonb "grading_data", default: {}, null: false
+    t.boolean "flipped", default: false, null: false
     t.index ["grading_set_image_id"], name: "index_user_grading_set_images_on_grading_set_image_id"
+    t.index ["user_id", "grading_set_image_id", "flipped"], name: "index_user_grading_set_images_on_unique", unique: true
     t.index ["user_id"], name: "index_user_grading_set_images_on_user_id"
   end
 

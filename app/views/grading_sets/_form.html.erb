@@ -2,6 +2,10 @@
   <div class="mb-3">
     <%= label_tag :name, "Grading Set Name", for: 'name', class: 'form-label' %>
     <%= form.text_field :name, class: 'form-control' %>
+  <div class="mb-3">
+  </div>
+    <%= label_tag :flipped_percent, "Percent to grade flipped", for: 'flipped_percent', class: 'form-label' %>
+    <%= form.number_field :flipped_percent, class: 'form-control' %>
   </div>
 
   <% unless @grading_set.errors.blank? %>

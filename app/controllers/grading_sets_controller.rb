@@ -23,7 +23,7 @@ class GradingSetsController < ApplicationController
   end
 
   def new
-    @grading_set = GradingSet.new
+    @grading_set = GradingSet.new flipped_percent: GradingSet::DEFAULT_FLIPPED_PERCENT
   end
 
   def edit
@@ -36,7 +36,7 @@ class GradingSetsController < ApplicationController
       flash.notice = "Grading set #{@grading_set.name} updated"
       return redirect_to action: 'show'
     else
-      return render action: 'show'
+      return render action: 'edit'
     end
   end
 
@@ -113,7 +113,7 @@ class GradingSetsController < ApplicationController
   private
 
     def grading_set_params
-      params.require(:grading_set).permit(:name)
+      params.require(:grading_set).permit(:name, :flipped_percent)
     end
 
 end

@@ -1,18 +1,20 @@
 # TF Imagery Database
 
-## Image Upload Process
+## Flipped Images Logic
 
-### Workbook Format:
+Upon creation of a grading set, a percentage flipped images is assigned (10% by default) - store this number so changing it in the future doesn't un-finish grading sets.
 
-Required columns:
+Derived # for grading set: 
 
-* `filename` - Name of the image (without path)
+```
+flipped_image_count = Math.ceil(image_count * flipped_percent) 
+```
 
-Optional columns:
+Total number to grade is # of images + (# of images * flipped percentage)
 
-* ``
+Create a second phase of grading - flipped grading:
 
-1. Client validates list of images to upload and xlsx workbook images match up.
-2. Upload batch is created in the system and workbook is uploaded.
-3. Each image is created 1 by 1 in the DB and the image is uploaded with metadata.  If the image already exists, the metadata is updated.
-4. Each image is processed into CloudFlare images 1 by 1.
+1. Do the number of flipped `user_grading_set_images` equal or exceed `flipped_image_count` for the grading_set?  If not, continue.
+2. Pick a grading_set_image at random.  If already a flipped image, pick another.
+3. Present that image for grading.
+
