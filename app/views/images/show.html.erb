@@ -85,24 +85,23 @@
         <ul class="list-unstyled">
           <% @image.grading_sets.each do |grading_set| %>
             <li>
-              <a href="<%= url_for controller: 'grading_sets', action: 'show', id: grading_set.id %>">
-                <%= grading_set.name %>
-              </a>
+              <%= grading_set_link grading_set %>
             </li>
           <% end %>
         </ul>
       </div>  
     </div>
 
-    <h4>
-      Grading Data 
-      <a class="btn btn-sm btn-outline-primary" href="#">download</a>
-    </h4>
-    <table class="table table-bordered table-striped table-sm mb-5">
-      <tbody>
-      </tbody>
-    </table>
-
+    <% if current_user.admin? %>
+      <h4>
+        Grading Data 
+        <a class="btn btn-sm btn-outline-primary" href="#">download</a>
+      </h4>
+      <table class="table table-bordered table-striped table-sm mb-5">
+        <tbody>
+        </tbody>
+      </table>
+    <% end %>
     <h4>
       Metadata 
       <!-- <a class="btn btn-sm btn-outline-primary" href="#">edit</a> -->

@@ -73,37 +73,40 @@
     </button>
   </div>
 
-  <input id="selected-grading-set" name="grading_set_id" type="hidden" />
-  <div class="modal fade" id="add-grading-set-modal" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">
-            Add selected images to grading set
-          </h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div class="grading-set-search" 
-            data-target-input="#selected-grading-set"
-            data-enable-button="#add-grading-set-button"
-          ></div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-            Cancel
-          </button>
-          <input id="add-grading-set-button" 
-            formaction="<%= url_for controller: 'images', action: 'addtogradingset' %>"
-            formmethod="post"
-            type="submit"
-            class="btn btn-primary" disabled 
-            value="Add to grading set"
-          />
+
+  <% if current_user.admin? %>
+    <input id="selected-grading-set" name="grading_set_id" type="hidden" />
+    <div class="modal fade" id="add-grading-set-modal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">
+              Add selected images to grading set
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="grading-set-search" 
+              data-target-input="#selected-grading-set"
+              data-enable-button="#add-grading-set-button"
+            ></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              Cancel
+            </button>
+            <input id="add-grading-set-button" 
+              formaction="<%= url_for controller: 'images', action: 'addtogradingset' %>"
+              formmethod="post"
+              type="submit"
+              class="btn btn-primary" disabled 
+              value="Add to grading set"
+            />
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  <% end %>
 
   <table class="table table-striped table-bordered align-middle">
     <thead>
@@ -118,12 +121,14 @@
             <%= @images_count %> Images
           </span>
           <div class="btn-group" role="group">
-            <button type="button"
-              class="btn btn-sm btn-outline-primary"
-              data-bs-toggle="modal" data-bs-target="#add-grading-set-modal"
-            >
-              Add to grading set
-            </button>
+            <% if current_user.admin? %>
+              <button type="button"
+                class="btn btn-sm btn-outline-primary"
+                data-bs-toggle="modal" data-bs-target="#add-grading-set-modal"
+              >
+                Add to grading set
+              </button>
+            <% end %>
             <input id="add-grading-set-button"
               class="btn btn-sm btn-outline-primary"
               formaction="<%= url_for controller: 'images', action: 'metadata'  %>"
@@ -204,9 +209,7 @@
                     <ul class="list-unstyled">
                       <% image.grading_sets.each do |grading_set| %>
                         <li>
-                          <a href="<%= url_for controller: 'grading_sets', action: 'show', id: grading_set.id %>">
-                            <%= grading_set.name %>
-                          </a>
+                          <%= grading_set_link grading_set %>
                         </li>
                       <% end %>
                     </ul>

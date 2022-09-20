@@ -3,6 +3,7 @@ class ImagesController < ApplicationController
 
   before_action :require_image_viewer, only: [:index, :show]
   before_action :require_image_admin, only: [:create, :update, :destroy, :download]
+  before_action :require_admin, only: [:addtogradingset]
 
   skip_before_action :verify_authenticity_token, 
     only: [:addtogradingset, :metadata, :exif_data]

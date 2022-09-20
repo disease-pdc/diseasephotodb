@@ -1,8 +1,7 @@
 class GradingSetsController < ApplicationController
   include CsvStreamable
 
-  before_action :require_image_viewer, only: [:index, :show]
-  before_action :require_image_admin, only: [:create, :adduser, :removeuser, :removeimage]
+  before_action :require_admin
 
   def index
     wheres = ["1=1"]
