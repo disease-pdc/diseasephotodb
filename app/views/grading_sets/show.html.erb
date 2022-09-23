@@ -68,7 +68,7 @@
           <%= user_grading_set.user.email %>
         </td>
         <td>
-          <%= user_grading_set.complete_image_count %> / <%= @grading_set.image_count %>
+          <%= user_grading_set.complete_image_count_total %> / <%= @grading_set.total_image_count %>
         </td>
         <td style="width:1%;">
           <%= form_with url: url_for(controller: 'grading_sets', action: 'removeuser', 

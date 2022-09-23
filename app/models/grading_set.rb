@@ -19,7 +19,7 @@ class GradingSet < ApplicationRecord
 
   # Number of images to test flipped with this grading set
   def flipped_image_count
-    images.count * (flipped_percent / 100.0).ceil
+    (images.count * (flipped_percent / 100.0)).ceil
   end
 
   # Total number of images (including flipped) that will be tested on this set
