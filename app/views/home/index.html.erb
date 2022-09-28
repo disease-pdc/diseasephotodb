@@ -1,4 +1,5 @@
 <% if current_user %>
+  <h3>Latest Grading Sets</h3>
   <div class="row mb-4">
     <% @user_grading_sets.each do |user_grading_set| %>
       <%= render partial: 'dashboard/user_grading_set_card', locals: {user_grading_set: user_grading_set} %>
