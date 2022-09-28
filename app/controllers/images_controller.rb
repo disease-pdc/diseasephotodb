@@ -128,8 +128,8 @@ class ImagesController < ApplicationController
       joins = []
       unless params[:metadata_key].blank?
         safe_key = params[:metadata_key].gsub("'", "") # remove single quotes
-        wheres << "images.metadata->>'#{safe_key}' = :metadata_value"
-        wheres_params[:metadata_value] = params[:metadata_value]
+        wheres << "images.metadata->>'#{safe_key}' like :metadata_value"
+        wheres_params[:metadata_value] = "%#{params[:metadata_value]}%"
       end
       unless params[:image_ids].blank?
         wheres << 'images.id in (:image_ids)'
