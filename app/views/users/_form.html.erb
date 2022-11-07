@@ -26,14 +26,14 @@
     <%= form.check_box :image_admin, class: 'form-check-input' %>
     <%= label_tag :image_admin, "Image Admin", for: 'image_admin', class: 'form-check-label' %>
     <div id="image_adminHelpBlock" class="form-text">
-      User will have permissions to administer (view, add, delete, modify) image sets, image sources and grading memberships.
+      User will have permissions to administer (view, add, delete, modify) image sets and image sources.
     </div>
   </div>
   <div class="mb-3 form-check">
     <%= form.check_box :admin, class: 'form-check-input' %>
     <%= label_tag :admin, "Admin", for: 'admin', class: 'form-check-label' %>
     <div id="graderHelpBlock" class="form-text">
-      User will have full permissions of the system, including adding/modifying/removing users.
+      User will have full permissions of the system, including adding/modifying/removing users and grading sets.
     </div>
   </div>
 
