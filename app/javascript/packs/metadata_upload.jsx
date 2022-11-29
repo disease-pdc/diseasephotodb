@@ -96,7 +96,7 @@ const MetadataUpload = ({
               Select Image Folder
             </label>
             <select className="form-select mb-3"
-              value={imageSourceId}
+              value={sourceId}
               onChange={e => setSourceId(e.target.value)}
             >
               <option value="-1"></option>
