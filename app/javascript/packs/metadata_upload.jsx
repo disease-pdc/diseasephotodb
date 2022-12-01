@@ -127,7 +127,7 @@ const MetadataUpload = ({
                   reader.readAsBinaryString(e.target.files[0])
                 }}
               />
-              <button disabled={!data || !imageSource || sourceId === "-1"}
+              <button disabled={!data || !sourceId || sourceId === "-1"}
                 className="btn btn-primary" 
                 type="button"
                 onClick={() => setUploading(true)}
