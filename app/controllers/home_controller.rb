@@ -1,5 +1,7 @@
 class HomeController < ApplicationController
 
+  layout 'home'
+
   skip_before_action :require_login
 
   def index

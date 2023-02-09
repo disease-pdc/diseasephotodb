@@ -1,6 +1,8 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <div class="container-xl">
-    <%= link_to 'TF Imagery DB', {controller: 'home'}, class: 'navbar-brand' %>
+    <a href="<%= url_for controller: 'home' %>" class="navbar-brand">
+      <img src="logo-td.svg" height="43px" style="margin-top: 2px;"/>
+    </a>
     <button class="navbar-toggler" 
       type="button" data-bs-toggle="collapse" 
       data-bs-target="#navbarSupportedContent" 

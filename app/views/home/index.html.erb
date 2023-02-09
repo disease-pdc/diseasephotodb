@@ -1,27 +1,51 @@
-<% if current_user %>
-  <h3>Latest Grading Sets</h3>
-  <div class="row mb-4">
-    <% @user_grading_sets.each do |user_grading_set| %>
-      <%= render partial: 'dashboard/user_grading_set_card', locals: {user_grading_set: user_grading_set} %>
-    <% end %>
+<div class="hero main-page-content main-page-section">
+  <div class="container-xl pt-4"> 
+    <div class="row align-items-center">
+      <div class="col-lg-6 order-2 order-lg-1">
+        <h1>Trachoma Photo Database</h1>
+        <p class="lead">This database is the result of a collective effort by the trachoma community to support education and research efforts for trachoma elimination and long-term surveillance. </p>
+        <p>It has been proposed that the use of photography and image grading can help us to overcome some of the trachoma diagnosis challenges we face. TFor the most recent progress report on this work please <a href="#">click here</a>.</p>
+        <p>This database was put together to create one acessible portal where images of the eye can be shared and accessed by stakeholders in the trachoma community for education and research.  Thank you for your support and for contributing to our efforts.</p>
+        <p>Please note that Tropical Data administers this database on behalf of the trachoma community, with support from a Steering Committee. A list of members can be found <strong><a href="/documents/db-steeringcom.docx">here</a></strong>. If you have any questions, please contact <a href="mailto:admin@tropicaldata.org">admin@tropicaldata.org</a>. </p>
+      </div>
+      <div class="col-lg-6 order-1 order-lg-2 text-center mb-md-3">
+        <img class="img-fluid hero-img-photo" src="/hero-img.png">
+      </div>
+    </div>
   </div>
-
-  <a href="<%= url_for(controller: 'dashboard') %>" class="btn btn-primary">
-    All Grading Sets &#8594;
-  </a> 
-  <hr/>
-<% end %>
-
-<h1>Trachoma Photo Database</h1>
-
-<p>This database is the result of a collective effort by the trachoma community to support education and research efforts for trachoma elimination and long-term surveillance. </p>
-
-<p>It has been proposed that the use of photography and image grading can help us to overcome some of the trachoma diagnosis challenges we face. This database was created to support the education and research efforts and to create one accessible portal where images of the eye can be shared and accessed by stakeholders in the trachoma community.</p>
-
-<p>If you have images you wish to share, please can you complete <strong><a href="/documents/db-uploadform-v3.docx">this form</a></strong> and send it to <a href="mailto:admin@tropicaldata.org">admin@tropicaldata.org</a> for us to assign a login to the system. Alongside any photos you upload, you will need to prepare and upload an accompanying metadata template which can be found <strong><a href="/documents/templatemetadataupload.xlsx">here</a></strong>. For full instructions on how to access the site, how to complete the metadata template, and how to upload, please <strong><a href="/documents/tpdb-user-guide-public.pdf">click here</a></strong>.</p>
-
-<p>If you have been invited to grade images on the system, you will have been sent details on how to log in. A guide for graders can be found <strong><a href="/documents/tpdb-user-guide-public.pdf">here</a></strong>. </p>
-
-<p>If you would like to access photos for educational and/or research purposes, please complete and return <strong><a href="/documents/db-access-tcs-v3.docx">this form</a></strong> to <a href="mailto:admin@tropicaldata.org">admin@tropicaldata.org</a>. Access requests will be reviewed and confirmed by the database’s Steering Committee.</p>
-
-<p>Please note that Tropical Data administers this database on behalf of the trachoma community, with support from a Steering Committee. A list of members can be found <strong><a href="/documents/db-steeringcom.docx">here</a></strong>. If you have any questions, please contact <a href="mailto:admin@tropicaldata.org">admin@tropicaldata.org</a>. </p>
+</div>
+<div class="container-xl main-page-content main-page-section"> 
+  <div class="row">
+    <div class="col-lg-4 pe-lg-5">
+      <h2>Uploading Images</h2>
+      <p>If you have images you wish to share, please can you complete <strong><a href="/documents/db-uploadform-v3.docx">this form</a></strong> and send it to <a href="mailto:admin@tropicaldata.org">admin@tropicaldata.org</a> for us to assign a login to the system. Alongside any photos you upload, you will need to prepare and upload an accompanying metadata template which can be found <strong><a href="/documents/templatemetadataupload.xlsx">here</a></strong>. For full instructions on how to access the site, how to complete the metadata template, and how to upload, please <strong><a href="/documents/tpdb-user-guide-public.pdf">click here</a></strong>.</p>
+    </div>
+    <div class="col-lg-4 pe-lg-5">
+      <h2>Accessing Images</h2>
+      <p>If you would like to access photos for educational and/or research purposes, please complete and return <strong><a href="/documents/db-access-tcs-v3.docx">this form</a></strong> to <a href="mailto:admin@tropicaldata.org">admin@tropicaldata.org</a>. Access requests will be reviewed and confirmed by the database’s Steering Committee.</p>
+    </div>
+    <div class="col-lg-4 pe-lg-5">
+      <h2>Grading</h2>
+      <p>If you have been invited to grade images on the system, you will have been sent details on how to log in. A guide for graders can be found <strong><a href="/documents/tpdb-user-guide-public.pdf">here</a></strong>. </p>
+    </div>
+  </div>
+</div>
+<div class="main-page-content main-page-footer">
+  <div class="container-xl">
+    <div class="d-flex flex-column flex-lg-row py-5">
+      <div class="flex-fill text-center text-lg-left" style="line-height: 54px;">
+          &copy; Copyright notice <%= Date.today.year %>
+      </div>
+      <div class="flex-fill text-center text-lg-left"" style="line-height: 54px;">
+          Database endorsed by
+          <img src="/ictc-logo.png" width="250" style="padding-left:10px;">
+      </div>
+      <div class="flex-fill text-center text-lg-left"" style="line-height: 54px;">
+          <a href="#">Cookies and privacy</a>
+      </div>
+      <div class="flex-fill text-center text-lg-left"" style="line-height: 54px;">
+          <a href="#">Terms and conditions</a>
+      </div>
+    </div>
+  </div>
+</div> 
