@@ -23,6 +23,7 @@ const ImagesDownload = ({
 
   const [downloading, setDownloading] = useState(false)
   const [downloadingPercent, setDownloadingPercent] = useState(0.0)
+  const [downloadingFile, setDownloadingFile] = useState(null)
 
   const getSourceName = (sourceId) => {
     for (let i = 0; i < imageSources.length; i++) {
@@ -48,12 +49,22 @@ const ImagesDownload = ({
     const zip = JsZip()
     imageBlobs.forEach((imageBlob, i) => {
       zip.file(imageBlob.filename, imageBlob.blob)
-      setDownloadingPercent((i+1) / imageBlobs.length * 100.0)
     })
-    zip.generateAsync({type: 'blob'}).then(zipFile => {
+    zip.generateAsync(
+      {
+        type: 'blob',
+        streamFiles: true
+      }, 
+      (metadata) => {
+        setDownloadingPercent(metadata.percent.toFixed(2))
+        setDownloadingFile(metadata.currentFile)
+      }
+    ).then(zipFile => {
       const currentDate = new Date().getTime()
       const sourceName = getSourceName(sourceId) || 'images_sources'
       const fileName = `${sourceName}.zip`
+      setDownloading(false)
+      setDownloading(false)
       return FileSaver.saveAs(zipFile, fileName);
     })
   }
@@ -95,7 +106,7 @@ const ImagesDownload = ({
       {downloading &&
         <>
           <div className="progress">
-            <div className="progress-bar" 
+            <div className="progress-bar progress-bar-striped progress-bar-animated" 
               role="progressbar" 
               aria-valuenow={downloadingPercent} 
               aria-valuemin="0" 
@@ -104,10 +115,21 @@ const ImagesDownload = ({
             >
             </div>
           </div>
-          {downloadingPercent == 100 &&
-            <p>Image downloading complete, your file should be saved shortly.</p>
+          {downloadingPercent <= 0.0 &&
+            <p>Fetching image list from database.</p>
+          }
+          {downloadingPercent > 0.0 && downloadingPercent < 100.0 &&
+            <>
+              <p>Downloading and zipping images.</p>
+              {downloadingFile &&
+                  <pre>{downloadingFile}</pre>
+              }
+            </>
           }
         </>
+      }
+      {downloadingPercent >= 100.0 &&
+        <p><hr/>Image downloading complete, your file should be saved shortly.</p>
       }
     </>
   )
