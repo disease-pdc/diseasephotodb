@@ -47,8 +47,8 @@ const ImagesDownload = ({
 
     const zip = JsZip()
     imageBlobs.forEach((imageBlob, i) => {
-      setDownloadingPercent((i+1) / imageBlobs.length * 100.0)
       zip.file(imageBlob.filename, imageBlob.blob)
+      setDownloadingPercent((i+1) / imageBlobs.length * 100.0)
     })
     zip.generateAsync({type: 'blob'}).then(zipFile => {
       const currentDate = new Date().getTime()
