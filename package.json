@@ -1,6 +1,9 @@
 {
   "name": "tfimagerydb",
   "private": true,
+  "engines" : { 
+    "node" : ">=16.0.0 <17.0.0"
+  },
   "dependencies": {
     "@babel/preset-react": "^7.16.7",
     "@popperjs/core": "^2.11.2",
