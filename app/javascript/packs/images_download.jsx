@@ -23,6 +23,7 @@ const ImagesDownload = ({
   const [sourceId, setSourceId] = useState(imageSourceId)
   const [imageData, setImageData] = useState(null) 
 
+  const [loadingImageData, setLoadingImageData] = useState(false)
   const [downloading, setDownloading] = useState(false)
   const [downloadingPercent, setDownloadingPercent] = useState(0.0)
   const [downloadingFile, setDownloadingFile] = useState(null)
@@ -31,7 +32,9 @@ const ImagesDownload = ({
   useEffect(() => {
     if (sourceId) {
       async function fetchData() {
+        setLoadingImageData(true)
         setImageData(await getImageData({ imageSourceId: sourceId }))
+        setLoadingImageData(false)
       }
       fetchData();
     }
@@ -100,6 +103,22 @@ const ImagesDownload = ({
             </select>
           </div>
         </div>
+        {loadingImageData &&
+          <>
+            <hr/>
+            <div className="progress">
+              <div className="progress-bar progress-bar-striped progress-bar-animated" 
+                role="progressbar" 
+                aria-valuenow="100" 
+                aria-valuemin="0" 
+                aria-valuemax="100"
+                style={{width: `100%`}}
+              >
+              </div>
+            </div>
+            <p>Loading image folder data...</p>
+          </>
+        }
         {downloading &&
           <>
             <hr/>
