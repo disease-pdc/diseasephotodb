@@ -132,10 +132,7 @@ const ImagesDownload = ({
               >
               </div>
             </div>
-            {downloadingPercent <= 0.0 &&
-              <p>Fetching image list from database.</p>
-            }
-            {downloadingPercent > 0.0 && downloadingPercent < 100.0 &&
+            {downloadingPercent < 100.0 &&
               <>
                 <p>Downloading and zipping images.</p>
                 {downloadingFile &&
