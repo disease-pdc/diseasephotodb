@@ -15,7 +15,11 @@ class MetadataController < ApplicationController
     unless @image
       render json: {filename: params[:filename], error: 'Image not found'}, staus: :unprocessable_entity
     else
-      @image.metadata = params[:metadata]
+      if params[:merge_metadata]
+        @image.metadata = (@image.metadata || {}).merge(metadata_params[:metadata])
+      else
+        @image.metadata = metadata_params[:metadata]
+      end
       if @image.save
         render json: {filename: params[:filename], success: true}
       else
@@ -27,7 +31,6 @@ class MetadataController < ApplicationController
   private
 
     def metadata_params
-      params.require(:filename, metadata: [])
+      params.permit(metadata: {})
     end
-
 end

@@ -9,12 +9,14 @@ const doUpload = async ({
   authenticityToken,
   imageSourceId,
   filename,
+  merge_metadata,
   metadata
 }) => {
   const result = await post('/metadata', {
     authenticity_token: authenticityToken,
     image_source_id: imageSourceId,
     filename: filename,
+    merge_metadata: merge_metadata,
     metadata: metadata
   })
   return result.data
@@ -56,6 +58,7 @@ const MetadataUpload = ({
 }) => {
 
   const [sourceId, setSourceId] = useState(imageSourceId || -1)
+  const [mergeMetadata, setMergeMetadata] = useState(false)
 
   const [data, setData] = useState(null)
   const [uploading, setUploading] = useState(false)
@@ -76,6 +79,7 @@ const MetadataUpload = ({
             active: '1',
             imageSourceId: sourceId,
             filename: data[i][0],
+            merge_metadata: mergeMetadata,
             metadata: getMetadata({headers, row: data[i]})
           })
           results.push(result)
@@ -91,11 +95,11 @@ const MetadataUpload = ({
     <>
       {!uploading && 
         <div className="row">
-          <div className="col-lg-4">
+          <div className="col-lg-3">
             <label htmlFor="metadataFile" className="form-label">
               Select Image Folder
             </label>
-            <select className="form-select mb-3"
+            <select className="form-select mb-4"
               value={sourceId}
               onChange={e => setSourceId(e.target.value)}
             >
@@ -105,7 +109,22 @@ const MetadataUpload = ({
               ))}
             </select>
           </div>
-          <div className="col-lg-8">
+          <div className="col-lg-3">
+            <label className="form-label">
+              Merge metadata?
+            </label>
+            <div className="form-check mt-1 mb-4">
+              <input className="form-check-input"
+                id="mergeMetadata"
+                type="checkbox" value={mergeMetadata}
+              onChange={(e) => setMergeMetadata(e.target.checked)}
+              />
+              <label className="form-check-label" htmlFor="mergeMetadata">
+                Yes, leave existing metadata
+              </label>
+            </div>
+          </div>
+          <div className="col-lg-6">
             <label htmlFor="metadataFile" className="form-label">
               Select XLSX Metadata File
             </label>
