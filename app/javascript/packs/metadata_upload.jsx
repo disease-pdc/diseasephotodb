@@ -58,7 +58,7 @@ const MetadataUpload = ({
 }) => {
 
   const [sourceId, setSourceId] = useState(imageSourceId || -1)
-  const [mergeMetadata, setMergeMetadata] = useState(false)
+  const [mergeMetadata, setMergeMetadata] = useState(true)
 
   const [data, setData] = useState(null)
   const [uploading, setUploading] = useState(false)
@@ -116,8 +116,9 @@ const MetadataUpload = ({
             <div className="form-check mt-1 mb-4">
               <input className="form-check-input"
                 id="mergeMetadata"
-                type="checkbox" value={mergeMetadata}
-              onChange={(e) => setMergeMetadata(e.target.checked)}
+                type="checkbox" 
+                checked={mergeMetadata}
+                onChange={(e) => setMergeMetadata(e.target.checked)}
               />
               <label className="form-check-label" htmlFor="mergeMetadata">
                 Yes, leave existing metadata

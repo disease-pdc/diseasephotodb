@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_09_20_160500) do
+ActiveRecord::Schema.define(version: 2024_07_31_160100) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -60,11 +60,34 @@ ActiveRecord::Schema.define(version: 2022_09_20_160500) do
     t.integer "flipped_percent", default: 0, null: false
   end
 
+  create_table "image_set_images", force: :cascade do |t|
+    t.bigint "image_set_id", null: false
+    t.bigint "image_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["image_id"], name: "index_image_set_images_on_image_id"
+    t.index ["image_set_id", "image_id"], name: "index_image_set_images_on_image_set_id_and_image_id", unique: true
+    t.index ["image_set_id"], name: "index_image_set_images_on_image_set_id"
+  end
+
+  create_table "image_sets", force: :cascade do |t|
+    t.bigint "image_source_id", null: false
+    t.text "name", null: false
+    t.text "source_metadata_name", null: false
+    t.jsonb "metadata", default: {}, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["image_source_id", "source_metadata_name"], name: "index_image_sets_on_image_source_id_and_source_metadata_name", unique: true
+    t.index ["image_source_id"], name: "index_image_sets_on_image_source_id"
+  end
+
   create_table "image_sources", force: :cascade do |t|
     t.text "name", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "active", default: true, null: false
+    t.string "create_image_sets"
+    t.string "create_image_sets_metadata_field"
   end
 
   create_table "images", force: :cascade do |t|
@@ -120,6 +143,9 @@ ActiveRecord::Schema.define(version: 2022_09_20_160500) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "grading_set_images", "grading_sets"
   add_foreign_key "grading_set_images", "images"
+  add_foreign_key "image_set_images", "image_sets"
+  add_foreign_key "image_set_images", "images"
+  add_foreign_key "image_sets", "image_sources"
   add_foreign_key "images", "image_sources"
   add_foreign_key "images", "users", name: "images_user_id_fkey"
   add_foreign_key "user_grading_set_images", "grading_set_images"

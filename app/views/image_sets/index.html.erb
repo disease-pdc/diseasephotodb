@@ -6,12 +6,12 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <li class="breadcrumb-item active" aria-current="page">
-      Images
+      Image Sets
     </li>
   </ol>
 </nav>
 
-<%= form_with url: url_for(controller: 'images'),
+<%= form_with url: url_for(controller: 'image_sets'),
   method: :get, 
   local: true,
   id: 'search-form',
@@ -33,10 +33,10 @@
     </select>
   </div>
   <div class="col-lg-2">
-    <label for="filename" class="form-label form-label-sm">Filename</label>
+    <label for="name" class="form-label form-label-sm">Name</label>
     <input type="text" class="form-control form-control-sm" 
-      id="filename" name="filename" 
-      value="<%= params[:filename] %>"
+      id="name" name="name" 
+      value="<%= params[:name] %>"
     />
   </div>
   <div class="col-lg-2">
@@ -69,10 +69,9 @@
   <div class="col-lg-2">
     <label class="form-label form-label-sm">&nbsp;</label>
     <button class="btn btn-primary form-control btn-sm" type="submit">
-      Search Images
+      Search Image Sets
     </button>
   </div>
-
 
   <% if current_user.admin? %>
     <input id="selected-grading-set" name="grading_set_id" type="hidden" />
@@ -81,7 +80,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">
-              Add selected images to grading set
+              Add selected image sets to grading set
             </h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
@@ -96,7 +95,7 @@
               Cancel
             </button>
             <input id="add-grading-set-button" 
-              formaction="<%= url_for controller: 'images', action: 'addtogradingset' %>"
+              formaction="<%= url_for controller: 'image_sets', action: 'addtogradingset' %>"
               formmethod="post"
               type="submit"
               class="btn btn-primary" disabled 
@@ -118,7 +117,7 @@
         </th>
         <th scope="col" colspan="2" style="vertical-align: middle;">
           <span class="display-inline me-2">
-            <%= @images_count %> Images
+            <%= @image_sets_count %> Image Sets
           </span>
           <div class="btn-group" role="group">
             <% if current_user.admin? %>
@@ -136,13 +135,6 @@
               type="submit"
               value="Download Metadata"
             />
-            <input id="add-grading-set-button"
-              class="btn btn-sm btn-outline-primary"
-              formaction="<%= url_for controller: 'images', action: 'exif_data'  %>"
-              formmethod="post"
-              type="submit"
-              value="Download Exif Data"
-            />
             <!-- <button type="button"
               class="btn btn-sm btn-outline-primary"
             >
@@ -157,18 +149,18 @@
         </th>
       </tr>
     </thead>
-    <tbody>
-      <% @images.each do |image| %>
+     <tbody>
+      <% @image_sets.each do |image_set| %>
         <tr>
           <td style="width:1%;">
             <input class="form-check-input" type="checkbox" 
-              name="image_ids[]" value="<%= image.id %>"
+              name="image_set_ids[]" value="<%= image_set.id %>"
             />
           </td>
           <td style="width:1%;">
-            <a href="<%= url_for controller: 'images', action: 'show', id: image.id %>">
+            <a href="<%= url_for controller: 'image_sets', action: 'show', id: image_set.id %>">
               <%= 
-                image_tag image.variant_url(Image::SIZES[:list]),
+                image_tag image_set.image_variant_url(Image::SIZES[:list]),
                   style: "max-width: 150px;max-height: 150px;"
               %>
             </a>
@@ -178,24 +170,24 @@
               <div class="col-md-6">
                 <div class="row">
                   <div class="<%= label_class %>">
-                    Filename
+                    Name
                   </div>
                   <div class="<%= data_class %>">
-                    <%= link_to image.filename, {controller: 'images', action: 'show', id: image.id} %>
+                    <%= link_to image_set.name, {controller: 'image_sets', action: 'show', id: image_set.id} %>
                   </div>
                   <div class="<%= label_class %>">
                     Folder
                   </div>
                   <div class="<%= data_class %>">
-                    <a href="<%= url_for controller: 'images', image_source_id: image.image_source.id %>">
-                      <%= image.image_source.name %>
+                    <a href="<%= url_for controller: 'image_sets', image_source_id: image_set.image_source.id %>">
+                      <%= image_set.image_source.name %>
                     </a>
                   </div>
                   <div class="<%= label_class %>">
-                    Uploaded On
+                    Create
                   </div>
                   <div class="<%= data_class %>">
-                    <%= image.created_at %>
+                    <%= image_set.created_at %>
                   </div>
                 </div>
               </div>
@@ -206,11 +198,7 @@
                   </div>
                   <div class="<%= data_class %>">
                     <ul class="list-unstyled">
-                      <% image.grading_sets.each do |grading_set| %>
-                        <li>
-                          <%= grading_set_link grading_set %>
-                        </li>
-                      <% end %>
+                      
                     </ul>
                   </div>  
                 </div>  
@@ -220,7 +208,9 @@
         </tr>
       <% end %>
     </tbody>
+
   </table>
+
   <nav>
     <ul class="pagination flex-wrap">
       <li class="page-item <%= 'disabled' if @offset < 1 %>">
@@ -232,7 +222,7 @@
         </a>
       </li>
       <% current_page = (@offset / @limit) %>
-      <% (0..(@images_count.to_f / @limit.to_f).ceil - 1).each do |page| %>
+      <% (0..(@image_sets_count.to_f / @limit.to_f).ceil - 1).each do |page| %>
         <li class="page-item <%= 'active' if page == current_page %>">
           <a class="page-link" <%= 'href=#' unless page == current_page %>
             data-offset="<%= page * @limit %>"
@@ -241,10 +231,10 @@
           </a>
         </li>
       <% end %>
-      <li class="page-item <%= 'disabled' if @offset + @limit >= @images_count %>">
+      <li class="page-item <%= 'disabled' if @offset + @limit >= @image_sets_count %>">
         <a class="page-link" 
           data-offset="<%= @offset + @limit %>" 
-          <%= 'href=#' unless @offset + @limit >= @images_count %> 
+          <%= 'href=#' unless @offset + @limit >= @image_sets_count %> 
         >
           Next
         </a>
@@ -253,5 +243,3 @@
   </nav>
 
 <% end %>
-
-<%= javascript_pack_tag 'image_scripts' %>

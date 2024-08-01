@@ -1,5 +1,5 @@
 class Image < ApplicationRecord
-  include JsonKeyable
+  include JsonKeyable, MetadataManagable
 
   PROCESSING_URL = '/processing.png'
   SIZES = {
@@ -12,6 +12,8 @@ class Image < ApplicationRecord
   belongs_to :user
   has_many :grading_set_images
   has_many :grading_sets, through: :grading_set_images
+  has_many :image_set_images
+  has_many :image_sets, through: :image_set_images
 
   scope :active, -> { joins(:image_source).where('image_sources.active', true) }
 
@@ -21,6 +23,7 @@ class Image < ApplicationRecord
     uniqueness: { scope: [:image_source_id] }
   validates 'mime_type', presence: true
 
+  after_save :do_image_set_association
   after_commit :do_image_processing, on: [:create]
 
   def self.all_metadata_keys
@@ -73,6 +76,12 @@ class Image < ApplicationRecord
       end
     else
       PROCESSING_URL
+    end
+  end
+
+  def do_image_set_association
+    if saved_change_to_attribute?(:metadata) && image_source.create_image_sets?
+      ImageSet.apply_to_image_set self
     end
   end
 
