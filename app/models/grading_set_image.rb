@@ -1,6 +1,6 @@
 class GradingSetImage < ApplicationRecord
 
-  belongs_to :image
+  belongs_to :gradeable, polymorphic: true
   belongs_to :grading_set
   has_many :user_grading_set_images, dependent: :delete_all
 
@@ -18,6 +18,10 @@ class GradingSetImage < ApplicationRecord
 
   def complete?
     grading_set.users.count == complete_count
+  end
+
+  def name
+    gradeable.name || gradeable.filename
   end
 
 end

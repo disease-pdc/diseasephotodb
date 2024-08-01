@@ -6,6 +6,8 @@ class ImageSet < ApplicationRecord
   has_many :image_set_images
   has_many :images, -> { order('images.filename') },
     through: :image_set_images
+  has_many :grading_set_images, as: :gradeable
+  has_many :grading_sets, through: :grading_set_images
 
   scope :active, -> { joins(:image_source).where('image_sources.active', true) }
 
@@ -38,7 +40,7 @@ class ImageSet < ApplicationRecord
     end
   end
 
-  def image_variant_url variant
+  def variant_url variant
     images.first&.variant_url(variant) || Image::PROCESSING_URL
   end
 

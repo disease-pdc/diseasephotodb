@@ -74,7 +74,7 @@ class ImageSourcesController < ApplicationController
   private
 
     def image_source_params
-      params.require(:image_source).permit(:name, :active, :create_image_sets, :create_image_sets_metadata_field)
+      params.require(:image_source).permit(:name, :active)
     end
 
     def metadata_params

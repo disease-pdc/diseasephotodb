@@ -60,6 +60,11 @@ $(function () {
     $("input[name='image_ids[]'").prop('checked', e.target.checked)
     $("input[name='image_ids[]'").prop('disabled', e.target.checked)
   });
+  // Handle imageid-all checked/unchecked
+  $("input[name='image_set_id_all']").on('change', function(e) {
+    $("input[name='image_set_ids[]'").prop('checked', e.target.checked)
+    $("input[name='image_set_ids[]'").prop('disabled', e.target.checked)
+  });
 
   // Handle page links
   $("a.page-link").on('click', function(e) {

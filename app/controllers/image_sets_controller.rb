@@ -1,6 +1,9 @@
 class ImageSetsController < ApplicationController
 
   before_action :require_image_viewer, only: [:index, :show]
+  before_action :require_admin, only: [:addtogradingset]
+
+  skip_before_action :verify_authenticity_token, only: [:addtogradingset]
 
   def index
     @pagesize = 50
@@ -46,7 +49,35 @@ class ImageSetsController < ApplicationController
   end
 
   def addtogradingset
-
+    @grading_set = GradingSet.find params[:grading_set_id]
+    unless @grading_set
+      return redirect_to({ action: 'index' }, flash: { error: "No such grading set" })
+    end
+    if params[:image_set_id_all] == 'all'
+      @image_set_ids = search_images.select(:id).map(&:id)
+      @count = GradingSetImage.upsert_all(@image_set_ids.map {|image_set_id|
+        {
+          gradeable_id: image_set_id, 
+          gradeable_type: 'ImageSet', 
+          grading_set_id: @grading_set.id,
+          created_at: Time.zone.now,
+          updated_at: Time.zone.now
+        }
+      }, unique_by: [:grading_set_id, :gradeable_id], returning: [:id]).count
+    else
+      @count = GradingSetImage.upsert_all(params[:image_set_ids].map {|image_set_id|
+        {
+          gradeable_id: image_set_id, 
+          gradeable_type: 'ImageSet', 
+          grading_set_id: @grading_set.id,
+          created_at: Time.zone.now,
+          updated_at: Time.zone.now
+        }
+      }, unique_by: [:grading_set_id, :gradeable_id], returning: [:id]).count
+    end
+    return redirect_to({ action: 'index' }, flash: {
+      success: "Successfully added #{@count} image sets to #{@grading_set.name}"
+    })
   end
 
   private

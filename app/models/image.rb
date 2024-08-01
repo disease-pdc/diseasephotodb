@@ -10,7 +10,7 @@ class Image < ApplicationRecord
   has_one_attached :image_file
   belongs_to :image_source
   belongs_to :user
-  has_many :grading_set_images
+  has_many :grading_set_images, as: :gradeable
   has_many :grading_sets, through: :grading_set_images
   has_many :image_set_images
   has_many :image_sets, through: :image_set_images
@@ -60,6 +60,10 @@ class Image < ApplicationRecord
         yielder << CSV.generate_line(data)
       end
     end
+  end
+
+  def name
+    filename
   end
 
   def do_image_processing

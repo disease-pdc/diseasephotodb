@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_07_31_160100) do
+ActiveRecord::Schema.define(version: 2024_08_01_110900) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,12 +45,13 @@ ActiveRecord::Schema.define(version: 2024_07_31_160100) do
 
   create_table "grading_set_images", force: :cascade do |t|
     t.bigint "grading_set_id", null: false
-    t.bigint "image_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["grading_set_id", "image_id"], name: "index_grading_set_images_on_grading_set_id_and_image_id", unique: true
+    t.string "gradeable_type", null: false
+    t.integer "gradeable_id", null: false
+    t.index ["gradeable_type", "gradeable_id"], name: "index_grading_set_images_on_gradeable_type_and_gradeable_id"
+    t.index ["grading_set_id", "gradeable_id"], name: "index_grading_set_images_on_grading_set_id_and_gradeable_id", unique: true
     t.index ["grading_set_id"], name: "index_grading_set_images_on_grading_set_id"
-    t.index ["image_id"], name: "index_grading_set_images_on_image_id"
   end
 
   create_table "grading_sets", force: :cascade do |t|
@@ -142,7 +143,6 @@ ActiveRecord::Schema.define(version: 2024_07_31_160100) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "grading_set_images", "grading_sets"
-  add_foreign_key "grading_set_images", "images"
   add_foreign_key "image_set_images", "image_sets"
   add_foreign_key "image_set_images", "images"
   add_foreign_key "image_sets", "image_sources"
