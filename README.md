@@ -1,4 +1,4 @@
-# TF Imagery Database
+# Disease Photo Database
 
 ## Flipped Images Logic
 
