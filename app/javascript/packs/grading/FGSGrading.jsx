@@ -8,6 +8,9 @@ export const FGSGrading = ({
   return (
     <div className="FGSGrading">
       FGS Grading
+      <pre>
+        {JSON.stringify(userGradingSet, null, 2)}
+      </pre>
     </div>
   )
 }

@@ -2,7 +2,14 @@
 <hr/>
 <div id="react-app-container" 
   data-authenticity-token="<%= form_authenticity_token %>"
-  data-user-grading-set="<%= JSON.dump(@user_grading_set.as_json) %>"
+  data-user-grading-set="<%= JSON.dump(@user_grading_set.as_json(
+    include: [
+      :user_grading_set_images,
+      grading_set: {
+        include: [grading_set_images: {include: :gradeable}]
+      }
+    ]
+  )) %>"
   data-grading-type="<%= 'FGSGrading' %>"
 ></div>
 
