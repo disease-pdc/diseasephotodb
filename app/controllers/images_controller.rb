@@ -64,21 +64,23 @@ class ImagesController < ApplicationController
       @image_ids = search_images.select(:id).map(&:id)
       @count = GradingSetImage.upsert_all(@image_ids.map {|image_id|
         {
-          image_id: image_id, 
+          gradeable_id: image_id, 
+          gradeable_type: 'Image', 
           grading_set_id: @grading_set.id,
           created_at: Time.zone.now,
           updated_at: Time.zone.now
         }
-      }, unique_by: [:grading_set_id, :image_id], returning: [:id]).count
+      }, unique_by: [:grading_set_id, :gradeable_id], returning: [:id]).count
     else
       @count = GradingSetImage.upsert_all(params[:image_ids].map {|image_id|
         {
-          image_id: image_id, 
+          gradeable_id: image_id, 
+          gradeable_type: 'Image', 
           grading_set_id: @grading_set.id,
           created_at: Time.zone.now,
           updated_at: Time.zone.now
         }
-      }, unique_by: [:grading_set_id, :image_id], returning: [:id]).count
+      }, unique_by: [:grading_set_id, :gradeable_id], returning: [:id]).count
     end
     return redirect_to({ action: 'index' }, flash: {
       success: "Successfully added #{@count} images to #{@grading_set.name}"

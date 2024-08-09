@@ -5,7 +5,6 @@ class GradingSet < ApplicationRecord
   DEFAULT_FLIPPED_PERCENT = 10
 
   has_many :grading_set_images
-  has_many :images, through: :grading_set_images
   has_many :user_grading_sets
   has_many :users, through: :user_grading_sets
 
@@ -14,12 +13,12 @@ class GradingSet < ApplicationRecord
   
   # Number of associated image with this grading set
   def image_count
-    images.count
+    grading_set_images.count
   end
 
   # Number of images to test flipped with this grading set
   def flipped_image_count
-    (images.count * (flipped_percent / 100.0)).ceil
+    (grading_set_images.count * (flipped_percent / 100.0)).ceil
   end
 
   # Total number of images (including flipped) that will be tested on this set

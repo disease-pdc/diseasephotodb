@@ -103,13 +103,13 @@
       <th scope="col"></th>
     </tr>
   </thead>
-    <% @grading_set.grading_set_images.joins(:image).order("images.filename").each do |grading_set_image| %>
-      <% image = grading_set_image.image %>
+    <% @grading_set.grading_set_images.each do |grading_set_image| %>
+      <% gradeable = grading_set_image.gradeable %>
       <tr>
         <td class="align-top" style="width:1%;">
-          <a href="<%= url_for controller: 'images', action: 'show', id: image.id %>">
+          <a href="<%= url_for controller: 'images', action: 'show', id: gradeable.id %>">
             <%= 
-              image_tag image.variant_url(Image::SIZES[:list]),
+              image_tag gradeable.variant_url(Image::SIZES[:list]),
                 class: "img-thumbnail",
                 style: "max-width: 150px;max-height: 150px;"
             %>
@@ -120,24 +120,26 @@
             <div class="col-md-6">
               <div class="row">
                 <div class="<%= label_class %>">
-                  Filename
+                  Name
                 </div>
                 <div class="<%= data_class %>">
-                  <%= link_to image.filename, {controller: 'images', action: 'show', id: image.id} %>
+                  <a href="<%= gradeable_url(gradeable) %>">
+                    <%= gradeable.name %>
+                  </a>
                 </div>
                 <div class="<%= label_class %>">
                   Source
                 </div>
                 <div class="<%= data_class %>">
-                  <a href="<%= url_for controller: 'images', image_source_id: image.image_source.id %>">
-                    <%= image.image_source.name %>
+                  <a href="<%= url_for controller: 'images', image_source_id: gradeable.image_source.id %>">
+                    <%= gradeable.image_source.name %>
                   </a>
                 </div>
                 <div class="<%= label_class %>">
                   Uploaded On
                 </div>
                 <div class="<%= data_class %>">
-                  <%= image.created_at %>
+                  <%= gradeable.created_at %>
                 </div>
               </div>
             </div>
@@ -167,9 +169,9 @@
         <td class="align-top" style="width:1%;">
           <%= form_with url: url_for(controller: 'grading_sets', action: 'removeimage', 
             id: @grading_set.id), 
-            html: {onsubmit: "return confirm('Remove #{image.filename} from this grading set?  It will also remove andy grades entered.');"} do |form| 
+            html: {onsubmit: "return confirm('Remove #{gradeable.name} from this grading set?  It will also remove andy grades entered.');"} do |form| 
           %>
-            <input type="hidden" name="image_id" value="<%= image.id %>" />
+            <input type="hidden" name="grading_set_image_id" value="<%= grading_set_image.id %>" />
             <input type="submit" class="btn btn-sm btn-outline-primary" value="Remove" />
           <% end %>
         </td>

@@ -96,16 +96,12 @@ class GradingSetsController < ApplicationController
   end
 
   def removeimage
-    @grading_set = GradingSet.find params[:id]
-    @image = Image.find params[:image_id]
-    @grading_set_image = GradingSetImage.where({
-      image: @image,
-      grading_set: @grading_set
-    }).first
+    @grading_set_image = GradingSetImage.find params[:grading_set_image_id]
+    name = @grading_set_image.gradeable.name
     if @grading_set_image && @grading_set_image.destroy
-      flash.notice = "#{@image.filename} removed from grading set"
+      flash.notice = "#{name} removed from grading set"
     else
-      flash.alert = "Unable to remove #{@image.filename} from grading set"
+      flash.alert = "Unable to remove #{name} from grading set"
     end
     redirect_to action: 'show'
   end

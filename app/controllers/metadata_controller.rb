@@ -8,18 +8,20 @@ class MetadataController < ApplicationController
   end
 
   def update
-    @image = Image.where(
+    @entity = Image.where(
       image_source_id: params[:image_source_id],
       filename: params[:filename]
+    ).first || ImageSet.where(
+      image_source_id: params[:image_source_id],
+      name: params[:filename]
     ).first
-    unless @image
-      render json: {filename: params[:filename], error: 'Image not found'}, staus: :unprocessable_entity
+    unless @entity
+      render json: {filename: params[:filename], error: 'Image or image set not found'}, staus: :unprocessable_entity
     else
-      @image.metadata = params[:metadata]
-      if @image.save
+      if @entity.update_metadata metadata_params[:metadata], params[:merge_metadata]
         render json: {filename: params[:filename], success: true}
       else
-        render json: {filename: params[:filename], error: @image.errors}, staus: :unprocessable_entity 
+        render json: {filename: params[:filename], error: @entity.errors}, staus: :unprocessable_entity 
       end
     end
   end
@@ -27,7 +29,6 @@ class MetadataController < ApplicationController
   private
 
     def metadata_params
-      params.require(:filename, metadata: [])
+      params.permit(metadata: {})
     end
-
 end

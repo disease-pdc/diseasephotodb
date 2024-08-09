@@ -4,6 +4,20 @@
     <%= form.text_field :name, class: 'form-control' %>
   </div>
   <div class="mb-3 form-check">
+    <%= form.check_box :create_image_sets, class: 'form-check-input' %>
+    <%= label_tag :name, "Sort images into image sets?", for: 'active', class: 'form-check-label' %>
+    <div class="form-text">
+      When checked, images uploaded to this folder will be sorted automatically into image sets based on a metadata field's value.
+      <br />
+      The name of the set will be the value of the metadata field.
+      <div class="mt-1 mb-3">
+        <%= label_tag :create_image_sets_metadata_field, "Image set metadata field", for: 'name', class: 'form-label' %>
+        <%= form.text_field :create_image_sets_metadata_field, class: 'form-control' %>
+      </div>
+    </div>
+  </div>
+  
+  <div class="mb-3 form-check">
     <%= form.check_box :active, class: 'form-check-input' %>
     <%= label_tag :name, "Active?", for: 'active', class: 'form-check-label' %>
     <div class="form-text">
