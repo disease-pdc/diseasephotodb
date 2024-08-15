@@ -24,4 +24,12 @@ class GradingSetImage < ApplicationRecord
     gradeable.name || gradeable.filename
   end
 
+  def images_for_grading
+    if gradeable_type == 'ImageSet'
+      gradeable.images
+    else
+      [gradeable]
+    end
+  end
+
 end

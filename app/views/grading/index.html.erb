@@ -6,7 +6,14 @@
     include: [
       :user_grading_set_images,
       grading_set: {
-        include: [grading_set_images: {include: :gradeable}]
+        include: [grading_set_images: {
+          include: {
+            images_for_grading: {methods: [
+              :image_url_list,
+              :image_url_main
+            ]}
+          }
+        }]
       }
     ]
   )) %>"

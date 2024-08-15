@@ -26,6 +26,23 @@ img.flipped {
   transform: scaleX(-1);
 }
 
+.GradeableImages {
+  .ImageThumbnail {
+    cursor: pointer;
+  }
+  .ImageFill {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden
+  }
+  .ImageFullscreen {
+    flex-shrink: 0;
+    min-width: 100%;
+    min-height: 100%
+  }
+}
+
 
 // Style overrides
 body {

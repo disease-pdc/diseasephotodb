@@ -1,9 +1,10 @@
 class Image < ApplicationRecord
-  include JsonKeyable, MetadataManagable
+  include JsonKeyable, MetadataManagable, ImageVariantable
 
   PROCESSING_URL = '/processing.png'
   SIZES = {
     main: [1000,1000],
+    preview: [300,300],
     list: [150,150]
   }
 
@@ -69,18 +70,6 @@ class Image < ApplicationRecord
   def do_image_processing
     ExifJob.perform_async self.id
     ImageVariantJob.perform_async self.id
-  end
-
-  def variant_url variant
-    if (image_file.variant(resize_to_limit: variant).processed?)
-      if ActiveStorage::Blob.service.name == :local
-        image_file.variant(resize_to_limit: variant)
-      else
-        image_file.variant(resize_to_limit: variant).processed.url
-      end
-    else
-      PROCESSING_URL
-    end
   end
 
   def do_image_set_association

@@ -1,5 +1,5 @@
 class ImageSet < ApplicationRecord
-  include JsonKeyable, MetadataManagable
+  include JsonKeyable, MetadataManagable, ImageVariantable
 
   belongs_to :image_source
 
@@ -41,7 +41,7 @@ class ImageSet < ApplicationRecord
   end
 
   def variant_url variant
-    images.first&.variant_url(variant) || Image::PROCESSING_URL
+    images.first&.variant_url(variant) || ImageVariantable::PROCESSING_URL
   end
 
 end
