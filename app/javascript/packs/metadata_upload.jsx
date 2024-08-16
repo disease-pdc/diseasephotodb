@@ -123,6 +123,9 @@ const MetadataUpload = ({
               <label className="form-check-label" htmlFor="mergeMetadata">
                 Yes, leave existing metadata
               </label>
+              <div class="form-text">
+                Leaving existing metadata means that values that are NOT specified in the file will remain attached to the images and image sets.<br/>If you wish to reset the metadata for an image or image set, uncheck this box.
+              </div>
             </div>
           </div>
           <div className="col-lg-6">

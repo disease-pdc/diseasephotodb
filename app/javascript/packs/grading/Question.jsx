@@ -78,6 +78,7 @@ export const Question = ({
             className="form-control" 
             id={question.name} name={question.name}
             value={editingValue}
+            autoFocus={state === 'current'}
             disabled={state === 'answered'}
             onChange={e => setEditingValue(e.target.value)}
             onKeyPress={e => {if (e.key === 'Enter') submit();} }
@@ -97,8 +98,10 @@ export const Question = ({
           <select className="form-select"
             name={question.name} id={question.name}
             value={editingValue}
+            autoFocus={state === 'current'}
             disabled={state === 'answered'}
             onChange={e => setEditingValue(e.target.value)}
+            onKeyPress={e => {if (e.key === 'Enter') submit();} }
           >
             <option value={null}></option>
             {question.options.map(({value, label}) =>(
@@ -126,6 +129,7 @@ export const Question = ({
               <input className="form-check-input" 
                 type="checkbox" 
                 name={value} 
+                autoFocus={state === 'current'}
                 disabled={state === 'answered'}
                 checked={editingValue.indexOf(value) > -1}
                 id={`${question.name}.${value}`}
@@ -164,7 +168,7 @@ export const Question = ({
             <button className="btn btn-primary me-1"
               onClick={submit}
             >
-              {last ? 'Submit Form' : 'Submit Answer'}
+              {last ? 'Submit Form' : 'Next'}
             </button>
             <button className="btn btn-outline-secondary"
               disabled={ onCancel == null }

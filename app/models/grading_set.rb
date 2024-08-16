@@ -4,27 +4,29 @@ class GradingSet < ApplicationRecord
 
   DEFAULT_FLIPPED_PERCENT = 0
 
+  FGS_GRADING_MULTIDATA_OPTIONS = {
+    location: %w(left_lateral_fornix right_lateral_fornix anterior_fornix posterior_fornix cervix_q1 cervix_q2 cervix_q3 cervix_q4 vaginal_walls),
+    sti: %w(suspected_bacterial_vaginosis suspected_trichomonas candidiasis suspected_gonorrhoea suspected_chlamydia suspected_herpes genital_warts chancroid),
+    repro: %w(buboes lymphogranuloma scabies crabs polyp ectropion nabothian_cyst prolapsed_uterus other_please_list)
+  }
   FGS_GRADING_DATA_KEYS = [
-    'name_of_expert_reviewer',
-    'other_expert_reviewer',
-    'pid',
-    'cervical_images_assessed',
-    'cervical_image_comments',
-    'vaginal_wall_images_assessed',
-    'image_comments',
-    'grainy_sandy_patches',
-    'location_grainy_sandy_patches',
-    'homogeneous_yellow_patches',
-    'location_homogeneous_yellow',
-    'rubbery_papules',
-    'location_rubbery_papules',
-    'abnormal_blood_vessels',
-    'location_abnormal_blood_vessel',
-    'fgs_status',
-    'suspected_sti',
-    'other_reproductive_problem',
-    'specify_reproductive_problem',
-    'additional_comments'
+    {key: 'cervical_images_assessed'},
+    {key: 'cervical_image_comments'},
+    {key: 'vaginal_wall_images_assessed'},
+    {key: 'image_comments'},
+    {key: 'grainy_sandy_patches'},
+    {key: 'location_grainy_sandy_patches', multi_options: FGS_GRADING_MULTIDATA_OPTIONS[:location]},
+    {key: 'homogeneous_yellow_patches'},
+    {key: 'location_homogeneous_yellow', multi_options: FGS_GRADING_MULTIDATA_OPTIONS[:location]},
+    {key: 'rubbery_papules'},
+    {key: 'location_rubbery_papules', multi_options: FGS_GRADING_MULTIDATA_OPTIONS[:location]},
+    {key: 'abnormal_blood_vessels'},
+    {key: 'location_abnormal_blood_vessel', multi_options: FGS_GRADING_MULTIDATA_OPTIONS[:location]},
+    {key: 'fgs_status'},
+    {key: 'suspected_sti', multi_options: FGS_GRADING_MULTIDATA_OPTIONS[:sti]},
+    {key: 'other_reproductive_problem', multi_options: FGS_GRADING_MULTIDATA_OPTIONS[:repro]},
+    {key: 'specify_reproductive_problem'},
+    {key: 'additional_comments'}
   ]
 
   has_many :grading_set_images
@@ -72,14 +74,6 @@ class GradingSet < ApplicationRecord
     )).first['count']
   end
 
-  def data_to_csv
-    headers = %w{filename source email grade}
-    CSV.generate(headers: true) do |csv|
-      csv << headers
-    end
-  end
-
-
   def csv_enumerator
     Enumerator.new do |yielder|
       headers_written = false
@@ -88,20 +82,41 @@ class GradingSet < ApplicationRecord
           .find_in_batches do |batch|
         batch.each do |user_grading_set_image|
           unless headers_written
-            yielder << CSV.generate_line(
-              %w(id filename source user_id) + FGS_GRADING_DATA_KEYS
-            )
+            headers = %w(id grading_set name source user_id user_email)
+            FGS_GRADING_DATA_KEYS.each do |key| 
+              if key[:multi_options]
+                key[:multi_options].each do |option|
+                  headers << "#{key[:key]}.#{option}"
+                end
+              else
+                headers << key[:key]
+              end
+            end
+            yielder << CSV.generate_line(headers)
             headers_written = true
           end
-          yielder << CSV.generate_line(
-            [
-              user_grading_set_image.id,
-              user_grading_set_image.grading_set_image.gradeable.name,
-              user_grading_set_image.grading_set_image.gradeable.image_source.name,
-              user_grading_set_image.user.id
-            ] + 
-            FGS_GRADING_DATA_KEYS.map{|k| user_grading_set_image.grading_data[k]}
-          )
+          line = [
+            user_grading_set_image.id,
+            self.name,
+            user_grading_set_image.grading_set_image.gradeable.name,
+            user_grading_set_image.grading_set_image.gradeable.image_source.name,
+            user_grading_set_image.user.id,
+            user_grading_set_image.user.email
+          ]
+          FGS_GRADING_DATA_KEYS.each do |key| 
+            if key[:multi_options]
+              key[:multi_options].each do |option|
+                if user_grading_set_image.grading_data[key[:key]]&.include?(option)
+                  line << "1"
+                else
+                  line << ""
+                end
+              end
+            else
+              line << user_grading_set_image.grading_data[key[:key]]
+            end
+          end
+          yielder << CSV.generate_line(line)
         end
       end
     end

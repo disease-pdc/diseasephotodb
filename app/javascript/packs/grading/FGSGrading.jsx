@@ -13,14 +13,6 @@ const selected = (values, key, value) => {
 }
 
 const Options = {
-  expert_reviewer: [
-    {value: 'expert_reviewer_1', label: 'Amaya Bustinduy'},
-    {value: 'expert_reviewer_2', label: 'Albert Kihunrwa'},
-    {value: 'expert_reviewer_3', label: 'Edgar Ndaboine'},
-    {value: 'expert_reviewer_4', label: 'Bellington Vwalika'},
-    {value: 'expert_reviewer_5', label: 'Amina Yussuph'},
-    {value: 'other_expert_reviewer', label: 'Other expert reviewer'}
-  ],
   image: [
     {value: '1', label: 'Yes'},
     {value: '-1', label: 'No, not available'},
@@ -80,31 +72,6 @@ const Groups = [
 ]
 const Questions = [
   {
-    name: 'name_of_expert_reviewer',
-    type: 'select_one',
-    options: Options.expert_reviewer,
-    label: 'Name of expert reviewer',
-    required: true
-  }, {
-    type: 'text',
-    name: 'other_expert_reviewer',
-    label: 'Name of If other expert reviewer that is not in the proposed list enter the name reviewer',
-    hint: 'All name must be in CAPITAL letters',
-    relevant: (values) => {
-      return values.name_of_expert_reviewer === 'other_expert_reviewer'
-    },
-    required: true
-  }, {
-    type: 'text',
-    name: 'pid',
-    label: 'Participant ID',
-    hint: 'Participant ID must be in the format FGS-T-XXXX, where XXXX is a four-digit number',
-    constraint: (value, values) => {
-      return /^FGS-T-[0-9]{4}$/.test(value)
-    },
-    constraint_message: 'Participant ID is not in the correct format. Ensure that the ID is typed correctly and that there are no extra spaces before or after the ID',
-    required: true
-  }, {
     group: 'image_quality',
     type: 'select_one',
     options: Options.image,
