@@ -156,12 +156,14 @@
                     </span> 
                   <% end %>
                 </div>
-                <div class="<%= label_class %>">
-                  Flipped
-                </div>
-                <div class="<%= data_class %>">
-                  <%= grading_set_image.complete_count_flipped %>
-                </div>
+                <% if @grading_set.flipped_percent > 0 || grading_set_image.complete_count_flipped > 0 %>
+                  <div class="<%= label_class %>">
+                    Flipped
+                  </div>
+                  <div class="<%= data_class %>">
+                    <%= grading_set_image.complete_count_flipped %>
+                  </div>
+                <% end %>
               </div>
             </div>
           </div>

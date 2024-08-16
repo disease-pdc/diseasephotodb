@@ -2,7 +2,7 @@ require 'csv'
 
 class GradingSet < ApplicationRecord
 
-  DEFAULT_FLIPPED_PERCENT = 10
+  DEFAULT_FLIPPED_PERCENT = 0
 
   FGS_GRADING_DATA_KEYS = [
     'name_of_expert_reviewer',
