@@ -6,13 +6,16 @@ module ImageVariantable
   PROCESSING_URL = '/processing.png'
   SIZES = {
     main: [1000,1000],
+    preview: [300,300],
     list: [150,150]
   }
 
   def variant_url variant
     if (image_file.variant(resize_to_limit: variant).processed?)
       if ActiveStorage::Blob.service.name == :local
-        image_file.variant(resize_to_limit: variant)
+        Rails.application.routes.url_helpers.rails_representation_url(
+          image_file.variant(resize_to_limit: variant), only_path: true
+        )
       else
         image_file.variant(resize_to_limit: variant).processed.url
       end
@@ -22,11 +25,15 @@ module ImageVariantable
   end
 
   def image_url_list
-    Rails.application.routes.url_helpers.rails_representation_url(self.variant_url(ImageVariantable::SIZES[:list]), only_path: true)
+    variant_url SIZES[:list]
+  end
+
+  def image_url_preview
+    variant_url SIZES[:preview]
   end
 
   def image_url_main
-    Rails.application.routes.url_helpers.rails_representation_url(self.variant_url(ImageVariantable::SIZES[:main]), only_path: true)
+    variant_url SIZES[:main]
   end
 
 end

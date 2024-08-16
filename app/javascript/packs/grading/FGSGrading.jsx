@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
 
 import { GradeableImages } from './GradeableImages'
@@ -268,45 +268,46 @@ const Questions = [
 
 
 export const FGSGrading = ({
-  userGradingSet
+  authenticityToken,
+  gradingSetImage,
+  submitUrl
 }) => {
 
   const [gradingData, setGradingData] = useState({});
-  const [gradeableIndex, setGradeableIndex] = useState(0);
-
-  const currentGradeable = () => {
-    return userGradingSet.grading_set.grading_set_images[gradeableIndex];
-  }
-
-  const currentGradingData = () => {
-    return {};
-  }
+  const formRef = useRef(null);
+  const gradingDataInputRef = useRef(null);
 
   const setCurrentValues = (values) => {
-    // Save and move on to next gradeable
-    console.log(values)
+    setGradingData(values)
+    gradingDataInputRef.current.value = JSON.stringify(values)
+    formRef.current.submit()
   }
 
   return (
     <div className="FGSGrading">
-      FGS Grading
       <div className="row">
-        <div className="col-lg-4">
-          <GradeableImages gradeable={currentGradeable()} />
+        <div className="col-lg-5">
+          <GradeableImages gradingSetImage={gradingSetImage} />
         </div>
-        <div className="col-lg-8">
+        <div className="col-lg-7">
           <GradeableQuestionnaire
             groups={Groups}
             questions={Questions}
-            gradeable={currentGradeable()}
-            values={currentGradingData()}
+            gradeable={gradingSetImage}
+            values={gradingData}
             setValues={setCurrentValues}
           />
         </div>
       </div>
-      <pre>
-        {JSON.stringify(userGradingSet, null, 2)}
-      </pre>
+      <form ref={formRef} method="POST" action={submitUrl} style={{display: 'none'}}>
+        <input type="hidden" name="grading_set_image_id" 
+          value={gradingSetImage.id}
+        />
+        <input type="hidden" name="grading_data"
+          ref={gradingDataInputRef}
+          value={JSON.stringify(gradingData)}
+        />
+      </form>
     </div>
   )
 }

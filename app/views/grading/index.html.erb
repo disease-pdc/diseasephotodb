@@ -1,23 +1,58 @@
-<h2><%= @user_grading_set.grading_set.name %></h2>
+<% 
+  image_index = @user_grading_set.complete_image_count_total
+  image_count = @user_grading_set.total_image_count 
+%>
+
+
+<div class="row">
+  <div class="col-lg-4">
+    <h2><%= @user_grading_set.grading_set.name %></h2>
+  </div>
+  <div class="col-lg-8">
+    <h4 class="pt-1 text-end">
+      Grading Form <%= image_count == image_index ? image_count : image_index + 1 %> / <%= image_count %>
+    </h4>
+  </div>
+</div>
+
 <hr/>
-<div id="react-app-container" 
-  data-authenticity-token="<%= form_authenticity_token %>"
-  data-user-grading-set="<%= JSON.dump(@user_grading_set.as_json(
-    include: [
-      :user_grading_set_images,
-      grading_set: {
-        include: [grading_set_images: {
-          include: {
-            images_for_grading: {methods: [
-              :image_url_list,
-              :image_url_main
-            ]}
-          }
-        }]
-      }
-    ]
-  )) %>"
-  data-grading-type="<%= 'FGSGrading' %>"
-></div>
+
+  <% if @grading_set_image %>
+
+    <div id="react-app-container" 
+      data-grading-set-image="<%= JSON.dump(@grading_set_image.as_json(
+        include: {
+          images_for_grading: {methods: [
+            :image_url_list,
+            :image_url_preview,
+            :image_url_main
+          ]}
+        }
+      )) %>"
+      data-submit-url="<%= 
+        url_for(
+          controller: 'grading',
+          action: 'grade', 
+          grading_set_id: @user_grading_set.grading_set.id
+        ) 
+      %>"
+      data-grading-type="<%= 'FGSGrading' %>"
+    ></div>
+
+  <% else %>
+    <div class="row">
+      <div class="col-sm-8">
+        All images in this grading set have been graded.
+      </div>
+      <%= form_with url: url_for(controller: 'grading', action: 'complete', grading_set_id: @user_grading_set.grading_set.id), 
+        method: :post, class: 'col-sm-12 p-2 d-grid' do |form| 
+      %>
+        <hr/>
+        <button type="submit" class="btn btn-primary">
+          Complete Grading
+        </button>
+      <% end %>
+    </div>
+  <% end %>
 
 <%= javascript_pack_tag 'grading' %>

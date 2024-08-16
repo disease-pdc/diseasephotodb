@@ -4,6 +4,29 @@ class GradingSet < ApplicationRecord
 
   DEFAULT_FLIPPED_PERCENT = 10
 
+  FGS_GRADING_DATA_KEYS = [
+    'name_of_expert_reviewer',
+    'other_expert_reviewer',
+    'pid',
+    'cervical_images_assessed',
+    'cervical_image_comments',
+    'vaginal_wall_images_assessed',
+    'image_comments',
+    'grainy_sandy_patches',
+    'location_grainy_sandy_patches',
+    'homogeneous_yellow_patches',
+    'location_homogeneous_yellow',
+    'rubbery_papules',
+    'location_rubbery_papules',
+    'abnormal_blood_vessels',
+    'location_abnormal_blood_vessel',
+    'fgs_status',
+    'suspected_sti',
+    'other_reproductive_problem',
+    'specify_reproductive_problem',
+    'additional_comments'
+  ]
+
   has_many :grading_set_images
   has_many :user_grading_sets
   has_many :users, through: :user_grading_sets
@@ -56,30 +79,29 @@ class GradingSet < ApplicationRecord
     end
   end
 
+
   def csv_enumerator
     Enumerator.new do |yielder|
-      yielder << CSV.generate_line(%w(
-        id filename source user_id flipped photo_quality is_everted tf_grade ti_grade 
-        ts_grade upper_lid_tt_grade lower_lid_tt_grade
-      ))
-      UserGradingSetImage.joins({grading_set_image: :image}, :user)
+      headers_written = false
+      UserGradingSetImage.joins(:grading_set_image, :user)
           .where("grading_set_images.grading_set_id = ?", id)
           .find_in_batches do |batch|
         batch.each do |user_grading_set_image|
-          yielder << CSV.generate_line([
-            user_grading_set_image.id,
-            user_grading_set_image.grading_set_image.image.filename,
-            user_grading_set_image.grading_set_image.image.image_source.name,
-            user_grading_set_image.user.id,
-            user_grading_set_image.flipped ? 1 : 0,
-            user_grading_set_image.grading_data['photo_quality'],
-            user_grading_set_image.grading_data['is_everted'],
-            user_grading_set_image.grading_data['tf_grade'],
-            user_grading_set_image.grading_data['ti_grade'],
-            user_grading_set_image.grading_data['ts_grade'],
-            user_grading_set_image.grading_data['upper_lid_tt_grade'],
-            user_grading_set_image.grading_data['lower_lid_tt_grade']
-          ])
+          unless headers_written
+            yielder << CSV.generate_line(
+              %w(id filename source user_id) + FGS_GRADING_DATA_KEYS
+            )
+            headers_written = true
+          end
+          yielder << CSV.generate_line(
+            [
+              user_grading_set_image.id,
+              user_grading_set_image.grading_set_image.gradeable.name,
+              user_grading_set_image.grading_set_image.gradeable.image_source.name,
+              user_grading_set_image.user.id
+            ] + 
+            FGS_GRADING_DATA_KEYS.map{|k| user_grading_set_image.grading_data[k]}
+          )
         end
       end
     end

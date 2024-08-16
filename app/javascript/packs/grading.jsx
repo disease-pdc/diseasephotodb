@@ -6,21 +6,20 @@ import { TrachomaGrading } from './grading/TrachomaGrading'
 
 const Grading = ({
   gradingType,
-  userGradingSet
+  submitUrl,
+  gradingSetImage
 }) => {
-
-  const saveGradingSetImage = (gradingSetImage) => {
-    // save grading set image
-    // return next grading set image
-  }
 
   return (
     <>
       {gradingType === 'FGSGrading' && 
-        <FGSGrading userGradingSet={userGradingSet} />
+        <FGSGrading 
+          gradingSetImage={gradingSetImage} 
+          submitUrl={submitUrl}
+        />
       }
       {gradingType === 'TrachomaGrading' && 
-        <TrachomaGrading userGradingSet={userGradingSet} />
+        <TrachomaGrading gradingSetImage={gradingSetImage} />
       }
     </>
   )
@@ -30,9 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const el = document.getElementById('react-app-container')
   ReactDOM.render(
     <Grading 
-      authenticityToken={el.getAttribute('data-authenticity-token')}
-      userGradingSet={JSON.parse(el.getAttribute('data-user-grading-set'))}
+      gradingSetImage={JSON.parse(el.getAttribute('data-grading-set-image'))}
       gradingType={el.getAttribute('data-grading-type')}
+      submitUrl={el.getAttribute('data-submit-url')}
     />,
     el.appendChild(document.createElement('div'))
   )

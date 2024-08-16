@@ -1,10 +1,19 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 export const ImageThumbnail = ({
   image
 }) => {
 
-  const [zoomed, setZoomed] = useState(false)
+  const [zoomed, setZoomed] = useState(false);
+
+  const escFunction = () => setZoomed(false);
+
+  useEffect(() => {
+    document.addEventListener("keydown", escFunction, false);
+    return () => {
+      document.removeEventListener("keydown", escFunction, false);
+    };
+  }, [escFunction]);
 
   return (
     <div className="ImageThumbnail">
@@ -20,7 +29,7 @@ export const ImageThumbnail = ({
                   onClick={() => setZoomed(false)}
                 />
               </div>
-              <div className="modal-body ImageFill">
+              <div className="modal-body">
                 <img src={image.image_url_main} 
                   className="ImageFullscreen"
                 />
@@ -36,7 +45,7 @@ export const ImageThumbnail = ({
           </div>
         </div>
       }
-      <img src={image.image_url_list} 
+      <img src={image.image_url_preview} 
         onClick={() => setZoomed(true)}
         className="img-thumbnail"
       />

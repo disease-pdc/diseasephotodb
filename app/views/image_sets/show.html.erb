@@ -83,21 +83,16 @@
       </div>
       <div class="<%= data_class %> mt-2">
         <ul class="list-unstyled">
-          
+          <% @image_set.grading_sets.each do |grading_set| %>
+            <li>
+              <a href="<%= url_for controller: 'grading_sets', action: 'show', id: grading_set.id %>">
+                <%= grading_set.name %>
+              </a>
+            </li>
+          <% end %>
         </ul>
       </div> 
     </div>
-
-    <% if current_user.admin? %>
-      <h4>
-        Grading Data
-      </h4>
-      <a class="mb-3 btn btn-sm btn-outline-primary" href="#">download</a>
-<!--       <table class="table table-bordered table-striped table-sm mb-5">
-        <tbody>
-        </tbody>
-      </table> -->
-    <% end %>
     
     <h4>
       Metadata 
