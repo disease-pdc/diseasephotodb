@@ -283,6 +283,18 @@ export const FGSGrading = ({
     formRef.current.submit()
   }
 
+  const confirmNavAway = () => {
+    const message = "Are you sure you want to navigate away from this page?\n\nAny responses entered will not be saved.\n\nPress OK to continue or Cancel to stay on the current page.";
+    if (confirm(message)) return true;
+    else return false;
+  }
+
+
+  useEffect(() => {
+    window.onbeforeunload = confirmNavAway;
+    return () => { window.onbeforeunload = null; };
+  }, [confirmNavAway]);
+
   return (
     <div className="FGSGrading">
       <div className="row">
