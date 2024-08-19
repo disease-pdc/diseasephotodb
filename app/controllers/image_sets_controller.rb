@@ -80,6 +80,11 @@ class ImageSetsController < ApplicationController
     })
   end
 
+  def gradingdata
+    stream_csv_response filename: 'gradingdata.csv',
+      enumerator: Image.csv_metadata_enumerator(search_image_ids)
+  end
+
   private
 
     def image_set_params
