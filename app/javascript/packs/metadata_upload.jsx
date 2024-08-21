@@ -67,6 +67,9 @@ const MetadataUpload = ({
   const [results, setResults] = useState([])
   const [finished, setFinished] = useState(false)
 
+  const newUpload = () => {
+    window.location.reload()
+  }
 
   useEffect(() => {
     const doEffect = async () => {
@@ -74,13 +77,14 @@ const MetadataUpload = ({
         const headers = data[0]
         for (let i = 1; i < data.length; i++) {
           setCurrent(i)
+          const metadata = getMetadata({headers, row: data[i]})
           const result = await doUpload({
             authenticityToken,
             active: '1',
             imageSourceId: sourceId,
-            filename: data[i][0],
+            filename: metadata['filename'],
             merge_metadata: mergeMetadata,
-            metadata: getMetadata({headers, row: data[i]})
+            metadata: metadata
           })
           results.push(result)
           setResults(results)
@@ -123,7 +127,7 @@ const MetadataUpload = ({
               <label className="form-check-label" htmlFor="mergeMetadata">
                 Yes, leave existing metadata
               </label>
-              <div class="form-text">
+              <div className="form-text">
                 Leaving existing metadata means that values that are NOT specified in the file will remain attached to the images and image sets.<br/>If you wish to reset the metadata for an image or image set, uncheck this box.
               </div>
             </div>
@@ -168,10 +172,17 @@ const MetadataUpload = ({
               Uploading {current} / {data.length - 1}
             </strong>
           }
-          {finished && 
-            <div className="alert alert-success" role="alert">
-              Upload Complete - {current} uploaded
-            </div>
+          {finished &&
+            <>
+              <div className="alert alert-success" role="alert">
+                Upload Complete - {current} uploaded
+              </div>
+              <div className="mb-3">
+                <button className="btn btn-primary" onClick={newUpload}>
+                  &lt; Back to metadata upload
+                </button>
+              </div>
+            </>
           }
           <ul>
             {results.map((result, i) => (
