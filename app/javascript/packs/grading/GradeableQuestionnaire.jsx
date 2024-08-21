@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 
 import { Question } from './Question'
 
@@ -11,6 +11,7 @@ export const GradeableQuestionnaire = ({
 }) => {
 
   const [inputValues, setInputValues] = useState(values);
+  const elRef = useRef()
 
   const getQuestionGroup = (question) => {
     if (!question.group) return null;
@@ -105,8 +106,12 @@ export const GradeableQuestionnaire = ({
     return () => { window.onbeforeunload = null; };
   }, [confirmNavAway]);
 
+  useEffect(() => {
+    elRef.current?.scrollIntoView({block: "end", inline: "nearest"})
+  }, [inputValues])
+
   return (
-    <div className="GradeableQuestionnaire">
+    <div className="GradeableQuestionnaire" ref={elRef}>
       {getCurrentQuestions()}
     </div>
   );

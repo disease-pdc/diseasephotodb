@@ -161,7 +161,7 @@ export const Question = ({
     <div className="Question">
       {groupTitle &&
         <div className="mt-3 row">
-          <div className={`offset-lg-${LEFT_COLS}`}>
+          <div className={`offset-lg-${LEFT_COLS} col-lg-${RIGHT_COLS}`}>
             <h5>{groupTitle}</h5>
           </div>
         </div>
