@@ -11,13 +11,21 @@
     </h4>
   </div>
   <div class="col-lg-8">
+    <% if @grading_set_image %>
     <h4 class="text-end">
       <%= @grading_set_image.name %>
       <span className="mx-2">&middot;</span>
       <small>
-      (form <%= image_count == image_index ? image_count : image_index + 1 %> / <%= image_count %>)
+      (Form <%= image_count == image_index ? image_count : image_index + 1 %> / <%= image_count %>)
       </small>
     </h4>
+    <% else %>
+      <h4 class="text-end">
+        <small>
+        Complete <%= image_count == image_index ? image_count : image_index + 1 %> / <%= image_count %> 
+        </small>
+      </h4>
+    <% end %>
   </div>
 </div>
 

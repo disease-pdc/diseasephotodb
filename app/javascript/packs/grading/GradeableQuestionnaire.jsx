@@ -37,9 +37,8 @@ export const GradeableQuestionnaire = ({
     }
   }
 
-  const getCurrentQuestions = () => {
+  const getCurrentQuestionData = () => {
     let currentQuestions = [];
-    let groupTitle = null;
     for (let i = 0; i < questions.length; i++) {
       const state =  getQuestionState(questions[i]);
       if (state != 'skipped') {
@@ -50,6 +49,13 @@ export const GradeableQuestionnaire = ({
         if (state === 'current') break;
       }
     }
+    return currentQuestions
+  }
+
+  const getCurrentQuestions = () => {
+    const currentQuestions = getCurrentQuestionData();
+    let groupTitle = null;
+    
     let els = []
     for (let i = 0; i < currentQuestions.length; i++) {
       const prevQuestion = i > 0 ? currentQuestions[i-1].question : null;
@@ -84,6 +90,20 @@ export const GradeableQuestionnaire = ({
     }
     return els;
   }
+
+  const confirmNavAway = () => {
+    const currentQuestions = getCurrentQuestionData();
+    const lastIndex = currentQuestions.length - 1;
+    const last = currentQuestions[lastIndex].state != 'current';
+    if (!last) {
+      return "Are you sure you want to navigate away from this page?\n\nAny responses entered will not be saved.\n\nPress OK to continue or Cancel to stay on the current page.";
+    }
+  }
+
+  useEffect(() => {
+    window.onbeforeunload = confirmNavAway;
+    return () => { window.onbeforeunload = null; };
+  }, [confirmNavAway]);
 
   return (
     <div className="GradeableQuestionnaire">

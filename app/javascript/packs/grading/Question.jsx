@@ -64,6 +64,16 @@ export const Question = ({
     onSubmit(editingValue);
   }
 
+  useEffect(() => {
+    if (question.type === TYPES.SELECT_ONE && 
+      editingValue && 
+      editingValue != '' &&
+      editingValue != value
+    ) {
+      submit();
+    }
+  }, [editingValue])
+
   let el = <span>Question type "{question.type}" not found.</span>;
   if (question.type === TYPES.TEXT) {
     el = (
