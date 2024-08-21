@@ -7,7 +7,8 @@ class GradingSet < ApplicationRecord
   FGS_GRADING_MULTIDATA_OPTIONS = {
     location: %w(left_lateral_fornix right_lateral_fornix anterior_fornix posterior_fornix cervix_q1 cervix_q2 cervix_q3 cervix_q4 vaginal_walls),
     sti: %w(suspected_bacterial_vaginosis suspected_trichomonas candidiasis suspected_gonorrhoea suspected_chlamydia suspected_herpes genital_warts chancroid),
-    repro: %w(buboes lymphogranuloma scabies crabs polyp ectropion nabothian_cyst prolapsed_uterus other_please_list)
+    repro: %w(buboes lymphogranuloma scabies crabs polyp ectropion nabothian_cyst prolapsed_uterus other_please_list),
+    sti_repro: %w(1 2 3 4 5 6 7 8 9 10 11 12 13 14 95)
   }
   FGS_GRADING_DATA_KEYS = [
     {key: 'cervical_images_assessed'},
@@ -23,9 +24,9 @@ class GradingSet < ApplicationRecord
     {key: 'abnormal_blood_vessels'},
     {key: 'location_abnormal_blood_vessel', multi_options: FGS_GRADING_MULTIDATA_OPTIONS[:location]},
     {key: 'fgs_status'},
-    {key: 'suspected_sti', multi_options: FGS_GRADING_MULTIDATA_OPTIONS[:sti]},
-    {key: 'other_reproductive_problem', multi_options: FGS_GRADING_MULTIDATA_OPTIONS[:repro]},
-    {key: 'specify_reproductive_problem'},
+    {key: 'sus_sti_repro'},
+    {key: 'sti_repro_list', multi_options: FGS_GRADING_MULTIDATA_OPTIONS[:sti_repro]},
+    {key: 'repro_other_desc'},
     {key: 'additional_comments'}
   ]
 

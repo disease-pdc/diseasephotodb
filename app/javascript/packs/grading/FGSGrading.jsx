@@ -53,6 +53,23 @@ const Options = {
     {value: 'nabothian_cyst', label: 'Nabothian Cyst'},
     {value: 'prolapsed_uterus', label: 'Prolapsed Uterus'},
     {value: 'other_please_list', label: 'Other: please list'}
+  ],
+  sti_repro: [
+    {value: '1', label: 'Cervicitis'},
+    {value: '2', label: 'Suspected Trichomonas'},
+    {value: '3', label: 'Candidiasis'},
+    {value: '4', label: 'Suspected Herpes'},
+    {value: '5', label: 'Genital Warts'},
+    {value: '6', label: 'Chancroid'},
+    {value: '7', label: 'Buboes'},
+    {value: '8', label: 'Lymphogranuloma'},
+    {value: '9', label: 'Scabies'},
+    {value: '10', label: 'Crabs'},
+    {value: '11', label: 'Polyp'},
+    {value: '12', label: 'Ectropion'},
+    {value: '13', label: 'Nabothian Cyst'},
+    {value: '14', label: 'Prolapsed Uterus'},
+    {value: '95', label: 'Other: please list'}
   ]
 }
 const Groups = [
@@ -62,6 +79,9 @@ const Groups = [
   }, {
     name: 'exam_findings',
     label: 'FGS Examination Findings',
+    relevant: ({cervical_images_assessed, vaginal_wall_images_assessed}) => (
+      cervical_images_assessed === '1' || vaginal_wall_images_assessed === '1'
+    ) 
   }, {
     name: 'results',
     label: 'Results',
@@ -189,39 +209,24 @@ const Questions = [
     group: 'results',
     type: 'select_one',
     options: Options.yesno,
-    name: 'suspected_sti',
-    label: 'Does the patient have a suspected STI?',
+    name: 'sus_sti_repro',
+    label: 'Does the patient have any suspected reproductive health problem, includings STIs?',
     required: true
   }, {
     group: 'results',
     type: 'select_multiple',
-    options: Options.sti,
-    name: 'specify_suspected_sti',
-    label: 'Specify suspected STI',
-    relevant: values => values.suspected_sti === '1',
-    required: true
-  }, {
-    group: 'results',
-    type: 'select_one',
-    options: Options.yesno,
-    name: 'other_reproductive_problem',
-    label: 'Does the patient have any other reproductive health problem?',
-    required: true
-  }, {
-    group: 'results',
-    type: 'select_multiple',
-    options: Options.repro,
-    name: 'specify_reproductive_problem',
+    options: Options.sti_repro,
+    name: 'sti_repro_list',
     label: 'Specify suspected reproductive health problem',
-    relevant: values => values.other_reproductive_problem === '1',
+    relevant: values => values.sus_sti_repro === '1',
     required: true
-  }, {
+  },  {
     group: 'results',
     type: 'text',
-    name: 'list_other_reproductive_problem',
+    name: 'repro_other_desc',
     label: 'Please list other',
     relevant: values => (
-      selected(values, 'specify_reproductive_problem', 'other_please_list')
+      selected(values, 'sti_repro_list', '95')
     ),
     required: true
   }, {
