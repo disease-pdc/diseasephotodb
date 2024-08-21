@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_08_01_110900) do
+ActiveRecord::Schema.define(version: 2024_08_21_140400) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -87,7 +87,7 @@ ActiveRecord::Schema.define(version: 2024_08_01_110900) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.boolean "active", default: true, null: false
-    t.string "create_image_sets"
+    t.boolean "create_image_sets", default: false, null: false
     t.string "create_image_sets_metadata_field"
   end
 
