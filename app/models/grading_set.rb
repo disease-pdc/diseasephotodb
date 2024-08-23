@@ -75,60 +75,59 @@ class GradingSet < ApplicationRecord
     )).first['count']
   end
 
-  def csv_headers
-    headers = %w(id grading_set name source user_id user_email)
-    FGS_GRADING_DATA_KEYS.each do |key| 
-      if key[:multi_options]
-        key[:multi_options].each do |option|
-          headers << "#{key[:key]}.#{option}"
-        end
-      else
-        headers << key[:key]
-      end
-    end
-    return headers
-  end
+  # def csv_headers
+  #   headers = %w(id grading_set name source user_id user_email)
+  #   FGS_GRADING_DATA_KEYS.each do |key| 
+  #     if key[:multi_options]
+  #       key[:multi_options].each do |option|
+  #         headers << "#{key[:key]}.#{option}"
+  #       end
+  #     else
+  #       headers << key[:key]
+  #     end
+  #   end
+  #   return headers
+  # end
 
-  def csv_line_for user_grading_set_image
-    line = [
-      user_grading_set_image.id,
-      self.name,
-      user_grading_set_image.grading_set_image.gradeable.name,
-      user_grading_set_image.grading_set_image.gradeable.image_source.name,
-      user_grading_set_image.user.id,
-      user_grading_set_image.user.email
-    ]
-    FGS_GRADING_DATA_KEYS.each do |key| 
-      if key[:multi_options]
-        key[:multi_options].each do |option|
-          if user_grading_set_image.grading_data[key[:key]]&.include?(option)
-            line << "1"
-          else
-            line << ""
-          end
-        end
-      else
-        line << user_grading_set_image.grading_data[key[:key]]
-      end
-    end
-    return line
-  end
+  # def csv_line_for user_grading_set_image
+  #   line = [
+  #     user_grading_set_image.id,
+  #     self.name,
+  #     user_grading_set_image.grading_set_image.gradeable.name,
+  #     user_grading_set_image.grading_set_image.gradeable.image_source.name,
+  #     user_grading_set_image.user.id,
+  #     user_grading_set_image.user.email
+  #   ]
+  #   FGS_GRADING_DATA_KEYS.each do |key| 
+  #     if key[:multi_options]
+  #       key[:multi_options].each do |option|
+  #         if user_grading_set_image.grading_data[key[:key]]&.include?(option)
+  #           line << "1"
+  #         else
+  #           line << ""
+  #         end
+  #       end
+  #     else
+  #       line << user_grading_set_image.grading_data[key[:key]]
+  #     end
+  #   end
+  #   return line
+  # end
 
-  def csv_enumerator
-    Enumerator.new do |yielder|
-      headers_written = false
-      UserGradingSetImage.joins(:grading_set_image, :user)
-          .where("grading_set_images.grading_set_id = ?", id)
-          .find_in_batches do |batch|
-        batch.each do |user_grading_set_image|
-          unless headers_written
-            yielder << CSV.generate_line(self.csv_headers)
-            headers_written = true
-          end
-          yielder << CSV.generate_line(csv_line_for(user_grading_set_image))
-        end
-      end
-    end
-  end
+  # def csv_enumerator
+  #   Enumerator.new do |yielder|
+  #     headers_written = false
+  #     UserGradingSetImage.search({grading_sets: {id: self.id}})
+  #         .find_in_batches do |batch|
+  #       batch.each do |user_grading_set_image|
+  #         unless headers_written
+  #           yielder << CSV.generate_line(self.csv_headers)
+  #           headers_written = true
+  #         end
+  #         yielder << CSV.generate_line(csv_line_for(user_grading_set_image))
+  #       end
+  #     end
+  #   end
+  # end
 
 end

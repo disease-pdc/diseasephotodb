@@ -40,10 +40,12 @@ Rails.application.routes.draw do
   post '/images/addtogradingset', to: 'images#addtogradingset'
   post '/images/metadata', to: 'images#metadata'
   post '/images/exif_data', to: 'images#exif_data'
+  post '/images/gradingdata', to: 'images#gradingdata'
   resources :images
 
   get '/image_sets/download', to: 'image_sets#download'
   post '/image_sets/addtogradingset', to: 'image_sets#addtogradingset'
+  post '/image_sets/gradingdata', to: 'image_sets#gradingdata'
   resources :image_sets
 
   get '/grading_sets/:id/data', to: 'grading_sets#data'

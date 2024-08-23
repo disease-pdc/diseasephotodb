@@ -6,7 +6,7 @@ class ImagesController < ApplicationController
   before_action :require_admin, only: [:addtogradingset]
 
   skip_before_action :verify_authenticity_token, 
-    only: [:addtogradingset, :metadata, :exif_data]
+    only: [:addtogradingset, :metadata, :exif_data, :gradingdata]
   
   skip_forgery_protection only: [:index]
 
@@ -14,8 +14,8 @@ class ImagesController < ApplicationController
     @pagesize = 50
     @limit = (params[:limit] || @pagesize).to_i
     @offset = (params[:offset] || 0).to_i
-    @images = search_images.limit(@limit).offset(@offset)
-    @images_count = search_images.count
+    @images = Image.search(params).limit(@limit).offset(@offset)
+    @images_count = Image.search(params).count
     @image_sources = ImageSource.active.order('name desc')
     @metadata_keys = Image.all_metadata_keys
     respond_to do |format|
@@ -61,7 +61,7 @@ class ImagesController < ApplicationController
       return redirect_to({ action: 'index' }, flash: { error: "No such grading set" })
     end
     if params[:image_id_all] == 'all'
-      @image_ids = search_images.select(:id).map(&:id)
+      @image_ids = Image.search(params).select(:id).map(&:id)
       @count = GradingSetImage.upsert_all(@image_ids.map {|image_id|
         {
           gradeable_id: image_id, 
@@ -89,17 +89,24 @@ class ImagesController < ApplicationController
 
   def metadata
     stream_csv_response filename: 'metadata.csv',
-      enumerator: Image.csv_metadata_enumerator(search_image_ids)
+      enumerator: Image.csv_metadata_enumerator(search_image_ids(params))
   end
 
   def exif_data
     stream_csv_response filename: 'exif_data.csv',
-      enumerator: Image.csv_exif_data_enumerator(search_image_ids)
+      enumerator: Image.csv_exif_data_enumerator(search_image_ids(params))
   end
 
   def download
     @image_sources = ImageSource.active.order("name desc").all
     @image_source_id = params[:image_source_id]
+  end
+
+  def gradingdata
+    stream_csv_response filename: 'image_gradingdata.csv',
+      enumerator: UserGradingSetImage.data_csv_enumerator({
+        images: params
+      })
   end
 
   # def update
@@ -124,44 +131,8 @@ class ImagesController < ApplicationController
       )
     end
 
-    def search_images
-      wheres = ["1=1"]
-      wheres_params = {}
-      joins = []
-      unless params[:metadata_key].blank?
-        safe_key = params[:metadata_key].gsub("'", "") # remove single quotes
-        wheres << "images.metadata->>'#{safe_key}' like :metadata_value"
-        wheres_params[:metadata_value] = "%#{params[:metadata_value]}%"
-      end
-      unless params[:image_ids].blank?
-        wheres << 'images.id in (:image_ids)'
-        wheres_params[:image_ids] = params[:image_ids]
-      end
-      unless params[:filename].blank?
-        wheres << 'filename ilike :filename'
-        wheres_params[:filename] = "%#{params[:filename]}%"
-      end
-      unless params[:image_source_id].blank?
-        wheres << 'image_source_id = :image_source_id'
-        wheres_params[:image_source_id] = params[:image_source_id]
-      end
-      unless params[:image_source].blank?
-        joins << :image_source
-        wheres << 'image_sources.name ilike :image_source'
-        wheres_params[:image_source] = "%#{params[:image_source]}%"
-      end
-      unless params[:grading_set].blank?
-        joins << :grading_sets
-        wheres << 'grading_sets.name ilike :grading_set'
-        wheres_params[:grading_set] = "%#{params[:grading_set]}%"
-      end
-      Image.active.joins(joins)
-        .order("images.filename asc")
-        .where(wheres.join(" and "), wheres_params)
-    end
-
-    def search_image_ids
-      search_images.select(:id).map(&:id)
+    def search_image_ids(params)
+      Image.search(params).select(:id).map(&:id)
     end
 
 end

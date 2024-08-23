@@ -1,9 +1,10 @@
 class ImageSetsController < ApplicationController
+  include CsvStreamable
 
   before_action :require_image_viewer, only: [:index, :show]
   before_action :require_admin, only: [:addtogradingset]
 
-  skip_before_action :verify_authenticity_token, only: [:addtogradingset]
+  skip_before_action :verify_authenticity_token, only: [:addtogradingset, :gradingdata]
 
   def index
     @pagesize = 50
@@ -81,8 +82,10 @@ class ImageSetsController < ApplicationController
   end
 
   def gradingdata
-    stream_csv_response filename: 'gradingdata.csv',
-      enumerator: Image.csv_metadata_enumerator(search_image_ids)
+    stream_csv_response filename: 'image_set_gradingdata.csv',
+      enumerator: UserGradingSetImage.data_csv_enumerator({
+        image_sets: params
+      })
   end
 
   private

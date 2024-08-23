@@ -51,9 +51,11 @@ class GradingSetsController < ApplicationController
   end
 
   def data
-    @grading_set = GradingSet.find params[:id]
+    # @grading_set = GradingSet.find params[:id]
     stream_csv_response filename: 'report.csv',
-      enumerator: @grading_set.csv_enumerator
+      enumerator: UserGradingSetImage.data_csv_enumerator({
+        grading_sets: {id: params[:id]}
+      })
   end
 
   def destroy
