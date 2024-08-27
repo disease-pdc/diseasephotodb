@@ -55,7 +55,7 @@ class ImageSetsController < ApplicationController
       return redirect_to({ action: 'index' }, flash: { error: "No such grading set" })
     end
     if params[:image_set_id_all] == 'all'
-      @image_set_ids = search_images.select(:id).map(&:id)
+      @image_set_ids = search_image_sets.select(:id).map(&:id)
       @count = GradingSetImage.upsert_all(@image_set_ids.map {|image_set_id|
         {
           gradeable_id: image_set_id, 
@@ -95,38 +95,6 @@ class ImageSetsController < ApplicationController
     end
 
     def search_image_sets
-      wheres = ["1=1"]
-      wheres_params = {}
-      joins = []
-      unless params[:metadata_key].blank?
-        safe_key = params[:metadata_key].gsub("'", "") # remove single quotes
-        wheres << "images.metadata->>'#{safe_key}' like :metadata_value"
-        wheres_params[:metadata_value] = "%#{params[:metadata_value]}%"
-      end
-      unless params[:image_set_ids].blank?
-        wheres << 'image_sets.id in (:image_set_ids)'
-        wheres_params[:image_set_ids] = params[:image_set_ids]
-      end
-      unless params[:name].blank?
-        wheres << 'name ilike :name'
-        wheres_params[:name] = "%#{params[:name]}%"
-      end
-      unless params[:image_source_id].blank?
-        wheres << 'image_source_id = :image_source_id'
-        wheres_params[:image_source_id] = params[:image_source_id]
-      end
-      unless params[:image_source].blank?
-        joins << :image_source
-        wheres << 'image_sources.name ilike :image_source'
-        wheres_params[:image_source] = "%#{params[:image_source]}%"
-      end
-      unless params[:grading_set].blank?
-        joins << :grading_sets
-        wheres << 'grading_sets.name ilike :grading_set'
-        wheres_params[:grading_set] = "%#{params[:grading_set]}%"
-      end
-      ImageSet.active.joins(joins)
-        .order("image_sets.name asc")
-        .where(wheres.join(" and "), wheres_params)
+      ImageSet.search(params)
     end
 end

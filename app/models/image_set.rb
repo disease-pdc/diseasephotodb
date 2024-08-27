@@ -46,7 +46,7 @@ class ImageSet < ApplicationRecord
     joins = []
     unless params[:metadata_key].blank?
       safe_key = params[:metadata_key].gsub("'", "") # remove single quotes
-      wheres << "images.metadata->>'#{safe_key}' like :metadata_value"
+      wheres << "image_sets.metadata->>'#{safe_key}' like :metadata_value"
       wheres_params[:metadata_value] = "%#{params[:metadata_value]}%"
     end
     unless params[:image_set_ids].blank?
@@ -54,11 +54,11 @@ class ImageSet < ApplicationRecord
       wheres_params[:image_set_ids] = params[:image_set_ids]
     end
     unless params[:name].blank?
-      wheres << 'name ilike :name'
+      wheres << 'image_sets.name ilike :name'
       wheres_params[:name] = "%#{params[:name]}%"
     end
     unless params[:image_source_id].blank?
-      wheres << 'image_source_id = :image_source_id'
+      wheres << 'image_sets.image_source_id = :image_source_id'
       wheres_params[:image_source_id] = params[:image_source_id]
     end
     unless params[:image_source].blank?

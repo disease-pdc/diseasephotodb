@@ -77,11 +77,11 @@ class Image < ApplicationRecord
       wheres_params[:image_ids] = params[:image_ids]
     end
     unless params[:filename].blank?
-      wheres << 'filename ilike :filename'
+      wheres << 'images.filename ilike :filename'
       wheres_params[:filename] = "%#{params[:filename]}%"
     end
     unless params[:image_source_id].blank?
-      wheres << 'image_source_id = :image_source_id'
+      wheres << 'images.image_source_id = :image_source_id'
       wheres_params[:image_source_id] = params[:image_source_id]
     end
     unless params[:image_source].blank?
