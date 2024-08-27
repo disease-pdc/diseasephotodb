@@ -20,6 +20,20 @@ class ImageSet < ApplicationRecord
     ImageSet.query_json_metadata_keys 'metadata'
   end
 
+  def self.csv_metadata_enumerator ids
+    keys = ImageSet.all_metadata_keys
+    Enumerator.new do |yielder|
+      yielder << CSV.generate_line(%w(id name source) + keys)
+      ImageSet.where('id in (?)', ids)
+          .includes(:image_source)
+          .find_each do |image_set|
+        data = [image_set.id, image_set.name, image_set.image_source.name]
+        keys.each { |k| data << image_set.metadata[k] }
+        yielder << CSV.generate_line(data)
+      end
+    end
+  end
+
   def self.apply_to_image_set image
     if image.image_source.create_image_sets?
       metadata_field = image.image_source.create_image_sets_metadata_field

@@ -46,6 +46,7 @@ Rails.application.routes.draw do
   get '/image_sets/download', to: 'image_sets#download'
   post '/image_sets/addtogradingset', to: 'image_sets#addtogradingset'
   post '/image_sets/gradingdata', to: 'image_sets#gradingdata'
+  post '/image_sets/metadata', to: 'image_sets#metadata'
   resources :image_sets
 
   get '/grading_sets/:id/data', to: 'grading_sets#data'

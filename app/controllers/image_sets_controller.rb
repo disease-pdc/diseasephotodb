@@ -4,7 +4,7 @@ class ImageSetsController < ApplicationController
   before_action :require_image_viewer, only: [:index, :show]
   before_action :require_admin, only: [:addtogradingset]
 
-  skip_before_action :verify_authenticity_token, only: [:addtogradingset, :gradingdata]
+  skip_before_action :verify_authenticity_token, only: [:addtogradingset, :gradingdata, :metadata]
 
   def index
     @pagesize = 50
@@ -48,6 +48,12 @@ class ImageSetsController < ApplicationController
   def download
 
   end
+
+  def metadata
+    stream_csv_response filename: 'metadata.csv',
+      enumerator: ImageSet.csv_metadata_enumerator(search_image_set_ids)
+  end
+
 
   def addtogradingset
     @grading_set = GradingSet.find params[:grading_set_id]
@@ -96,5 +102,9 @@ class ImageSetsController < ApplicationController
 
     def search_image_sets
       ImageSet.search(params)
+    end
+
+    def search_image_set_ids
+      search_image_sets.select(:id).map(&:id)
     end
 end
