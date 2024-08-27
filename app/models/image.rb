@@ -2,11 +2,6 @@ class Image < ApplicationRecord
   include JsonKeyable, MetadataManagable, ImageVariantable
 
   PROCESSING_URL = '/processing.png'
-  SIZES = {
-    main: [1000,1000],
-    preview: [300,300],
-    list: [150,150]
-  }
 
   has_one_attached :image_file
   belongs_to :image_source

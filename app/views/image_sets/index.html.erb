@@ -168,7 +168,7 @@
             <td style="width:1%;">
               <a href="<%= url_for controller: 'image_sets', action: 'show', id: image_set.id %>">
                 <%= 
-                  image_tag image_set.variant_url(Image::SIZES[:list]),
+                  image_tag image_set.variant_url(ImageVariantable::SIZES[:list]),
                     style: "max-width: 150px;max-height: 150px;"
                 %>
               </a>

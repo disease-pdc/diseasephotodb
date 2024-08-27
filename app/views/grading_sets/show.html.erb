@@ -109,7 +109,7 @@
         <td class="align-top" style="width:1%;">
           <a href="<%= url_for controller: 'images', action: 'show', id: gradeable.id %>">
             <%= 
-              image_tag gradeable.variant_url(Image::SIZES[:list]),
+              image_tag gradeable.variant_url(ImageVariantable::SIZES[:list]),
                 class: "img-thumbnail",
                 style: "max-width: 150px;max-height: 150px;"
             %>
