@@ -1,5 +1,7 @@
 class UserGradingSetImage < ApplicationRecord
 
+  FIXED_CSV_HEADERS = %w(id grading_set name source user_id user_email)
+
   YES_NO_VALUES = {
     yes: 'y',
     no: 'n'
@@ -43,7 +45,7 @@ class UserGradingSetImage < ApplicationRecord
   end
 
   def self.data_csv_headers search_params
-    headers = %w(id grading_set name source user_id user_email)
+    headers = [] + FIXED_CSV_HEADERS
     UserGradingSetImage.search(search_params).find_in_batches do |batch|
       batch.each do |user_grading_set_image|
         user_grading_set_image.grading_data.each do |k,v|
@@ -79,8 +81,15 @@ class UserGradingSetImage < ApplicationRecord
   end
 
   def data_csv_line headers
-    line = []
-    headers.each do |header|
+    line = [
+      id,
+      grading_set_image.grading_set.name,
+      grading_set_image.gradeable.name,
+      grading_set_image.gradeable.image_source.name,
+      user.id,
+      user.email
+    ]
+    headers.drop(FIXED_CSV_HEADERS.length).each do |header|
       if header.include?(".")
         k, v = header.split(".")
         line << (grading_data[k] && grading_data[k].include?(v) ? '1' : nil)
