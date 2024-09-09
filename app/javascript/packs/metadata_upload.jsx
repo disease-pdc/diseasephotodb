@@ -9,6 +9,7 @@ const doUpload = async ({
   authenticityToken,
   imageSourceId,
   filename,
+  name,
   merge_metadata,
   metadata
 }) => {
@@ -16,6 +17,7 @@ const doUpload = async ({
     authenticity_token: authenticityToken,
     image_source_id: imageSourceId,
     filename: filename,
+    name: name,
     merge_metadata: merge_metadata,
     metadata: metadata
   })
@@ -30,20 +32,20 @@ const getMetadata = ({headers, row}) => {
   return metadata
 }
 
-const Result = ({filename, success, error}) => (
+const Result = ({filename, name, success, error}) => (
   <>
     {success && 
       <>
         <span className="badge bg-success">Success</span>
         &nbsp;
-        <strong>{filename}</strong>
+        <strong>{filename || name}</strong>
       </>
     }
     {!success &&
       <>
         <span className="badge bg-danger">Error</span>
         &nbsp;
-        <strong>{filename}</strong>
+        <strong>{filename || name}</strong>
         &nbsp;
         <span>{error}</span>
       </>
@@ -83,6 +85,7 @@ const MetadataUpload = ({
             active: '1',
             imageSourceId: sourceId,
             filename: metadata['filename'],
+            name: metadata['name'],
             merge_metadata: mergeMetadata,
             metadata: metadata
           })

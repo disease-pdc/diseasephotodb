@@ -3,6 +3,8 @@ class Image < ApplicationRecord
 
   PROCESSING_URL = '/processing.png'
 
+  FIXED_METADATA = %w(id filename source mime_type)
+
   has_one_attached :image_file
   belongs_to :image_source
   belongs_to :user
@@ -31,9 +33,9 @@ class Image < ApplicationRecord
   end
 
   def self.csv_metadata_enumerator ids
-    keys = Image.all_metadata_keys
+    keys = Image.all_metadata_keys - FIXED_METADATA
     Enumerator.new do |yielder|
-      yielder << CSV.generate_line(%w(id filename source mime_type) + keys)
+      yielder << CSV.generate_line(FIXED_METADATA + keys)
       Image.where('id in (?)', ids)
           .includes(:image_source)
           .find_each do |image|
@@ -47,7 +49,7 @@ class Image < ApplicationRecord
   def self.csv_exif_data_enumerator ids
     keys = Image.all_exif_data_keys
     Enumerator.new do |yielder|
-      yielder << CSV.generate_line(%w(id filename source mime_type) + keys)
+      yielder << CSV.generate_line(FIXED_METADATA + keys)
       Image.where('id in (?)', ids)
           .includes(:image_source)
           .find_each do |image|
@@ -96,6 +98,10 @@ class Image < ApplicationRecord
 
   def name
     filename
+  end
+
+  def fixed_metadata
+    FIXED_METADATA
   end
 
   def do_image_processing

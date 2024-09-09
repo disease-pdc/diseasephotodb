@@ -1,6 +1,8 @@
 class ImageSet < ApplicationRecord
   include JsonKeyable, MetadataManagable, ImageVariantable
 
+  FIXED_METADATA = %w(id name source)
+
   belongs_to :image_source
 
   has_many :image_set_images
@@ -21,9 +23,9 @@ class ImageSet < ApplicationRecord
   end
 
   def self.csv_metadata_enumerator ids
-    keys = ImageSet.all_metadata_keys
+    keys = ImageSet.all_metadata_keys - FIXED_METADATA
     Enumerator.new do |yielder|
-      yielder << CSV.generate_line(%w(id name source) + keys)
+      yielder << CSV.generate_line(FIXED_METADATA + keys)
       ImageSet.where('id in (?)', ids)
           .includes(:image_source)
           .find_each do |image_set|
@@ -38,19 +40,21 @@ class ImageSet < ApplicationRecord
     if image.image_source.create_image_sets?
       metadata_field = image.image_source.create_image_sets_metadata_field
       metadata_value = image.metadata[metadata_field]
-      image_set = ImageSet.upsert({
-        image_source_id: image.image_source.id,
-        name: metadata_value,
-        source_metadata_name: metadata_value,
-        created_at: Time.zone.now,
-        updated_at: Time.zone.now
-      }, unique_by: [:image_source_id, :source_metadata_name])
-      ImageSetImage.upsert({
-        image_id: image.id,
-        image_set_id: image_set.first['id'],
-        created_at: Time.zone.now,
-        updated_at: Time.zone.now
-      }, unique_by: [:image_set_id, :image_id])
+      unless metadata_value.blank?
+        image_set = ImageSet.upsert({
+          image_source_id: image.image_source.id,
+          name: metadata_value,
+          source_metadata_name: metadata_value,
+          created_at: Time.zone.now,
+          updated_at: Time.zone.now
+        }, unique_by: [:image_source_id, :source_metadata_name])
+        ImageSetImage.upsert({
+          image_id: image.id,
+          image_set_id: image_set.first['id'],
+          created_at: Time.zone.now,
+          updated_at: Time.zone.now
+        }, unique_by: [:image_set_id, :image_id])
+      end
     end
   end
 
@@ -92,6 +96,10 @@ class ImageSet < ApplicationRecord
 
   def variant_url variant
     images.first&.variant_url(variant) || ImageVariantable::PROCESSING_URL
+  end
+
+  def fixed_metadata
+    FIXED_METADATA
   end
 
 end
