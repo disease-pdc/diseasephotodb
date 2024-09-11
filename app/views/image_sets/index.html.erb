@@ -129,19 +129,24 @@
                   Add to grading set
                 </button>
               <% end %>
+            </div>
+            <div class="btn-group input-group-sm ms-2" role="group">
+              <div class="input-group-text">
+                Download:
+              </div>
               <input id="add-grading-set-button"
                 class="btn btn-sm btn-outline-primary"
                 formaction="<%= url_for controller: 'image_sets', action: 'metadata'  %>"
                 formmethod="post"
                 type="submit"
-                value="Download Metadata"
+                value="Metadata"
               />
               <input id="add-grading-set-button"
                 class="btn btn-sm btn-outline-primary"
                 formaction="<%= url_for controller: 'image_sets', action: 'gradingdata'  %>"
                 formmethod="post"
                 type="submit"
-                value="Download Grading Data"
+                value="Grading Data"
               />
               <!-- <button type="button"
                 class="btn btn-sm btn-outline-primary"
