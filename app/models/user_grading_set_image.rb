@@ -35,12 +35,28 @@ class UserGradingSetImage < ApplicationRecord
     
     # Search via image params
     elsif !params[:images].blank?
-      ids = params[:images][:image_id_all] ?
-        Image.search(params).select(:id).map(&:id) :
-        params[:images][:image_set_ids]
-      return self.joins(:grading_set_image)
-        .where("grading_set_images.gradeable_type = 'Image'")
-        .where("grading_set_images.gradeable_id in (?)", ids)
+
+      if !params[:images][:image_set_gradingdata].blank?
+        ids = params[:images][:image_id_all] ?
+          Image.joins({image_set_images: :image_set})
+            .search(params).select("id", "image_sets.id as image_set_id")
+            .map(&:image_set_id).uniq :
+          Image.joins({image_set_images: :image_set})
+            .where("id in (:ids)", params[:images][:image_ids])
+            .search(params).select("id", "image_sets.id as image_set_id")
+            .map(&:image_set_id).uniq
+        return self.joins(:grading_set_image)
+          .where("grading_set_images.gradeable_type = 'ImageSet'")
+          .where("grading_set_images.gradeable_id in (?)", ids)
+      else
+        ids = params[:images][:image_id_all] ?
+          Image.search(params).select(:id).map(&:id) :
+          params[:images][:image_ids]
+        return self.joins(:grading_set_image)
+          .where("grading_set_images.gradeable_type = 'Image'")
+          .where("grading_set_images.gradeable_id in (?)", ids)
+      end
+      
     end
   end
 
