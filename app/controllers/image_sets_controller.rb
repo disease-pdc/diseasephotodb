@@ -10,7 +10,9 @@ class ImageSetsController < ApplicationController
     @pagesize = 50
     @limit = (params[:limit] || @pagesize).to_i
     @offset = (params[:offset] || 0).to_i
-    @image_sets = search_image_sets.limit(@limit).offset(@offset)
+    @image_sets = search_image_sets
+      .includes(:image_set_images, :grading_sets)
+      .limit(@limit).offset(@offset)
     @image_sets_count = search_image_sets.count
     @image_sources = ImageSource.active.order('name desc')
     @metadata_keys = ImageSet.all_metadata_keys

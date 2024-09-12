@@ -11,7 +11,7 @@
     <div class="col-lg-8 col-md-6 col-xs-12">
       <%= 
         image_tag image.variant_url(ImageVariantable::SIZES[:main]),
-          class: "img-fluid img-thumbnail mb-3 #{@flipped ? 'flipped' : ''}",
+          class: "img-fluid rounded mb-3 #{@flipped ? 'flipped' : ''}",
           alt: image.filename
       %>
     </div>

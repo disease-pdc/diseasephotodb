@@ -7,7 +7,7 @@ export const ImageThumbnail = ({
   return (
     <div className="ImageThumbnail">
       <img src={image.image_url_preview}
-        className="img-thumbnail"
+        className="rounded"
       />
     </div>
   )

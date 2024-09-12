@@ -102,4 +102,8 @@ class ImageSet < ApplicationRecord
     FIXED_METADATA
   end
 
+  def image_count
+    image_set_images.count
+  end
+
 end
