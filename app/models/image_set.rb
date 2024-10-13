@@ -65,7 +65,11 @@ class ImageSet < ApplicationRecord
     unless params[:metadata_key].blank?
       safe_key = params[:metadata_key].gsub("'", "") # remove single quotes
       wheres << "image_sets.metadata->>'#{safe_key}' like :metadata_value"
-      wheres_params[:metadata_value] = "%#{params[:metadata_value]}%"
+      if !(params[:metadata_value].blank?)
+        wheres_params[:metadata_value] = "%#{params[:metadata_value]}%"
+      elsif !(params[:metadata_value_eq].blank?)
+        wheres_params[:metadata_value] = "#{params[:metadata_value_eq]}"
+      end
     end
     unless params[:image_set_ids].blank?
       wheres << 'image_sets.id in (:image_set_ids)'
