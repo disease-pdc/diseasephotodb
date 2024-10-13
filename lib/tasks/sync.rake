@@ -140,11 +140,16 @@ def participant_loaded? image_source_id, participant_id
   ).exists?
 end
 
+def sync_password_for username
+  JSON.parse(ENV['SYNC_CREDENTIALS'])[username]
+end
+
 namespace :sync do
 
   desc "Sync patients on profile"
-  task :patients, [:email, :password, :image_source_id, :sync_user_id, :last_updated] => :environment do |task, args|
-    email, password = args[:email], args[:password]
+  task :patients, [:email, :image_source_id, :sync_user_id, :last_updated] => :environment do |task, args|
+    email = args[:email]
+    password = sync_password_for(email)
     image_source_id = args[:image_source_id]
     sync_user_id = args[:sync_user_id]
     last_updated = args[:last_updated] ? Date.parse(args[:last_updated]) : 2.days.ago
