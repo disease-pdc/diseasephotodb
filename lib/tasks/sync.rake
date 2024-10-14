@@ -147,12 +147,14 @@ end
 namespace :sync do
 
   desc "Sync patients on profile"
-  task :patients, [:email, :image_source_id, :sync_user_id, :last_updated] => :environment do |task, args|
+  task :patients, [:email, :image_source_id, :sync_user_id, :last_updated_days] => :environment do |task, args|
     email = args[:email]
     password = sync_password_for(email)
     image_source_id = args[:image_source_id]
     sync_user_id = args[:sync_user_id]
-    last_updated = args[:last_updated] ? Date.parse(args[:last_updated]) : 2.days.ago
+    last_updated = args[:last_updated_days] ? 
+      args[:last_updated_days].to_i.days.ago.beginning_of_day : 
+      2.days.ago
 
     begin
       browser = Ferrum::Browser.new(browser_options: { 'no-sandbox': nil })
@@ -181,7 +183,7 @@ namespace :sync do
         participant_id = tds[2].inner_text
         date_updated = Date.parse(tds[4].inner_text)
         if date_updated < last_updated
-          "Found participant #{participant_id} with #{date_updated} before limit, ending sync"
+          puts "Found participant #{participant_id} with #{date_updated} before limit, ending sync"
           break
         end
         unless participant_loaded?(image_source_id, participant_id)
