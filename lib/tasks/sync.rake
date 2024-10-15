@@ -1,7 +1,6 @@
 require 'fileutils'
 
 BASE_URL = "https://eva.mobileodt.com/Login"
-PARTICIPANT_ID_KEY = 'participant_id'
 DATE_UPDATED_KEY = 'date_updated'
 IMAGE_INDEX_KEY = 'image_sequence'
 
@@ -33,9 +32,17 @@ def wait_for_xpath browser, path, tries=8
 end
 
 def create_participant participant_id, date_updated, image_source_id, sync_user_id, image_paths
+  image_source = ImageSource.find image_source_id
+  participant_id_key = image_source.create_image_sets_metadata_field
   image_paths.each_with_index do |image_path, index|
     image = Image.where(image_source_id: image_source_id, filename: File.basename(image_path)).first
     unless image
+      metadata = {
+        "date_updated" => date_updated.to_s,
+        "synced_at" => DateTime.now,
+        "image_sequence" => index + 1
+      }
+      metadata[participant_id_key] = participant_id
       image = Image.new(
         image_source_id: image_source_id,
         filename: File.basename(image_path),
@@ -46,23 +53,20 @@ def create_participant participant_id, date_updated, image_source_id, sync_user_
           filename: File.basename(image_path),
           content_type: "image/png"
         },
-        metadata: {
-          "participant_id" => participant_id,
-          "date_updated" => date_updated.to_s,
-          "synced_at" => DateTime.now,
-          "image_sequence" => index + 1
-        }
+        metadata: metadata
       )
       image.save!
     end
   end
+  sleep(1) # Wait for image_set
   image_set = ImageSet.where(name: participant_id).first
-  image_set.metadata = (image_set.metadata || {}).merge({
-    "participant_id" => participant_id,
+  metadata = {
     "date_updated" => date_updated.to_s,
     "synced_at" => DateTime.now,
     "image_count" => image_paths.length
-  })
+  }
+  metadata[participant_id_key] = participant_id
+  image_set.metadata = (image_set.metadata || {}).merge(metadata)
   image_set.save!
 end
 
