@@ -67,10 +67,12 @@ def create_participant participant_id, date_updated, image_source_id, sync_user_
 end
 
 def load_participant browser, participant_id, image_source_id, sync_user_id, date_updated
+  image_source = ImageSource.find image_source_id
+  participant_id_key = image_source.create_image_sets_metadata_field
   image_folder = "#{Dir.pwd}/tmp/participants/#{participant_id}"
   image_set = ImageSet.search(
     image_source_id: image_source_id,
-    metadata_key: PARTICIPANT_ID_KEY, 
+    metadata_key: participant_id_key, 
     metadata_value_eq: participant_id
   ).first
   if image_set
@@ -133,9 +135,11 @@ def load_participant browser, participant_id, image_source_id, sync_user_id, dat
 end
 
 def participant_loaded? image_source_id, participant_id
+  image_source = ImageSource.find image_source_id
+  participant_id_key = image_source.create_image_sets_metadata_field
   ImageSet.search(
     image_source_id: image_source_id,
-    metadata_key: PARTICIPANT_ID_KEY, 
+    metadata_key: participant_id_key, 
     metadata_value_eq: participant_id
   ).exists?
 end
