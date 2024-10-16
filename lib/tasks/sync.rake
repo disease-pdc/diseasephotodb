@@ -208,9 +208,11 @@ namespace :sync do
         end
         current_patient_tr_index = current_patient_tr_index + 1
         if current_patient_tr_index >= patient_trs.length
+          puts "At patient tr index #{current_patient_tr_index} of #{patient_trs.length}, going to next"
           next_btn = browser.at_xpath("//div[@class='actions']//button[@class='next'")
           # If Next disabled, on last page
           if (next_btn.attribute['disabled'])
+            puts "Next button disabled, finishing"
             break;
           end
           next_btn.click
