@@ -7,26 +7,26 @@ IMAGE_INDEX_KEY = 'image_sequence'
 def wait_for_at_xpath browser, path, tries=8
   current_try = tries
   loop do
-    sleep(rand(2..4))
     element = browser.at_xpath path
     if !element.blank?
       return element
     else
       tries = tries - 1
     end
+    sleep(rand(2..4))
     raise "Waited too long for #{path}" if tries <= 0
   end
 end
 def wait_for_xpath browser, path, tries=8
   current_try = tries
   loop do
-    sleep(rand(2..4))
     element = browser.xpath path
     if !element.blank?
       return element
     else
       tries = tries - 1
     end
+    sleep(rand(2..4))
     raise "Waited too long for #{path}" if tries <= 0
   end
 end
@@ -223,6 +223,7 @@ namespace :sync do
 
     rescue => exception
       puts exception.backtrace
+      browser.screenshot(path: "screenshot-exception.png")
       raise # always reraise
 
     ensure
