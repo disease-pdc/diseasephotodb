@@ -3,6 +3,7 @@ require 'fileutils'
 BASE_URL = "https://eva.mobileodt.com/Login"
 DATE_UPDATED_KEY = 'date_updated'
 IMAGE_INDEX_KEY = 'image_sequence'
+MAX_SYNCED = 75
 
 def wait_for_at_xpath browser, path, tries=8
   current_try = tries
@@ -158,6 +159,24 @@ def sync_password_for username
   JSON.parse(ENV['SYNC_CREDENTIALS'])[username]
 end
 
+def login_new_browser email, password
+  browser = Ferrum::Browser.new(browser_options: { 'no-sandbox': nil }, headless: "new", window_size: [1024, 1400])
+  browser.go_to BASE_URL
+  email_input = wait_for_at_xpath browser, "//input[@class='email' and @type='email']"
+  email_input.focus.type email
+  pw_input = browser.at_xpath "//input[@class='password' and @type='password']"
+  pw_input.focus.type password
+  browser.at_xpath("//button[@class='login-btn']").click
+  puts "Logged In"
+
+  accept_cookies = wait_for_at_xpath browser, "//button[@class='accept']"
+  if accept_cookies
+    puts "Accepting cookies"
+    accept_cookies.click
+  end
+  return browser
+end
+
 namespace :sync do
 
   desc "Sync patients on profile"
@@ -170,21 +189,11 @@ namespace :sync do
       args[:last_updated_days].to_i.days.ago.beginning_of_day : 
       2.days.ago
 
-    begin
-      browser = Ferrum::Browser.new(browser_options: { 'no-sandbox': nil }, headless: "new", window_size: [1024, 1400])
-      browser.go_to BASE_URL
-      email_input = wait_for_at_xpath browser, "//input[@class='email' and @type='email']"
-      email_input.focus.type email
-      pw_input = browser.at_xpath "//input[@class='password' and @type='password']"
-      pw_input.focus.type password
-      browser.at_xpath("//button[@class='login-btn']").click
-      puts "Logged In"
+    # Sync no more than MAX_SYNCED per session
+    num_synced = 0
 
-      accept_cookies = wait_for_at_xpath browser, "//button[@class='accept']"
-      if accept_cookies
-        puts "Accepting cookies"
-        accept_cookies.click
-      end 
+    begin
+      browser = login_new_browser email, password     
 
       # Iterate over patients and pages until patient 
       current_patient_tr_index = 0
@@ -210,6 +219,7 @@ namespace :sync do
           close_button.click if close_button
           wait_for_at_xpath(browser, "//a[@class='back-btn']").click
           patient_trs = wait_for_xpath browser, "//div[@class='patients-content']//table//tbody//tr"
+          num_synced = num_synced + 1
           puts "Back to patient_trs, length #{patient_trs.length}"
         end
         current_patient_tr_index = current_patient_tr_index + 1
@@ -224,6 +234,12 @@ namespace :sync do
           next_btn.click
           current_patient_tr_index = 0
           sleep(1) # Wait 1 second for event to propagate
+        end
+        if num_synced > MAX_SYNCED
+          puts "Synced more than #{MAX_SYNCED}, restarting browser"
+          browser.quit
+          browser = login_new_browser email, password
+          num_synced = 0 
         end
       end
 
