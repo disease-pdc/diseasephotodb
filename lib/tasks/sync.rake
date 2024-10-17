@@ -160,7 +160,7 @@ def sync_password_for username
 end
 
 def login_new_browser email, password
-  browser = Ferrum::Browser.new(browser_options: { 'no-sandbox': nil }, headless: "new", window_size: [1024, 1400])
+  browser = Ferrum::Browser.new(browser_options: { 'no-sandbox': nil }, headless: "new", window_size: [1024, 1400], timeout: 15)
   browser.go_to BASE_URL
   email_input = wait_for_at_xpath browser, "//input[@class='email' and @type='email']"
   email_input.focus.type email
