@@ -237,6 +237,7 @@ namespace :sync do
         end
         if num_synced > MAX_SYNCED
           puts "Synced more than #{MAX_SYNCED}, restarting browser"
+          browser.reset
           browser.quit
           browser = login_new_browser email, password
           num_synced = 0 
@@ -249,6 +250,7 @@ namespace :sync do
       raise # always reraise
 
     ensure
+      browser.reset
       browser.quit
     end
 
