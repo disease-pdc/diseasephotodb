@@ -88,7 +88,7 @@ def load_participant browser, participant_id, image_source_id, sync_user_id, dat
   msg = browser.at_xpath "//div[@class='files']//p"
   if (msg && msg.inner_text.squish == 'There are no media files')
     puts "[ERROR] #{participant_id} reports no files"
-    return
+    return {skip: participant_id}
   end
   img = wait_for_at_xpath browser, "//div[@class='files']//img"
   img.scroll_into_view
@@ -192,6 +192,9 @@ namespace :sync do
     # Sync no more than MAX_SYNCED per session
     num_synced = 0
 
+    # Skip unsyncable
+    skip_ids = []
+
     begin
       browser = login_new_browser email, password     
 
@@ -209,10 +212,14 @@ namespace :sync do
           puts "Found participant #{participant_id} with #{date_updated} before limit, ending sync"
           break
         end
-        unless participant_loaded?(image_source_id, participant_id)
+        unless skip_ids.inclued?(participant_id) || participant_loaded?(image_source_id, participant_id)
           puts "Found new participant #{participant_id} updated at #{date_updated}, index #{current_patient_tr_index} in table"
           patient_tr.click
-          load_participant browser, participant_id, image_source_id, sync_user_id, date_updated
+          load_results = load_participant browser, participant_id, image_source_id, sync_user_id, date_updated
+
+          if load_results[:skip]
+            skip_ids = load_results[:skip]
+          end
 
           # Back to main list
           close_button = browser.at_xpath("//a[@class='close']")
