@@ -232,6 +232,7 @@ namespace :sync do
             break;
           end
           next_btn.click
+          num_synced = num_synced + 1
           current_patient_tr_index = 0
           sleep(1) # Wait 1 second for event to propagate
         end
