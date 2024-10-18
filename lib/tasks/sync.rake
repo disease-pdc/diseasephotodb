@@ -218,7 +218,7 @@ namespace :sync do
           load_results = load_participant browser, participant_id, image_source_id, sync_user_id, date_updated
 
           if load_results[:skip]
-            skip_ids = load_results[:skip]
+            skip_ids << load_results[:skip]
           end
 
           # Back to main list
