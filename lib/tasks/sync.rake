@@ -217,7 +217,7 @@ namespace :sync do
           patient_tr.click
           load_results = load_participant browser, participant_id, image_source_id, sync_user_id, date_updated
 
-          if load_results && load_results[:skip]
+          if load_results && load_results.is_a?(Hash) && !load_results[:skip].blank?
             skip_ids << load_results[:skip]
           end
 
