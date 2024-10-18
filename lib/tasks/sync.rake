@@ -212,7 +212,7 @@ namespace :sync do
           puts "Found participant #{participant_id} with #{date_updated} before limit, ending sync"
           break
         end
-        unless skip_ids.inclued?(participant_id) || participant_loaded?(image_source_id, participant_id)
+        unless skip_ids.include?(participant_id) || participant_loaded?(image_source_id, participant_id)
           puts "Found new participant #{participant_id} updated at #{date_updated}, index #{current_patient_tr_index} in table"
           patient_tr.click
           load_results = load_participant browser, participant_id, image_source_id, sync_user_id, date_updated
