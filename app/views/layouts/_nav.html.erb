@@ -54,6 +54,18 @@
                     Download Images
                   </a>
                 </li>
+                <% if current_user.admin? || current_user.image_admin? %>
+                  <li><hr class="dropdown-divider"></li>
+                  <li>
+                    <a class="dropdown-item" href="<%= url_for controller: 'images', action: 'new' %>">
+                      Upload Images
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="<%= url_for controller: 'metadata' %>">
+                      Upload Metadata
+                    </a>
+                  </li>
                 <% end %>
                 <li><hr class="dropdown-divider"></li>
                 <li>

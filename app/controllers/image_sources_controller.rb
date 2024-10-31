@@ -1,6 +1,8 @@
 class ImageSourcesController < ApplicationController
 
-  before_action :require_image_admin
+  before_action :require_image_admin, except: [:image_urls]
+  before_action :require_image_viewer, only: [:image_urls]
+
 
   def index
     wheres = ["1=1"]
