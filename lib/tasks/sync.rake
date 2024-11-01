@@ -44,7 +44,7 @@ def create_participant participant_id, date_updated, image_source_id, sync_user_
         "image_sequence" => index + 1,
         "pid" => participant_id
       }
-      metadata[participant_id_key] = participant_id
+      metadata[participant_id_key] = participant_code(participant_id, date_updated)
       image = Image.new(
         image_source_id: image_source_id,
         filename: File.basename(image_path),
@@ -68,7 +68,7 @@ def create_participant participant_id, date_updated, image_source_id, sync_user_
     "image_count" => image_paths.length,
     "pid" => participant_id
   }
-  metadata[participant_id_key] = "#{participant_id}-#{date_updated.to_s}"
+  metadata[participant_id_key] = participant_code(participant_id, date_updated)
   image_set.metadata = (image_set.metadata || {}).merge(metadata)
   image_set.save!
 end
@@ -80,10 +80,10 @@ def load_participant browser, participant_id, image_source_id, sync_user_id, dat
   image_set = ImageSet.search(
     image_source_id: image_source_id,
     metadata_key: participant_id_key, 
-    metadata_value_eq: participant_id
+    metadata_value_eq: participant_code(participant_id, date_updated)
   ).first
   if image_set
-    puts "#{participant_id} already loaded, skipping"
+    puts "#{participant_code(participant_id, date_updated)} already loaded, skipping"
     return
   end
   sleep(2)
@@ -147,13 +147,17 @@ def load_participant browser, participant_id, image_source_id, sync_user_id, dat
   FileUtils.rm_rf(image_folder)
 end
 
-def participant_loaded? image_source_id, participant_id
+def participant_code participant_id, date_updated
+  "#{participant_id}-#{date_updated.to_s}"
+end
+
+def participant_loaded? image_source_id, participant_id, date_updated
   image_source = ImageSource.find image_source_id
   participant_id_key = image_source.create_image_sets_metadata_field
   ImageSet.search(
     image_source_id: image_source_id,
     metadata_key: participant_id_key, 
-    metadata_value_eq: participant_id
+    metadata_value_eq: participant_code(participant_id, date_updated)
   ).exists?
 end
 
@@ -214,7 +218,7 @@ namespace :sync do
           puts "Found participant #{participant_id} with #{date_updated} before limit, ending sync"
           break
         end
-        unless skip_ids.include?(participant_id) || participant_loaded?(image_source_id, participant_id)
+        unless skip_ids.include?(participant_id) || participant_loaded?(image_source_id, participant_id, date_updated)
           puts "Found new participant #{participant_id} updated at #{date_updated}, index #{current_patient_tr_index} in table"
           patient_tr.click
           load_results = load_participant browser, participant_id, image_source_id, sync_user_id, date_updated
