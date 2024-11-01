@@ -61,7 +61,7 @@ def create_participant participant_id, date_updated, image_source_id, sync_user_
     end
   end
   sleep(1) # Wait for image_set
-  image_set = ImageSet.where(name: participant_id).first
+  image_set = ImageSet.where(name: participant_code(participant_id, date_updated)).first
   metadata = {
     "date_updated" => date_updated.to_s,
     "synced_at" => DateTime.now,
