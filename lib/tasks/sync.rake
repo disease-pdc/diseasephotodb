@@ -41,7 +41,8 @@ def create_participant participant_id, date_updated, image_source_id, sync_user_
       metadata = {
         "date_updated" => date_updated.to_s,
         "synced_at" => DateTime.now,
-        "image_sequence" => index + 1
+        "image_sequence" => index + 1,
+        "pid" => participant_id
       }
       metadata[participant_id_key] = participant_id
       image = Image.new(
@@ -64,9 +65,10 @@ def create_participant participant_id, date_updated, image_source_id, sync_user_
   metadata = {
     "date_updated" => date_updated.to_s,
     "synced_at" => DateTime.now,
-    "image_count" => image_paths.length
+    "image_count" => image_paths.length,
+    "pid" => participant_id
   }
-  metadata[participant_id_key] = participant_id
+  metadata[participant_id_key] = "#{participant_id}-#{date_updated.to_s}"
   image_set.metadata = (image_set.metadata || {}).merge(metadata)
   image_set.save!
 end
