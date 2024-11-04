@@ -11,6 +11,8 @@ class ImageSet < ApplicationRecord
   has_many :grading_set_images, as: :gradeable
   has_many :grading_sets, through: :grading_set_images
 
+  has_many :image_set_images, dependent: :delete_all
+
   scope :active, -> { joins(:image_source).where('image_sources.active', true) }
 
   validates 'image_source_id', presence: true
