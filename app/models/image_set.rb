@@ -5,13 +5,12 @@ class ImageSet < ApplicationRecord
 
   belongs_to :image_source
 
-  has_many :image_set_images
+  has_many :image_set_images, dependent: :delete_all
   has_many :images, -> { order('images.filename') },
     through: :image_set_images
+
   has_many :grading_set_images, as: :gradeable
   has_many :grading_sets, through: :grading_set_images
-
-  has_many :image_set_images, dependent: :delete_all
 
   scope :active, -> { joins(:image_source).where('image_sources.active', true) }
 
