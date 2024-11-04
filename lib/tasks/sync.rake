@@ -3,7 +3,7 @@ require 'fileutils'
 BASE_URL = "https://eva.mobileodt.com/Login"
 DATE_UPDATED_KEY = 'date_updated'
 IMAGE_INDEX_KEY = 'image_sequence'
-MAX_SYNCED = 75
+MAX_SYNCED = 50
 
 def wait_for_at_xpath browser, path, tries=8
   current_try = tries
