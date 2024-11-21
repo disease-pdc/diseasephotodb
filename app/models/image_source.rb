@@ -1,6 +1,7 @@
 class ImageSource < ApplicationRecord
 
   has_many :images
+  has_many :image_sets
 
   scope :active, -> { where(active: true) }
 

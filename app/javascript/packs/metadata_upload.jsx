@@ -9,12 +9,16 @@ const doUpload = async ({
   authenticityToken,
   imageSourceId,
   filename,
+  name,
+  merge_metadata,
   metadata
 }) => {
   const result = await post('/metadata', {
     authenticity_token: authenticityToken,
     image_source_id: imageSourceId,
     filename: filename,
+    name: name,
+    merge_metadata: merge_metadata,
     metadata: metadata
   })
   return result.data
@@ -28,20 +32,20 @@ const getMetadata = ({headers, row}) => {
   return metadata
 }
 
-const Result = ({filename, success, error}) => (
+const Result = ({filename, name, success, error}) => (
   <>
     {success && 
       <>
         <span className="badge bg-success">Success</span>
         &nbsp;
-        <strong>{filename}</strong>
+        <strong>{filename || name}</strong>
       </>
     }
     {!success &&
       <>
         <span className="badge bg-danger">Error</span>
         &nbsp;
-        <strong>{filename}</strong>
+        <strong>{filename || name}</strong>
         &nbsp;
         <span>{error}</span>
       </>
@@ -56,6 +60,7 @@ const MetadataUpload = ({
 }) => {
 
   const [sourceId, setSourceId] = useState(imageSourceId || -1)
+  const [mergeMetadata, setMergeMetadata] = useState(true)
 
   const [data, setData] = useState(null)
   const [uploading, setUploading] = useState(false)
@@ -64,6 +69,9 @@ const MetadataUpload = ({
   const [results, setResults] = useState([])
   const [finished, setFinished] = useState(false)
 
+  const newUpload = () => {
+    window.location.reload()
+  }
 
   useEffect(() => {
     const doEffect = async () => {
@@ -71,12 +79,15 @@ const MetadataUpload = ({
         const headers = data[0]
         for (let i = 1; i < data.length; i++) {
           setCurrent(i)
+          const metadata = getMetadata({headers, row: data[i]})
           const result = await doUpload({
             authenticityToken,
             active: '1',
             imageSourceId: sourceId,
-            filename: data[i][0],
-            metadata: getMetadata({headers, row: data[i]})
+            filename: metadata['filename'],
+            name: metadata['name'],
+            merge_metadata: mergeMetadata,
+            metadata: metadata
           })
           results.push(result)
           setResults(results)
@@ -91,11 +102,11 @@ const MetadataUpload = ({
     <>
       {!uploading && 
         <div className="row">
-          <div className="col-lg-4">
+          <div className="col-lg-3">
             <label htmlFor="metadataFile" className="form-label">
               Select Image Folder
             </label>
-            <select className="form-select mb-3"
+            <select className="form-select mb-4"
               value={sourceId}
               onChange={e => setSourceId(e.target.value)}
             >
@@ -105,7 +116,26 @@ const MetadataUpload = ({
               ))}
             </select>
           </div>
-          <div className="col-lg-8">
+          <div className="col-lg-3">
+            <label className="form-label">
+              Merge metadata?
+            </label>
+            <div className="form-check mt-1 mb-4">
+              <input className="form-check-input"
+                id="mergeMetadata"
+                type="checkbox" 
+                checked={mergeMetadata}
+                onChange={(e) => setMergeMetadata(e.target.checked)}
+              />
+              <label className="form-check-label" htmlFor="mergeMetadata">
+                Yes, leave existing metadata
+              </label>
+              <div className="form-text">
+                Leaving existing metadata means that values that are NOT specified in the file will remain attached to the images and image sets.<br/>If you wish to reset the metadata for an image or image set, uncheck this box.
+              </div>
+            </div>
+          </div>
+          <div className="col-lg-6">
             <label htmlFor="metadataFile" className="form-label">
               Select XLSX Metadata File
             </label>
@@ -145,10 +175,17 @@ const MetadataUpload = ({
               Uploading {current} / {data.length - 1}
             </strong>
           }
-          {finished && 
-            <div className="alert alert-success" role="alert">
-              Upload Complete - {current} uploaded
-            </div>
+          {finished &&
+            <>
+              <div className="alert alert-success" role="alert">
+                Upload Complete - {current} uploaded
+              </div>
+              <div className="mb-3">
+                <button className="btn btn-primary" onClick={newUpload}>
+                  &lt; Back to metadata upload
+                </button>
+              </div>
+            </>
           }
           <ul>
             {results.map((result, i) => (

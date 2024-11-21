@@ -1,0 +1,124 @@
+<%
+  label_class = "col-lg-3 col-md-4 fw-bold text-md-end mb-1"
+  data_class = "col-lg-9 col-md-8 mb-1"
+%>
+
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item">
+      <%= link_to 'Images Sets', {controller: 'image_sets'} %>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      <%= @image_set.name %>
+    </li>
+  </ol>
+</nav>
+
+<div class="row">
+
+  <div class="col-md-6 mb-4">
+    <table class="table table-striped table-bordered">
+    <% @image_set.images.each do |image| %>
+      <tr>
+        <td style="width:1%;">
+          <a href="<%= url_for controller: 'images', action: 'show', id: image.id %>">
+            <%= 
+              image_tag image.variant_url(ImageVariantable::SIZES[:list]),
+                style: "max-width: 150px;max-height: 150px;"
+            %>
+          </a>
+        </td>
+        <td>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="row">
+                <div class="<%= label_class %>">
+                  Filename
+                </div>
+                <div class="<%= data_class %>">
+                  <%= link_to image.filename, {controller: 'images', action: 'show', id: image.id} %>
+                </div>
+                <div class="<%= label_class %>">
+                  Uploaded
+                </div>
+                <div class="<%= data_class %>">
+                  <%= image.created_at %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>
+    <% end %>
+    </table>
+  </div>
+
+  <div class="col-md-6">
+    <h4>Image Set Details</h4>
+
+    <div class="row mb-4">
+      <div class="<%= label_class %>">
+        Image Folder
+      </div>
+      <div class="<%= data_class %>">
+        <a href="<%= url_for controller: 'image_sets', image_source_id: @image_set.image_source.id %>">
+          <%= @image_set.image_source.name %>
+        </a>
+      </div>
+      <div class="<%= label_class %>">
+        Name
+      </div>
+      <div class="<%= data_class %>">
+        <%= @image_set.name %>
+      </div>
+      <div class="<%= label_class %>">
+        Metadata Value
+      </div>
+      <div class="<%= data_class %>">
+        <%= @image_set.source_metadata_name %>
+      </div>
+
+      <div class="<%= label_class %> mt-2">
+        Grading Sets
+      </div>
+      <div class="<%= data_class %> mt-2">
+        <ul class="list-unstyled">
+          <% @image_set.grading_sets.each do |grading_set| %>
+            <li>
+              <a href="<%= url_for controller: 'grading_sets', action: 'show', id: grading_set.id %>">
+                <%= grading_set.name %>
+              </a>
+            </li>
+          <% end %>
+        </ul>
+      </div> 
+    </div>
+
+    <% if current_user.admin? %>
+      <h4>
+        Grading Data
+      </h4>
+      <a class="mb-3 btn btn-sm btn-outline-primary" href="#">download</a>
+<!--       <table class="table table-bordered table-striped table-sm mb-5">
+        <tbody>
+        </tbody>
+      </table> -->
+    <% end %>
+    
+    <h4>
+      Metadata 
+      <!-- <a class="btn btn-sm btn-outline-primary" href="#">edit</a> -->
+    </h4>
+    <table class="table table-bordered table-striped table-sm mb-5">
+      <tbody>
+        <% @image_set.metadata.keys.each do |key| %>
+          <tr>
+            <td style="width: 1%; white-space: nowrap; padding-right: 1rem;"><%= key %></td>
+            <td><%= @image_set.metadata[key] %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+
+</div>

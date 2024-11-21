@@ -4,6 +4,8 @@
     <tr>
       <th scope="col">Name</th>
       <th scope="col"># of Images</th>
+      <th scope="col">Image Sets?</th>
+      <th scope="col">Image Set Metadata</th>
       <th scope="col">Active?</th>
       <th scope="col"></th>
     </tr>
@@ -11,8 +13,14 @@
   <tbody>
     <% @image_sources.each do |source| %>
       <tr>
-        <td><%= source.name %></td>
-        <td><%= source.image_count %></td>
+        <td>
+          <%= link_to source.name, controller: 'image_sources', action: 'show', id: source.id %>
+        </td>
+        <td>
+          <%= link_to source.image_count, controller: 'images', image_source_id: source.id %>
+        </td>
+        <td><%= source.create_image_sets? ? 'Yes' : '' %></td>
+        <td><%= source.create_image_sets_metadata_field %></td>
         <td><%= source.active? ? 'Active' : 'Inactive' %></td>
         <td class="text-nowrap" width="1%">
           <%= link_to 'upload images', controller: 'images', action: 'new', image_source_id: source.id %>

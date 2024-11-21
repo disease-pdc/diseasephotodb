@@ -37,15 +37,22 @@ Rails.application.routes.draw do
   resources :users
 
   get '/images/download', to: 'images#download'
-  resources :images
   post '/images/addtogradingset', to: 'images#addtogradingset'
   post '/images/metadata', to: 'images#metadata'
   post '/images/exif_data', to: 'images#exif_data'
+  post '/images/gradingdata', to: 'images#gradingdata'
+  resources :images
 
-  resources :grading_sets
+  get '/image_sets/download', to: 'image_sets#download'
+  post '/image_sets/addtogradingset', to: 'image_sets#addtogradingset'
+  post '/image_sets/gradingdata', to: 'image_sets#gradingdata'
+  post '/image_sets/metadata', to: 'image_sets#metadata'
+  resources :image_sets
+
   get '/grading_sets/:id/data', to: 'grading_sets#data'
   post '/grading_sets/:id/adduser', to: 'grading_sets#adduser'
   post '/grading_sets/:id/removeuser', to: 'grading_sets#removeuser'
   post '/grading_sets/:id/removeimage', to: 'grading_sets#removeimage'
+  resources :grading_sets
 
 end

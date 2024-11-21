@@ -17,8 +17,8 @@
 <div class="row">
   <div class="col-md-6 mb-4">
     <%= 
-      image_tag @image.variant_url(Image::SIZES[:main]),
-        class: "img-fluid img-thumbnail mb-3",
+      image_tag @image.variant_url(ImageVariantable::SIZES[:main]),
+        class: "img-fluid rounded mb-3",
         alt: @image.filename
     %>
     <a class="btn btn-primary" 
@@ -47,14 +47,14 @@
       </div>
 
       <div class="<%= label_class %>">
-        Uploaded On
+        Uploaded
       </div>
       <div class="<%= data_class %>">
         <%= @image.created_at %>
       </div>
 
       <div class="<%= label_class %>">
-        Last Modified On
+        Last Modified
       </div>
       <div class="<%= data_class %>">
         <%= @image.updated_at %>
@@ -69,19 +69,32 @@
         </div>
       <% end %>
 
-      <div class="<%= label_class %>">
+      <div class="<%= label_class %> mt-2">
         Folder
       </div>
-      <div class="<%= data_class %>">
+      <div class="<%= data_class %> mt-2">
         <a href="<%= url_for controller: 'images', image_source_id: @image.image_source.id %>">
           <%= @image.image_source.name %>
         </a>
       </div>
 
-      <div class="<%= label_class %>">
+      <div class="<%= label_class %> mt-2">
+        Images Sets
+      </div>
+      <div class="<%= data_class %> mt-2">
+        <ul class="list-unstyled">
+          <% @image.image_sets.each do |image_set| %>
+            <li>
+              <%= link_to image_set.name, controller: 'image_sets', action: 'show', id: image_set.id %>
+            </li>
+          <% end %>
+        </ul>
+      </div>  
+
+      <div class="<%= label_class %> mt-2">
         Grading Sets
       </div>
-      <div class="<%= data_class %>">
+      <div class="<%= data_class %> mt-2">
         <ul class="list-unstyled">
           <% @image.grading_sets.each do |grading_set| %>
             <li>
@@ -94,13 +107,13 @@
 
     <% if current_user.admin? %>
       <h4>
-        Grading Data 
-        <a class="btn btn-sm btn-outline-primary" href="#">download</a>
+        Grading Data
       </h4>
-      <table class="table table-bordered table-striped table-sm mb-5">
+      <a class="mb-3 btn btn-sm btn-outline-primary" href="#">download</a>
+<!--       <table class="table table-bordered table-striped table-sm mb-5">
         <tbody>
         </tbody>
-      </table>
+      </table> -->
     <% end %>
     <h4>
       Metadata 

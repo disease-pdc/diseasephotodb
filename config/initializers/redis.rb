@@ -6,3 +6,4 @@ Rails.application.config.tfimagerydb_redis = {
 REDIS_POOL = ConnectionPool.new(size: 5) do
   Redis.new Rails.application.config.tfimagerydb_redis
 end
+

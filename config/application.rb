@@ -14,6 +14,9 @@ module Tfimagerydb
     # Session expires in 30 days
     config.session_store :cookie_store, expire_after: 30.days
 
+    # Use vips for image processing
+    config.active_storage.variant_processor = :vips
+
     # Configuration for the application, engines, and railties goes here.
     #
     # These settings can be overridden in specific environments using the files

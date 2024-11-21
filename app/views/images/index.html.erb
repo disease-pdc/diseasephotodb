@@ -20,13 +20,6 @@
   <input type="hidden" name="limit" value="<%= @limit %>" />
   <input type="hidden" name="offset" value="<%= @offset %>" />
   <div class="col-lg-2">
-    <label for="filename" class="form-label form-label-sm">Filename</label>
-    <input type="text" class="form-control form-control-sm" 
-      id="filename" name="filename" 
-      value="<%= params[:filename] %>"
-    />
-  </div>
-  <div class="col-lg-2">
     <label for="image_source" class="form-label form-label-sm">Folder</label>
     <select name="image_source_id" class="form-select form-select-sm">
       <option value=""></option>
@@ -38,6 +31,13 @@
         </option>
       <% end %>
     </select>
+  </div>
+  <div class="col-lg-2">
+    <label for="filename" class="form-label form-label-sm">Filename</label>
+    <input type="text" class="form-control form-control-sm" 
+      id="filename" name="filename" 
+      value="<%= params[:filename] %>"
+    />
   </div>
   <div class="col-lg-2">
     <label for="grading_set" class="form-label form-label-sm">Grading Set</label>
@@ -108,120 +108,141 @@
     </div>
   <% end %>
 
-  <table class="table table-striped table-bordered align-middle">
-    <thead>
-      <tr>
-        <th scope="col" style="vertical-align: middle;">
-          <input class="form-check-input" type="checkbox" 
-            name="image_id_all" value="all" 
-          />
-        </th>
-        <th scope="col" colspan="2" style="vertical-align: middle;">
-          <span class="display-inline me-2">
-            <%= @images_count %> Images
-          </span>
-          <div class="btn-group" role="group">
-            <% if current_user.admin? %>
+  <div class="col-lg-12">
+    <table class="table table-striped table-bordered align-middle">
+      <thead>
+        <tr>
+          <th scope="col" style="vertical-align: middle;">
+            <input class="form-check-input" type="checkbox" 
+              name="image_id_all" value="all" 
+            />
+          </th>
+          <th scope="col" colspan="2" style="vertical-align: middle;">
+            <span class="display-inline me-2">
+              <%= @images_count %> Images
+            </span>
+            <div class="btn-group" role="group">
+              <% if current_user.admin? %>
+                <button type="button"
+                  class="btn btn-sm btn-outline-primary"
+                  data-bs-toggle="modal" data-bs-target="#add-grading-set-modal"
+                >
+                  Add to grading set
+                </button>
+              <% end %>
+            </div>
+            <div class="btn-group input-group-sm ms-2" role="group">
+              <div class="input-group-text">
+                Download:
+              </div>
+              <input id="add-grading-set-button"
+                class="btn btn-sm btn-outline-primary"
+                formaction="<%= url_for controller: 'images', action: 'metadata'  %>"
+                formmethod="post"
+                type="submit"
+                value="Metadata"
+              />
+              <input id="add-grading-set-button"
+                class="btn btn-sm btn-outline-primary"
+                formaction="<%= url_for controller: 'images', action: 'exif_data'  %>"
+                formmethod="post"
+                type="submit"
+                value="Exif Data"
+              />
+              <input id="add-grading-set-button"
+                class="btn btn-sm btn-outline-primary"
+                formaction="<%= url_for controller: 'images', action: 'gradingdata'  %>"
+                formmethod="post"
+                type="submit"
+                value="Image Grading Data"
+              />
+              <input id="add-grading-set-button"
+                class="btn btn-sm btn-outline-primary"
+                formaction="<%= url_for controller: 'images', action: 'gradingdata', image_set_gradingdata: true  %>"
+                formmethod="post"
+                type="submit"
+                value="Image Set Grading Data"
+              />
+              <!-- <button type="button"
+                class="btn btn-sm btn-outline-primary"
+              >
+                Download
+              </button>
               <button type="button"
                 class="btn btn-sm btn-outline-primary"
-                data-bs-toggle="modal" data-bs-target="#add-grading-set-modal"
               >
-                Add to grading set
-              </button>
-            <% end %>
-            <input id="add-grading-set-button"
-              class="btn btn-sm btn-outline-primary"
-              formaction="<%= url_for controller: 'images', action: 'metadata'  %>"
-              formmethod="post"
-              type="submit"
-              value="Download Metadata"
-            />
-            <input id="add-grading-set-button"
-              class="btn btn-sm btn-outline-primary"
-              formaction="<%= url_for controller: 'images', action: 'exif_data'  %>"
-              formmethod="post"
-              type="submit"
-              value="Download Exif Data"
-            />
-            <!-- <button type="button"
-              class="btn btn-sm btn-outline-primary"
-            >
-              Download
-            </button>
-            <button type="button"
-              class="btn btn-sm btn-outline-primary"
-            >
-              Archive
-            </button> -->
-          </div>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @images.each do |image| %>
-        <tr>
-          <td style="width:1%;">
-            <input class="form-check-input" type="checkbox" 
-              name="image_ids[]" value="<%= image.id %>"
-            />
-          </td>
-          <td style="width:1%;">
-            <a href="<%= url_for controller: 'images', action: 'show', id: image.id %>">
-              <%= 
-                image_tag image.variant_url(Image::SIZES[:list]),
-                  class: "img-thumbnail",
-                  style: "max-width: 150px;max-height: 150px;"
-              %>
-            </a>
-          </td>
-          <td>
-            <div class="row">
-              <div class="col-md-6">
-                <div class="row">
-                  <div class="<%= label_class %>">
-                    Filename
-                  </div>
-                  <div class="<%= data_class %>">
-                    <%= link_to image.filename, {controller: 'images', action: 'show', id: image.id} %>
-                  </div>
-                  <div class="<%= label_class %>">
-                    Folder
-                  </div>
-                  <div class="<%= data_class %>">
-                    <a href="<%= url_for controller: 'images', image_source_id: image.image_source.id %>">
-                      <%= image.image_source.name %>
-                    </a>
-                  </div>
-                  <div class="<%= label_class %>">
-                    Uploaded On
-                  </div>
-                  <div class="<%= data_class %>">
-                    <%= image.created_at %>
+                Archive
+              </button> -->
+            </div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @images.each do |image| %>
+          <tr>
+            <td style="width:1%;">
+              <input class="form-check-input" type="checkbox" 
+                name="image_ids[]" value="<%= image.id %>"
+              />
+            </td>
+            <td style="width:1%;">
+              <a href="<%= url_for controller: 'images', action: 'show', id: image.id %>">
+                <%= 
+                  image_tag image.variant_url(ImageVariantable::SIZES[:list]),
+                    class: 'rounded',
+                    style: "max-width: 150px;max-height: 150px;"
+                %>
+              </a>
+            </td>
+            <td>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="row">
+                    <div class="<%= label_class %>">
+                      Filename
+                    </div>
+                    <div class="<%= data_class %>">
+                      <%= link_to image.filename, {controller: 'images', action: 'show', id: image.id} %>
+                    </div>
+                    <div class="<%= label_class %>">
+                      Folder
+                    </div>
+                    <div class="<%= data_class %>">
+                      <a href="<%= url_for controller: 'images', image_source_id: image.image_source.id %>">
+                        <%= image.image_source.name %>
+                      </a>
+                    </div>
+                    <div class="<%= label_class %>">
+                      Uploaded On
+                    </div>
+                    <div class="<%= data_class %>">
+                      <%= image.created_at %>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="col-md-6">
-                <div class="row">
-                  <div class="<%= label_class %>">
-                    Grading Sets
-                  </div>
-                  <div class="<%= data_class %>">
-                    <ul class="list-unstyled">
-                      <% image.grading_sets.each do |grading_set| %>
-                        <li>
-                          <%= grading_set_link grading_set %>
-                        </li>
-                      <% end %>
-                    </ul>
+                <div class="col-md-6">
+                  <div class="row">
+                    <div class="<%= label_class %>">
+                      Grading Sets
+                    </div>
+                    <div class="<%= data_class %>">
+                      <ul class="list-unstyled">
+                        <% image.grading_sets.each do |grading_set| %>
+                          <li>
+                            <%= grading_set_link grading_set %>
+                          </li>
+                        <% end %>
+                      </ul>
+                    </div>  
                   </div>  
-                </div>  
+                </div>
               </div>
-            </div>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
   <nav>
     <ul class="pagination flex-wrap">
       <li class="page-item <%= 'disabled' if @offset < 1 %>">

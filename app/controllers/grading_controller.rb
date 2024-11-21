@@ -1,5 +1,7 @@
 class GradingController < ApplicationController
 
+  skip_before_action :verify_authenticity_token, only: [:grade]
+
   def index
     @user_grading_set = current_user.user_grading_set_for(params[:grading_set_id])
     if !@user_grading_set.image_complete?
@@ -34,15 +36,7 @@ class GradingController < ApplicationController
       )
     end
     @user_grading_set_image.flipped = params[:flipped] == '1'
-    @user_grading_set_image.grading_data = params.permit(grading_data: [
-      :photo_quality,
-      :is_everted,
-      :tf_grade,
-      :ti_grade,
-      :ts_grade,
-      :upper_lid_tt_grade,
-      :lower_lid_tt_grade
-    ])['grading_data']
+    @user_grading_set_image.grading_data = JSON.parse(params[:grading_data])
     @user_grading_set_image.save!
     flash.notice = "#{@user_grading_set.grading_set.name} image grade saved!"
     redirect_to action: 'index', grading_set_id: params[:grading_set_id]

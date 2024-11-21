@@ -26,6 +26,19 @@ img.flipped {
   transform: scaleX(-1);
 }
 
+.GradeableImages {
+  .ImageThumbnail {
+    cursor: pointer;
+  }
+  .ImageFill {
+    width: 100%;
+    height: 100%;
+  }
+  .ImageFullscreen {
+    width: 100%;
+  }
+}
+
 
 // Style overrides
 body {
@@ -71,4 +84,7 @@ body {
   a {
     text-decoration: none;
   }
+}
+.list-unstyled {
+  margin-bottom: 0;
 }
