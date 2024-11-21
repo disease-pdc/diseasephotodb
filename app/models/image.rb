@@ -101,7 +101,7 @@ class Image < ApplicationRecord
   end
 
   def fixed_metadata
-    FIXED_METADATA
+    FIXED_METADATA + Rails.application.config.x.imagery_metadata_config.locked_keys
   end
 
   def do_image_processing

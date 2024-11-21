@@ -17,6 +17,13 @@
 <p>
   Metadata files can include data for images, referenced by image filename, or image sets referenced by the metadata image set field value.
 </p>
+<p>
+  The following metadata fields are LOCKED and cannot be updated:
+  <ul>
+    <li><strong>Images</strong>: <%= Image.new.fixed_metadata.join(', ') %></li>
+    <li><strong>Image Sets</strong>: <%= ImageSet.new.fixed_metadata.join(', ') %></li>
+  </ul>
+</p>
 
 <%= javascript_pack_tag 'metadata_upload' %>
 <hr/>
