@@ -32,7 +32,7 @@ def wait_for_xpath browser, path, tries=8
   end
 end
 
-def create_participant participant_id, date_updated, image_source_id, sync_user_id, image_paths
+def create_participant participant_id, date_updated, clinician_name, image_source_id, sync_user_id, image_paths
   image_source = ImageSource.find image_source_id
   participant_id_key = image_source.create_image_sets_metadata_field
   image_paths.each_with_index do |image_path, index|
@@ -42,7 +42,8 @@ def create_participant participant_id, date_updated, image_source_id, sync_user_
         "date_updated" => date_updated.to_s,
         "synced_at" => DateTime.now,
         "image_sequence" => index + 1,
-        "pid" => participant_id
+        "pid" => participant_id,
+        "clinician_name" => clinician_name
       }
       metadata[participant_id_key] = participant_code(participant_id, date_updated)
       image = Image.new(
@@ -66,7 +67,8 @@ def create_participant participant_id, date_updated, image_source_id, sync_user_
     "date_updated" => date_updated.to_s,
     "synced_at" => DateTime.now,
     "image_count" => image_paths.length,
-    "pid" => participant_id
+    "pid" => participant_id,
+    "clinician_name" => clinician_name
   }
   metadata[participant_id_key] = participant_code(participant_id, date_updated)
   image_set.metadata = (image_set.metadata || {}).merge(metadata)
@@ -87,6 +89,19 @@ def load_participant browser, participant_id, image_source_id, sync_user_id, dat
     return
   end
   sleep(2)
+  # Load clinician:
+  clinician_name = ""
+  exam_details_array = wait_for_xpath browser, "//div[@class='exam-section-content']"
+  exam_details_array.each do |exam_details|
+    label = exam_details.at_xpath("p[@class='label']")
+    if label && label.inner_text.downcase.include?('clinician')
+      info = exam_details.at_xpath("p[@class='info']")
+      if info && info.inner_text
+        clinician_name = info.inner_text
+      end
+    end
+  end
+
   msg = browser.at_xpath "//div[@class='files']//p"
   if (msg && msg.inner_text.squish == 'There are no media files')
     puts "[ERROR] #{participant_id} reports no files"
@@ -141,7 +156,7 @@ def load_participant browser, participant_id, image_source_id, sync_user_id, dat
 
   puts "Found #{image_seq} images for participant_id #{participant_id}"
   image_paths = Dir["#{image_folder}/*"].sort_by{ |f| File.mtime(f) }
-  create_participant participant_id, date_updated, image_source_id, sync_user_id, image_paths
+  create_participant participant_id, date_updated, clinician_name, image_source_id, sync_user_id, image_paths
 
   # Delete downloaded images
   FileUtils.rm_rf(image_folder)
