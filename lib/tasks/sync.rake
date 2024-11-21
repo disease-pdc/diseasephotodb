@@ -285,4 +285,109 @@ namespace :sync do
 
   end
 
+
+  desc "Sync clinician name to existing patients"
+  task :clinician_names, [:email, :image_source_id, :sync_user_id, :last_updated_days] => :environment do |task, args|
+    email = args[:email]
+    password = sync_password_for(email)
+    image_source_id = args[:image_source_id]
+    sync_user_id = args[:sync_user_id]
+    last_updated = args[:last_updated_days] ? 
+      args[:last_updated_days].to_i.days.ago.beginning_of_day : 
+      2.days.ago
+
+    # Sync no more than MAX_SYNCED per session
+    num_synced = 0
+
+    # Skip unsyncable
+    skip_ids = []
+
+    begin
+      browser = login_new_browser email, password     
+
+      # Iterate over patients and pages until patient 
+      current_patient_tr_index = 0
+      loop do
+        patient_trs = wait_for_xpath browser, "//div[@class='patients-content']//table//tbody//tr"
+        patient_tr = patient_trs[current_patient_tr_index]
+
+        patient_tr.scroll_into_view
+        tds = patient_tr.xpath "td"
+        participant_id = tds[2].inner_text
+        date_updated = Date.parse(tds[4].inner_text)
+        if date_updated < last_updated
+          puts "Found participant #{participant_id} with #{date_updated} before limit, ending sync"
+          break
+        end
+
+        image_source = ImageSource.find image_source_id
+        participant_id_key = image_source.create_image_sets_metadata_field
+        image_set = ImageSet.search(
+          image_source_id: image_source_id,
+          metadata_key: participant_id_key, 
+          metadata_value_eq: participant_code(participant_id, date_updated)
+        ).first
+
+        unless skip_ids.include?(participant_id) || !image_set || !image_set.metadata['clinician_name'].blank?
+          puts "Found participant #{participant_id} updated at #{date_updated}, index #{current_patient_tr_index} in table"
+          patient_tr.click
+
+          # Load clinician:
+          clinician_name = ""
+          exam_details_array = wait_for_xpath browser, "//div[@class='exam-section-content']"
+          exam_details_array.each do |exam_details|
+            label = exam_details.at_xpath("p[@class='label']")
+            if label && label.inner_text.downcase.include?('clinician')
+              info = exam_details.at_xpath("p[@class='info']")
+              if info && info.inner_text
+                clinician_name = info.inner_text
+              end
+            end
+          end
+          image_set.metadata['clinician_name'] = clinician_name
+          puts "Setting clinician name"
+          image_set.save!
+          skip_ids << participant_id
+
+          # Back to main list
+          wait_for_at_xpath(browser, "//a[@class='back-btn']").click
+          patient_trs = wait_for_xpath browser, "//div[@class='patients-content']//table//tbody//tr"
+          num_synced = num_synced + 1
+          puts "Back to patient_trs, length #{patient_trs.length}"
+        end
+        current_patient_tr_index = current_patient_tr_index + 1
+        if current_patient_tr_index >= patient_trs.length
+          puts "At patient tr index #{current_patient_tr_index} of #{patient_trs.length}, going to next"
+          next_btn = browser.at_xpath("//div[@class='actions']//button[@class='next']")
+          # If Next disabled, on last page
+          if (next_btn.attribute('disabled'))
+            puts "Next button disabled, finishing"
+            break;
+          end
+          next_btn.click
+          num_synced = num_synced + 1
+          current_patient_tr_index = 0
+          sleep(1) # Wait 1 second for event to propagate
+        end
+        if num_synced > MAX_SYNCED
+          puts "Synced more than #{MAX_SYNCED}, restarting browser"
+          browser.reset
+          browser.quit
+          browser = login_new_browser email, password
+          num_synced = 0 
+        end
+      end
+
+    rescue => exception
+      puts exception.backtrace
+      browser.screenshot(path: "screenshot-exception.png")
+      raise # always reraise
+
+    ensure
+      browser.reset
+      browser.quit
+    end
+
+  end
+
 end
