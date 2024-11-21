@@ -369,8 +369,8 @@ namespace :sync do
           current_patient_tr_index = 0
           sleep(1) # Wait 1 second for event to propagate
         end
-        if num_synced > MAX_SYNCED
-          puts "Synced more than #{MAX_SYNCED}, restarting browser"
+        if num_synced > 150
+          puts "Synced more than #{150}, restarting browser"
           browser.reset
           browser.quit
           browser = login_new_browser email, password
