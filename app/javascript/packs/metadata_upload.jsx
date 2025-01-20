@@ -9,12 +9,16 @@ const doUpload = async ({
   authenticityToken,
   imageSourceId,
   filename,
+  id,
   name,
+  type,
   merge_metadata,
   metadata
 }) => {
   const result = await post('/metadata', {
     authenticity_token: authenticityToken,
+    type: type,
+    id: id,
     image_source_id: imageSourceId,
     filename: filename,
     name: name,
@@ -26,7 +30,7 @@ const doUpload = async ({
 
 const getMetadata = ({headers, row}) => {
   let metadata = {}
-  for (let i = 1; i < headers.length; i++) {
+  for (let i = 0; i < headers.length; i++) {
     metadata[headers[i]] = row[i]
   }
   return metadata
@@ -60,6 +64,7 @@ const MetadataUpload = ({
 }) => {
 
   const [sourceId, setSourceId] = useState(imageSourceId || -1)
+  const [type, setType] = useState('image')
   const [mergeMetadata, setMergeMetadata] = useState(true)
 
   const [data, setData] = useState(null)
@@ -82,7 +87,9 @@ const MetadataUpload = ({
           const metadata = getMetadata({headers, row: data[i]})
           const result = await doUpload({
             authenticityToken,
+            type,
             active: '1',
+            id: metadata['id'],
             imageSourceId: sourceId,
             filename: metadata['filename'],
             name: metadata['name'],
@@ -103,18 +110,32 @@ const MetadataUpload = ({
       {!uploading && 
         <div className="row">
           <div className="col-lg-3">
-            <label htmlFor="metadataFile" className="form-label">
-              Select Image Folder
-            </label>
-            <select className="form-select mb-4"
-              value={sourceId}
-              onChange={e => setSourceId(e.target.value)}
-            >
-              <option value="-1"></option>
-              {imageSources.map(({id,name}) => (
-                <option key={id} value={id}>{name}</option>
-              ))}
-            </select>
+            <div className="mb-3">
+              <label htmlFor="metadataFile" className="form-label">
+                Select Image Folder
+              </label>
+              <select className="form-select mb-4"
+                value={sourceId}
+                onChange={e => setSourceId(e.target.value)}
+              >
+                <option value="-1"></option>
+                {imageSources.map(({id,name}) => (
+                  <option key={id} value={id}>{name}</option>
+                ))}
+              </select>
+            </div>
+            <div class="mb-3">
+              <label htmlFor="type" className="form-label">
+                Image or Image Set
+              </label>
+              <select className="form-select mb-4"
+                value={type}
+                onChange={e => setType(e.target.value)}
+              >
+                <option value="image">Image</option>
+                <option value="image_set">Image Set</option>
+              </select>
+            </div>
           </div>
           <div className="col-lg-3">
             <label className="form-label">
