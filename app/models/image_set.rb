@@ -16,7 +16,8 @@ class ImageSet < ApplicationRecord
 
   validates 'image_source_id', presence: true
   validates 'source_metadata_name', presence: true
-  validates 'name', presence: true
+  validates 'name', presence: true,
+    uniqueness: { scope: [:image_source_id] }
   validates 'metadata', presence: true,  allow_blank: false
 
   def self.all_metadata_keys

@@ -51,7 +51,7 @@ const Result = ({filename, name, success, error}) => (
         &nbsp;
         <strong>{filename || name}</strong>
         &nbsp;
-        <span>{error}</span>
+        <span>{(typeof error === 'string' && error) || JSON.stringify(error)}</span>
       </>
     }
   </>

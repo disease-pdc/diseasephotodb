@@ -18,10 +18,10 @@ class MetadataController < ApplicationController
     unless @entity
       render json: {filename: entity_name, error: "#{params[:type] == 'image_set' ? 'Image Set' : 'Image'} not found"}, staus: :unprocessable_entity
     else
-      if @entity.update_metadata metadata_params[:metadata], params[:merge_metadata]
+      if @entity.update_metadata metadata_params[:metadata], params[:merge_metadata], !!params[:id]
         render json: {filename: entity_name, success: true}
       else
-        render jsons: {filename: entity_name, error: @entity.errors}, staus: :unprocessable_entity 
+        render json: {filename: entity_name, error: @entity.errors}, staus: :unprocessable_entity 
       end
     end
   end
