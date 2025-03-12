@@ -33,11 +33,15 @@ def wait_for_xpath browser, path, tries=8
 end
 
 def create_participant participant_id, date_updated, clinician_name, image_source_id, sync_user_id, image_paths
+  puts "Creating participant #{participant_id} with #{image_paths.length} images"
   image_source = ImageSource.find image_source_id
   participant_id_key = image_source.create_image_sets_metadata_field
   image_paths.each_with_index do |image_path, index|
     image = Image.where(image_source_id: image_source_id, filename: File.basename(image_path)).first
-    unless image
+    if image
+      puts "Skipping existing image #{image_path} for participant #{participant_id}"
+    else
+      puts "Creating new image #{image_path} for participant #{participant_id}"
       metadata = {
         "date_updated" => date_updated.to_s,
         "synced_at" => DateTime.now,
@@ -63,6 +67,7 @@ def create_participant participant_id, date_updated, clinician_name, image_sourc
   end
   sleep(1) # Wait for image_set
   image_set = ImageSet.where(name: participant_code(participant_id, date_updated)).first
+  puts "Updating image set #{image_set.id}, participant #{participant_id}"
   metadata = {
     "date_updated" => date_updated.to_s,
     "synced_at" => DateTime.now,
@@ -84,10 +89,6 @@ def load_participant browser, participant_id, image_source_id, sync_user_id, dat
     metadata_key: participant_id_key, 
     metadata_value_eq: participant_code(participant_id, date_updated)
   ).first
-  if image_set
-    puts "#{participant_code(participant_id, date_updated)} already loaded, skipping"
-    return
-  end
   sleep(2)
   # Load clinician:
   clinician_name = ""
@@ -201,7 +202,7 @@ end
 namespace :sync do
 
   desc "Sync patients on profile"
-  task :patients, [:email, :image_source_id, :sync_user_id, :last_updated_days] => :environment do |task, args|
+  task :patients, [:email, :image_source_id, :sync_user_id, :last_updated_days, :validate] => :environment do |task, args|
     email = args[:email]
     password = sync_password_for(email)
     image_source_id = args[:image_source_id]
@@ -209,6 +210,7 @@ namespace :sync do
     last_updated = args[:last_updated_days] ? 
       args[:last_updated_days].to_i.days.ago.beginning_of_day : 
       2.days.ago
+    validate = %w(1 true yes t y).include?(args[:validate])
 
     # Sync no more than MAX_SYNCED per session
     num_synced = 0
@@ -233,8 +235,8 @@ namespace :sync do
           puts "Found participant #{participant_id} with #{date_updated} before limit, ending sync"
           break
         end
-        unless skip_ids.include?(participant_id) || participant_loaded?(image_source_id, participant_id, date_updated)
-          puts "Found new participant #{participant_id} updated at #{date_updated}, index #{current_patient_tr_index} in table"
+        if validate || (!skip_ids.include?(participant_id) && !participant_loaded?(image_source_id, participant_id, date_updated))
+          puts "Found participant #{participant_id} updated at #{date_updated}, index #{current_patient_tr_index} in table"
           patient_tr.click
           load_results = load_participant browser, participant_id, image_source_id, sync_user_id, date_updated
 
