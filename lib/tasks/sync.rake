@@ -207,7 +207,7 @@ end
 namespace :sync do
 
   desc "Sync patients on profile"
-  task :patients, [:email, :image_source_id, :sync_user_id, :last_updated_days, :start_index, :validate] => :environment do |task, args|
+  task :patients, [:email, :image_source_id, :sync_user_id, :last_updated_days, :start_pid, :validate] => :environment do |task, args|
     email = args[:email]
     password = sync_password_for(email)
     image_source_id = args[:image_source_id]
@@ -215,7 +215,9 @@ namespace :sync do
     last_updated = args[:last_updated_days] ? 
       args[:last_updated_days].to_i.days.ago.beginning_of_day : 
       2.days.ago
+    start_pid = args[:start_pid] || ''
     validate = %w(1 true yes t y).include?(args[:validate])
+
 
     # Sync no more than MAX_SYNCED per session
     num_synced = 0
@@ -227,8 +229,7 @@ namespace :sync do
       browser = login_new_browser email, password     
 
       # Iterate over patients and pages until patient 
-      current_patient_tr_index = (args[:start_index] || 0).to_i
-      puts "Starting at index #{current_patient_tr_index}"
+      current_patient_tr_index = 0
       loop do
         patient_trs = wait_for_xpath browser, "//div[@class='patients-content']//table//tbody//tr"
         patient_tr = patient_trs[current_patient_tr_index]
@@ -241,6 +242,13 @@ namespace :sync do
           puts "Found participant #{participant_id} with #{date_updated} before limit, ending sync"
           break
         end
+        if !start_pid.blank? && participant_id.squish != start_pid.squish
+          puts "Found participant #{participant_id} before start_pid, skipping"
+          current_patient_tr_index += 1
+          next
+        end
+        start_pid = nil
+        puts "Found start participant #{participant_id}, continuing"
         if validate || (!skip_ids.include?(participant_id) && !participant_loaded?(image_source_id, participant_id, date_updated))
           puts "Found participant #{participant_id} updated at #{date_updated}, index #{current_patient_tr_index} in table"
           patient_tr.click
