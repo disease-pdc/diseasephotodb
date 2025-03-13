@@ -33,7 +33,7 @@ def wait_for_xpath browser, path, tries=8
 end
 
 def create_participant participant_id, date_updated, clinician_name, image_source_id, sync_user_id, image_paths
-  puts "Creating participant #{participant_id} with #{image_paths.length} images"
+  puts "Creating participant #{participant_id} with #{image_paths.length} images, date_updated: #{date_updated}"
   image_source = ImageSource.find image_source_id
   participant_id_key = image_source.create_image_sets_metadata_field
   image_paths.each_with_index do |image_path, index|
@@ -67,17 +67,21 @@ def create_participant participant_id, date_updated, clinician_name, image_sourc
   end
   sleep(1) # Wait for image_set
   image_set = ImageSet.where(name: participant_code(participant_id, date_updated)).first
-  puts "Updating image set #{image_set.id}, participant #{participant_id}"
-  metadata = {
-    "date_updated" => date_updated.to_s,
-    "synced_at" => DateTime.now,
-    "image_count" => image_paths.length,
-    "pid" => participant_id,
-    "clinician_name" => clinician_name
-  }
-  metadata[participant_id_key] = participant_code(participant_id, date_updated)
-  image_set.metadata = (image_set.metadata || {}).merge(metadata)
-  image_set.save!
+  if image_set
+    puts "Updating image set #{image_set.id}, participant #{participant_id}"
+    metadata = {
+      "date_updated" => date_updated.to_s,
+      "synced_at" => DateTime.now,
+      "image_count" => image_paths.length,
+      "pid" => participant_id,
+      "clinician_name" => clinician_name
+    }
+    metadata[participant_id_key] = participant_code(participant_id, date_updated)
+    image_set.metadata = (image_set.metadata || {}).merge(metadata)
+    image_set.save!
+  else
+    puts "[ERROR] Failed to find image set for participant #{participant_id}, date_updated: #{date_updated}"
+  end
 end
 
 def load_participant browser, participant_id, image_source_id, sync_user_id, date_updated
@@ -156,6 +160,7 @@ def load_participant browser, participant_id, image_source_id, sync_user_id, dat
   end
 
   puts "Found #{image_seq} images for participant_id #{participant_id}"
+  sleep(2) # Wait for temp files to clear
   image_paths = Dir["#{image_folder}/*"].sort_by{ |f| File.mtime(f) }
   create_participant participant_id, date_updated, clinician_name, image_source_id, sync_user_id, image_paths
 
@@ -202,7 +207,7 @@ end
 namespace :sync do
 
   desc "Sync patients on profile"
-  task :patients, [:email, :image_source_id, :sync_user_id, :last_updated_days, :validate] => :environment do |task, args|
+  task :patients, [:email, :image_source_id, :sync_user_id, :last_updated_days, :start_index, :validate] => :environment do |task, args|
     email = args[:email]
     password = sync_password_for(email)
     image_source_id = args[:image_source_id]
@@ -222,7 +227,8 @@ namespace :sync do
       browser = login_new_browser email, password     
 
       # Iterate over patients and pages until patient 
-      current_patient_tr_index = 0
+      current_patient_tr_index = (args[:start_index] || 0).to_i
+      puts "Starting at index #{current_patient_tr_index}"
       loop do
         patient_trs = wait_for_xpath browser, "//div[@class='patients-content']//table//tbody//tr"
         patient_tr = patient_trs[current_patient_tr_index]
