@@ -103,6 +103,22 @@
           <% end %>
         </ul>
       </div>  
+
+      <% if current_user.admin? %>
+        <div class="<%= label_class %> mt-2">
+          Actions
+        </div>
+        <div class="<%= data_class %> mt-2">
+          <%= link_to(
+            'Permanently Delete',
+            url_for(action: 'destroy', id: @image.id),
+            class: 'btn btn-sm btn-outline-danger',
+            data: { method: :delete },
+            onclick: "return confirm('Are you sure you want to permanently delete this image?  All grading data will be deleted.');"
+          ) %>
+        </div> 
+      <% end %>
+
     </div>
 
     <% if current_user.admin? %>

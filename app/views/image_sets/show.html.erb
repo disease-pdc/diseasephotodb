@@ -92,6 +92,32 @@
           <% end %>
         </ul>
       </div> 
+
+      <% if current_user.admin? %>
+        <div class="<%= label_class %> mt-2">
+          Actions
+        </div>
+        <div class="<%= data_class %> mt-2">
+          <%= link_to(
+            'Delete Image Set',
+            url_for(action: 'destroy', id: @image_set.id),
+            class: 'btn btn-sm btn-outline-danger',
+            data: { method: :delete, confirm: "Are you sure you want to permanently delete this image set?  No grading data and all images will be deleted." },
+          ) %>
+
+          <%= link_to(
+            'Permanently Delete Images',
+            url_for(action: 'destroy', id: @image_set.id, delete_images: true),
+            class: 'btn btn-sm btn-outline-danger',
+            data: { 
+              method: :delete, 
+              delete_images: true,
+              confirm: "Are you sure you want to permanently delete this image set?  All grading data and all images will be deleted."
+            }
+          ) %>
+        </div> 
+      <% end %>
+
     </div>
 
     <% if current_user.admin? %>

@@ -112,4 +112,9 @@ class ImageSet < ApplicationRecord
     image_set_images.count
   end
 
+  def destroy_and_images!
+    image_set_images.each { |image_set_image| image_set_image.destroy_and_image! }
+    self.destroy!
+  end
+
 end

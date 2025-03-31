@@ -40,7 +40,18 @@ class ImageSetsController < ApplicationController
   end
 
   def destroy
-
+    @image_set = ImageSet.find params[:id]
+    if params[:delete_images]
+      @image_set.destroy_and_images!
+      redirect_to({ action: 'index' }, flash: {
+        success: "Successfully deleted image set #{@image_set.name} and all images"
+      })
+    else
+      @image_set.destroy!
+      redirect_to({ action: 'index' }, flash: {
+        success: "Successfully deleted image set #{@image_set.name}"
+      })
+    end
   end
 
   def set_images

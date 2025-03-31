@@ -109,6 +109,14 @@ class ImagesController < ApplicationController
       })
   end
 
+  def destroy
+    @image = Image.find params[:id]
+    @image.destroy
+    redirect_to({ action: 'index' }, flash: {
+      success: "Successfully deleted image #{@image.name}"
+    })
+  end
+
   # def update
   #   @image = Image.find params[:id]
   #   respond_to do |format|

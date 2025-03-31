@@ -10,7 +10,7 @@ class Image < ApplicationRecord
   belongs_to :user
   has_many :grading_set_images, as: :gradeable
   has_many :grading_sets, through: :grading_set_images
-  has_many :image_set_images
+  has_many :image_set_images, dependent: :destroy
   has_many :image_sets, through: :image_set_images
 
   scope :active, -> { joins(:image_source).where('image_sources.active', true) }
