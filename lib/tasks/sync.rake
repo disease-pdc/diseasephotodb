@@ -264,6 +264,13 @@ namespace :sync do
         if !start_pid.blank? && participant_id.squish != start_pid.squish
           puts "Found participant #{participant_id} before start_pid, skipping"
           current_patient_tr_index += 1
+          if current_patient_tr_index >= patient_trs.length
+            puts "At patient tr index #{current_patient_tr_index} of #{patient_trs.length}, going to next"
+            current_page += 1
+            num_synced = num_synced + 1
+            current_patient_tr_index = 0
+            patient_trs = patient_trs_on_page browser, current_page
+          end
           next
         end
         start_pid = nil
