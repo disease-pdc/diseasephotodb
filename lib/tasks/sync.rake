@@ -3,7 +3,7 @@ require 'fileutils'
 BASE_URL = "https://eva.mobileodt.com/Login"
 DATE_UPDATED_KEY = 'date_updated'
 IMAGE_INDEX_KEY = 'image_sequence'
-MAX_SYNCED = 50
+MAX_SYNCED = 100
 
 def wait_for_at_xpath browser, path, tries=8
   current_try = tries
@@ -230,8 +230,8 @@ namespace :sync do
 
       # Iterate over patients and pages until patient 
       current_patient_tr_index = 0
+      patient_trs = wait_for_xpath browser, "//div[@class='patients-content']//table//tbody//tr"
       loop do
-        patient_trs = wait_for_xpath browser, "//div[@class='patients-content']//table//tbody//tr"
         patient_tr = patient_trs[current_patient_tr_index]
 
         patient_tr.scroll_into_view
@@ -287,6 +287,7 @@ namespace :sync do
           browser = login_new_browser email, password
           num_synced = 0 
         end
+        patient_trs = wait_for_xpath browser, "//div[@class='patients-content']//table//tbody//tr"
       end
 
     rescue => exception
