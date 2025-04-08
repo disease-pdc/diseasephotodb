@@ -40,6 +40,7 @@ def patient_trs_on_page browser, page_num
       puts "Next button disabled, finishing"
       return nil
     end
+    next_button.scroll_into_view
     next_button.click
     sleep(2)
     cur_page += 1
