@@ -3,7 +3,7 @@ require 'fileutils'
 BASE_URL = "https://eva.mobileodt.com/Login"
 DATE_UPDATED_KEY = 'date_updated'
 IMAGE_INDEX_KEY = 'image_sequence'
-MAX_SYNCED = 100
+MAX_SYNCED = 50
 
 def wait_for_at_xpath browser, path, tries=8
   current_try = tries
@@ -42,7 +42,7 @@ def patient_trs_on_page browser, page_num
     end
     next_button.scroll_into_view
     next_button.click
-    sleep(2)
+    sleep(1)
     cur_page += 1
   end
   return wait_for_xpath browser, "//div[@class='patients-content']//table//tbody//tr"
