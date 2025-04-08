@@ -32,14 +32,18 @@ def wait_for_xpath browser, path, tries=8
   end
 end
 def patient_trs_on_page browser, page_num
-  next_button = wait_for_at_xpath browser, "//div[@class='actions']//button[@class='next']"
-  # If Next disabled, on last page
-  if (next_button.attribute('disabled'))
-    puts "Next button disabled, finishing"
-    return nil
+  cur_page = 0
+  while cur_page < page_num
+    next_button = wait_for_at_xpath browser, "//div[@class='actions']//button[@class='next']"
+    # If Next disabled, on last page
+    if (next_button.attribute('disabled'))
+      puts "Next button disabled, finishing"
+      return nil
+    end
+    next_button.click
+    sleep(2)
+    cur_page += 1
   end
-  next_button.click if next_button
-  sleep(1)
   return wait_for_xpath browser, "//div[@class='patients-content']//table//tbody//tr"
 end
 
