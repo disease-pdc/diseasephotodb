@@ -31,6 +31,17 @@ def wait_for_xpath browser, path, tries=8
     raise "Waited too long for #{path}" if tries <= 0
   end
 end
+def patient_trs_on_page browser, page_num
+  next_button = wait_for_at_xpath browser, "//div[@class='actions']//button[@class='next']"
+  # If Next disabled, on last page
+  if (next_button.attribute('disabled'))
+    puts "Next button disabled, finishing"
+    return nil
+  end
+  next_button.click if next_button
+  sleep(1)
+  return wait_for_xpath browser, "//div[@class='patients-content']//table//tbody//tr"
+end
 
 def create_participant participant_id, date_updated, clinician_name, image_source_id, sync_user_id, image_paths
   puts "Creating participant #{participant_id} with #{image_paths.length} images, date_updated: #{date_updated}"
@@ -225,12 +236,15 @@ namespace :sync do
     # Skip unsyncable
     skip_ids = []
 
+    # Current Page in sync
+    current_page = 0
+
     begin
       browser = login_new_browser email, password     
 
       # Iterate over patients and pages until patient 
       current_patient_tr_index = 0
-      patient_trs = wait_for_xpath browser, "//div[@class='patients-content']//table//tbody//tr"
+      patient_trs = patient_trs_on_page browser, current_page
       loop do
         patient_tr = patient_trs[current_patient_tr_index]
 
@@ -269,16 +283,9 @@ namespace :sync do
         current_patient_tr_index = current_patient_tr_index + 1
         if current_patient_tr_index >= patient_trs.length
           puts "At patient tr index #{current_patient_tr_index} of #{patient_trs.length}, going to next"
-          next_btn = browser.at_xpath("//div[@class='actions']//button[@class='next']")
-          # If Next disabled, on last page
-          if (next_btn.attribute('disabled'))
-            puts "Next button disabled, finishing"
-            break;
-          end
-          next_btn.click
+          current_page += 1
           num_synced = num_synced + 1
           current_patient_tr_index = 0
-          sleep(1) # Wait 1 second for event to propagate
         end
         if num_synced > MAX_SYNCED
           puts "Synced more than #{MAX_SYNCED}, restarting browser"
@@ -287,7 +294,7 @@ namespace :sync do
           browser = login_new_browser email, password
           num_synced = 0 
         end
-        patient_trs = wait_for_xpath browser, "//div[@class='patients-content']//table//tbody//tr"
+        patient_trs = patient_trs_on_page browser, current_page
       end
 
     rescue => exception
