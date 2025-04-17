@@ -1,0 +1,9 @@
+---
+:concurrency: 2
+:queues:
+  - [mailers, 3]
+  - [default, 2]
+  - [patient_sync, 1]
+
+:limits:
+  patient_sync: 1

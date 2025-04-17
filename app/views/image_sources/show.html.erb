@@ -1,3 +1,21 @@
 <h3>Edit Image Folder</h3>
 
 <%= render partial: 'image_sources/form' %>
+
+<hr/>
+
+<h3 class="mt-5">Sync Patient:</h3>
+
+<%= form_with url: sync_participant_image_source_path(@image_source), method: :post, class: 'form' do |f| %>
+  <div class="mb-3">
+    <%= f.label :participant_id, 'Participant ID', class: 'form-label' %>
+    <%= f.text_field :participant_id, class: 'form-control', required: true, placeholder: 'Enter participant ID' %>
+  </div>
+  
+  <div class="mb-3">
+    <%= f.label :email, 'Email for Sync', class: 'form-label' %>
+    <%= f.email_field :email, class: 'form-control', required: true, placeholder: 'ODT login email' %>
+  </div>
+  
+  <%= f.submit 'Queue Sync', class: 'btn btn-primary' %>
+<% end %>

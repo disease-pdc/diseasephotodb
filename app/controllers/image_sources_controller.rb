@@ -72,6 +72,33 @@ class ImageSourcesController < ApplicationController
       format.json { render json: {images: image_data} }
     end
   end
+  
+  # Queues a participant sync job for the specified participant ID
+  def sync_participant
+    @image_source = ImageSource.find params[:id]
+    participant_id = params[:participant_id]
+    email = params[:email]
+    
+    # Use current_user.id as the sync_user_id
+    sync_user_id = current_user.id
+    
+    # Validate required parameters
+    if participant_id.blank? || email.blank?
+      flash.alert = "Participant ID and email are required"
+      return redirect_to image_source_path(@image_source)
+    end
+    
+    # Queue the sync job
+    ParticipantSyncJob.perform_async(
+      participant_id,
+      @image_source.id,
+      sync_user_id,
+      email
+    )
+    
+    flash.notice = "Sync queued for participant #{participant_id}"
+    redirect_to image_source_path(@image_source)
+  end
 
   private
 
