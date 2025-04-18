@@ -59,9 +59,11 @@ class ImageSourcesController < ApplicationController
   end
 
   def image_urls
+    limit = params[:limit] || 200
+    offset = params[:offset] || 0
     @image_source = ImageSource.find params[:id]
     image_data = []
-    @image_source.images.find_each do |image|
+    @image_source.images.limit(limit).offset(offset).each do |image|
       image_data << {
         filename: image.filename,
         url: url_for(image.image_file)

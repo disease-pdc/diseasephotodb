@@ -6,9 +6,16 @@ import JsZip from 'jszip'
 import FileSaver from 'file-saver'
 
 const getImageData = async ({
-  imageSourceId
+  imageSourceId,
+  limit,
+  offset
 }) => {
-  const result = await get(`/image_sources/${imageSourceId}/image_urls.json`)
+  const result = await get(`/image_sources/${imageSourceId}/image_urls.json`, {
+    params: {
+      limit,
+      offset
+    }
+  })
   return result.data.images
 }
 
@@ -59,14 +66,17 @@ const ImagesDownload = ({
   const doDownload = async (batchIndex) => {
     setDownloading(true)
     setDownloadingPercent(0)
-    const imageData = await getImageData({ imageSourceId: sourceId })
-    const images = imageData.slice(batchIndex * batchSize, (batchIndex + 1) * batchSize);
+    const imageData = await getImageData({ 
+      imageSourceId: sourceId,
+      limit: batchSize,
+      offset: batchIndex * batchSize
+    })
 
     let imageBlobs = []
-    for (let i = 0; i < images.length; i++) {
+    for (let i = 0; i < imageData.length; i++) {
       imageBlobs.push({
-        filename: images[i].filename,
-        blob: fetch(images[i].url).then(resp => resp.blob())
+        filename: imageData[i].filename,
+        blob: fetch(imageData[i].url).then(resp => resp.blob())
       })
     }
 
