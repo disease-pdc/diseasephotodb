@@ -12,6 +12,13 @@ const getImageData = async ({
   return result.data.images
 }
 
+const getImageCount = async ({
+  imageSourceId
+}) => {
+  const result = await get(`/image_sources/${imageSourceId}/image_urls_count.json`)
+  return result.data.count
+}
+
 const ImagesDownload = ({
   authenticityToken,
   imageSources,
@@ -21,7 +28,8 @@ const ImagesDownload = ({
   const batchSize = 200;
 
   const [sourceId, setSourceId] = useState(imageSourceId)
-  const [imageData, setImageData] = useState(null) 
+  const [imageData, setImageData] = useState(null)
+  const [imageCount, setImageCount] = useState(null)
 
   const [loadingImageData, setLoadingImageData] = useState(false)
   const [downloading, setDownloading] = useState(false)
@@ -33,7 +41,7 @@ const ImagesDownload = ({
     if (sourceId) {
       async function fetchData() {
         setLoadingImageData(true)
-        setImageData(await getImageData({ imageSourceId: sourceId }))
+        setImageCount(await getImageCount({ imageSourceId: sourceId }))
         setLoadingImageData(false)
       }
       fetchData();
@@ -51,6 +59,7 @@ const ImagesDownload = ({
   const doDownload = async (batchIndex) => {
     setDownloading(true)
     setDownloadingPercent(0)
+    const imageData = await getImageData({ imageSourceId: sourceId })
     const images = imageData.slice(batchIndex * batchSize, (batchIndex + 1) * batchSize);
 
     let imageBlobs = []
@@ -148,15 +157,15 @@ const ImagesDownload = ({
             <p>Image downloading complete, your file should be saved shortly.</p>
           </>
         }
-        {imageData &&
+        {imageCount &&
           <>
             <hr/>
-            <h5>Image Count: {imageData.length}</h5>
-            {Array.from({length: Math.ceil(imageData.length / batchSize)}, (x, i) => (
+            <h5>Image Count: {imageCount}</h5>
+            {Array.from({length: Math.ceil(imageCount / batchSize)}, (x, i) => (
               <div className="row mb-3 align-items-center" key={i}>
                 <div className="col-auto text-right">
                   <label className="col-form-label">
-                    Download images {i * batchSize + 1} through {(i + 1) * batchSize > imageData.length ? imageData.length : (i + 1) * batchSize }:
+                    Download images {i * batchSize + 1} through {(i + 1) * batchSize > imageCount ? imageCount : (i + 1) * batchSize }:
                   </label>
                 </div>
                 <div className="col-auto">

@@ -72,6 +72,15 @@ class ImageSourcesController < ApplicationController
       format.json { render json: {images: image_data} }
     end
   end
+
+  def image_urls_count
+    @image_source = ImageSource.find params[:id]
+    @count = @image_source.images.count
+    respond_to do |format|
+      format.html 
+      format.json { render json: {count: @count} }
+    end
+  end
   
   # Queues a participant sync job for the specified participant ID
   def sync_participant
