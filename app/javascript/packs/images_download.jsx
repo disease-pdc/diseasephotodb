@@ -75,6 +75,7 @@ const ImagesDownload = ({
     let imageBlobs = []
     for (let i = 0; i < imageData.length; i++) {
       imageBlobs.push({
+        save_filename: imageData[i].save_filename,
         filename: imageData[i].filename,
         blob: fetch(imageData[i].url).then(resp => resp.blob())
       })
@@ -82,7 +83,7 @@ const ImagesDownload = ({
 
     const zip = JsZip()
     imageBlobs.forEach((imageBlob, i) => {
-      zip.file(imageBlob.filename, imageBlob.blob)
+      zip.file(imageBlob.save_filename, imageBlob.blob)
     })
     zip.generateAsync(
       {

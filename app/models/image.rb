@@ -115,4 +115,11 @@ class Image < ApplicationRecord
     end
   end
 
+  def save_filename
+    unless metadata.blank?
+      return "#{metadata['pid-date']}-#{metadata['image_sequence']}.#{id}.png"
+    end
+    filename
+  end
+
 end

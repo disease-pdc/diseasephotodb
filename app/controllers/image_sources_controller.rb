@@ -65,6 +65,7 @@ class ImageSourcesController < ApplicationController
     image_data = []
     @image_source.images.limit(limit).offset(offset).each do |image|
       image_data << {
+        save_filename: image.save_filename,
         filename: image.filename,
         url: url_for(image.image_file)
       }
