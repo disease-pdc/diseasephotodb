@@ -35,7 +35,7 @@ Rails.application.routes.draw do
   end
   get '/image_sources/:id/image_urls', to: 'image_sources#image_urls'
   get '/image_sources/:id/image_urls_count', to: 'image_sources#image_urls_count'
-  get '/image_sources/:id/image_url/:image_id', to: 'image_sources#image_url'
+  get '/image_sources/:id/signed_image_url/:image_id', to: 'image_sources#signed_image_url'
 
   get '/metadata', to: 'metadata#index'
   post '/metadata', to: 'metadata#update'

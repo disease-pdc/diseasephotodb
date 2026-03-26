@@ -1,13 +1,13 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '3.2.2'
+ruby '3.2.10'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 gem 'rails', '~> 6.1.4', '>= 6.1.4.1'
 
 # Use postgresql as the database for Active Record
-gem "pg"
+gem "pg", "~> 1.6.3"
 
 # Use Puma as the app server
 gem 'puma', '~> 5.0'
@@ -36,6 +36,12 @@ gem 'jbuilder', '~> 2.7'
 # gem 'image_processing', '~> 1.2'
 
 # Reduces boot times through caching; required in config/boot.rb
+# Gems extracted from Ruby stdlib needed for Rails 6.1 on Ruby 3.2.10+
+gem 'logger'
+gem 'mutex_m'
+gem 'bigdecimal'
+gem 'drb'
+
 gem 'bootsnap', '>= 1.4.4', require: false
 
 gem 'bcrypt', '~> 3.1', '>= 3.1.12'

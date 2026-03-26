@@ -23,7 +23,7 @@ const getSignedUrl = async ({
   imageSourceId,
   imageId
 }) => {
-  const result = await get(`/image_sources/${imageSourceId}/image_url/${imageId}.json`)
+  const result = await get(`/image_sources/${imageSourceId}/signed_image_url/${imageId}.json`)
   return result.data.url
 }
 
@@ -50,7 +50,7 @@ const ImagesDownload = ({
   const [downloading, setDownloading] = useState(false)
   const [downloadingPercent, setDownloadingPercent] = useState(0.0)
   const [downloadingFile, setDownloadingFile] = useState(null)
-
+  const [downloadErrors, setDownloadErrors] = useState([])
 
   useEffect(() => {
     if (sourceId) {
@@ -74,6 +74,7 @@ const ImagesDownload = ({
   const doDownload = async (batchIndex) => {
     setDownloading(true)
     setDownloadingPercent(0)
+    setDownloadErrors([])
 
     // Fetch image list for this batch (no signed URLs)
     const imageData = await getImageData({
@@ -83,19 +84,34 @@ const ImagesDownload = ({
     })
 
     const zip = JsZip()
+    const errors = []
 
     // Download one at a time, fetching a fresh signed URL for each
     for (let i = 0; i < imageData.length; i++) {
       setDownloadingPercent(((i / imageData.length) * 100).toFixed(2))
       setDownloadingFile(`Downloading image ${i + 1} of ${imageData.length}...`)
 
-      const url = await getSignedUrl({
-        imageSourceId: sourceId,
-        imageId: imageData[i].id
-      })
-      const resp = await fetch(url)
-      const blob = await resp.blob()
-      zip.file(imageData[i].save_filename, blob)
+      try {
+        const url = await getSignedUrl({
+          imageSourceId: sourceId,
+          imageId: imageData[i].id
+        })
+        const resp = await fetch(url)
+        if (!resp.ok) {
+          throw new Error(`HTTP ${resp.status} ${resp.statusText}`)
+        }
+        const blob = await resp.blob()
+        zip.file(imageData[i].save_filename, blob)
+      } catch (e) {
+        errors.push(`Error downloading '${imageData[i].save_filename}' - ${e.message}`)
+      }
+    }
+
+    setDownloadErrors(errors)
+
+    if (errors.length === imageData.length) {
+      setDownloading(false)
+      return
     }
 
     setDownloadingPercent(0)
@@ -181,6 +197,16 @@ const ImagesDownload = ({
             <hr/>
             <p>Image downloading complete, your file should be saved shortly.</p>
           </>
+        }
+        {downloadErrors.length > 0 &&
+          <div className="alert alert-danger mt-3">
+            <strong>Some images could not be downloaded:</strong>
+            <ul className="mb-0 mt-1">
+              {downloadErrors.map((err, i) => (
+                <li key={i}>{err}</li>
+              ))}
+            </ul>
+          </div>
         }
         {imageCount &&
           <>

@@ -1,7 +1,7 @@
 class ImageSourcesController < ApplicationController
 
-  before_action :require_image_admin, except: [:image_urls]
-  before_action :require_image_viewer, only: [:image_urls, :image_url]
+  before_action :require_image_admin, except: [:image_urls, :signed_image_url, :image_urls_count]
+  before_action :require_image_viewer, only: [:image_urls, :signed_image_url, :image_urls_count]
 
 
   def index
@@ -76,8 +76,8 @@ class ImageSourcesController < ApplicationController
     end
   end
 
-  def image_url
-    image = Image.find params[:image_id]
+  def signed_image_url
+    image = Image.find(params[:image_id])
     respond_to do |format|
       format.json { render json: { url: url_for(image.image_file) } }
     end
