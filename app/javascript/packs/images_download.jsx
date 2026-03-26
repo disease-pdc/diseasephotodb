@@ -19,6 +19,14 @@ const getImageData = async ({
   return result.data.images
 }
 
+const getSignedUrl = async ({
+  imageSourceId,
+  imageId
+}) => {
+  const result = await get(`/image_sources/${imageSourceId}/image_url/${imageId}.json`)
+  return result.data.url
+}
+
 const getImageCount = async ({
   imageSourceId
 }) => {
@@ -66,42 +74,48 @@ const ImagesDownload = ({
   const doDownload = async (batchIndex) => {
     setDownloading(true)
     setDownloadingPercent(0)
-    const imageData = await getImageData({ 
+
+    // Fetch image list for this batch (no signed URLs)
+    const imageData = await getImageData({
       imageSourceId: sourceId,
       limit: batchSize,
       offset: batchIndex * batchSize
     })
 
-    let imageBlobs = []
+    const zip = JsZip()
+
+    // Download one at a time, fetching a fresh signed URL for each
     for (let i = 0; i < imageData.length; i++) {
-      imageBlobs.push({
-        save_filename: imageData[i].save_filename,
-        filename: imageData[i].filename,
-        blob: fetch(imageData[i].url).then(resp => resp.blob())
+      setDownloadingPercent(((i / imageData.length) * 100).toFixed(2))
+      setDownloadingFile(`Downloading image ${i + 1} of ${imageData.length}...`)
+
+      const url = await getSignedUrl({
+        imageSourceId: sourceId,
+        imageId: imageData[i].id
       })
+      const resp = await fetch(url)
+      const blob = await resp.blob()
+      zip.file(imageData[i].save_filename, blob)
     }
 
-    const zip = JsZip()
-    imageBlobs.forEach((imageBlob, i) => {
-      zip.file(imageBlob.save_filename, imageBlob.blob)
-    })
-    zip.generateAsync(
+    setDownloadingPercent(0)
+    setDownloadingFile('Generating zip file...')
+
+    const zipFile = await zip.generateAsync(
       {
         type: 'blob',
         streamFiles: true
-      }, 
+      },
       (metadata) => {
         setDownloadingPercent(metadata.percent.toFixed(2))
         setDownloadingFile(metadata.currentFile)
       }
-    ).then(zipFile => {
-      const currentDate = new Date().getTime()
-      const sourceName = getSourceName(sourceId) || 'images_sources'
-      const fileName = `${sourceName}.${batchIndex + 1}.zip`
-      setDownloading(false)
-      setDownloading(false)
-      return FileSaver.saveAs(zipFile, fileName);
-    })
+    )
+
+    const sourceName = getSourceName(sourceId) || 'images_sources'
+    const fileName = `${sourceName}.${batchIndex + 1}.zip`
+    setDownloading(false)
+    return FileSaver.saveAs(zipFile, fileName)
   }
 
   return (

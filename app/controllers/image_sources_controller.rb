@@ -1,7 +1,7 @@
 class ImageSourcesController < ApplicationController
 
   before_action :require_image_admin, except: [:image_urls]
-  before_action :require_image_viewer, only: [:image_urls]
+  before_action :require_image_viewer, only: [:image_urls, :image_url]
 
 
   def index
@@ -65,14 +65,21 @@ class ImageSourcesController < ApplicationController
     image_data = []
     @image_source.images.limit(limit).offset(offset).each do |image|
       image_data << {
+        id: image.id,
         save_filename: image.save_filename,
-        filename: image.filename,
-        url: url_for(image.image_file)
+        filename: image.filename
       }
     end
     respond_to do |format|
-      format.html 
+      format.html
       format.json { render json: {images: image_data} }
+    end
+  end
+
+  def image_url
+    image = Image.find params[:image_id]
+    respond_to do |format|
+      format.json { render json: { url: url_for(image.image_file) } }
     end
   end
 
